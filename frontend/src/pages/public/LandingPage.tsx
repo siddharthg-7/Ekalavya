@@ -19,21 +19,20 @@ import {
 } from 'lucide-react';
 
 /* =====================================================================
-   SVG PENTAGON RADAR CHART COMPONENT (Large, Crisp & Generous)
+   HERO RADAR CHART (5 Axes matching exact specification)
    ===================================================================== */
-const CompetencyRadarChart: React.FC = () => {
-  const cx = 160;
-  const cy = 150;
-  const r = 95;
+const HeroProductRadarChart: React.FC = () => {
+  const cx = 130;
+  const cy = 115;
+  const r = 68;
 
   const angles = [-90, -18, 54, 126, 198];
-
   const labels = [
-    { text: 'Statistical Methods', x: cx, y: cy - r - 16, anchor: 'middle' },
-    { text: 'Data Analysis', x: cx + r + 24, y: cy - 10, anchor: 'start' },
-    { text: 'Digital Skills', x: cx + r * Math.cos((54 * Math.PI) / 180) + 16, y: cy + r * Math.sin((54 * Math.PI) / 180) + 16, anchor: 'start' },
-    { text: 'Administration', x: cx + r * Math.cos((126 * Math.PI) / 180) - 16, y: cy + r * Math.sin((126 * Math.PI) / 180) + 16, anchor: 'end' },
-    { text: 'Domain Knowledge', x: cx - r - 24, y: cy - 10, anchor: 'end' }
+    { text: 'Statistical Methods', x: cx, y: cy - r - 10, anchor: 'middle' },
+    { text: 'Data Analysis', x: cx + r + 14, y: cy - 4, anchor: 'start' },
+    { text: 'Digital Skills', x: cx + r * Math.cos((54 * Math.PI) / 180) + 12, y: cy + r * Math.sin((54 * Math.PI) / 180) + 10, anchor: 'start' },
+    { text: 'Communication', x: cx + r * Math.cos((126 * Math.PI) / 180) - 12, y: cy + r * Math.sin((126 * Math.PI) / 180) + 10, anchor: 'end' },
+    { text: 'Domain Knowledge', x: cx - r - 14, y: cy - 4, anchor: 'end' }
   ];
 
   const getPoint = (angleDeg: number, valRatio: number) => {
@@ -44,94 +43,68 @@ const CompetencyRadarChart: React.FC = () => {
     };
   };
 
-  const levels = [0.2, 0.4, 0.6, 0.8, 1.0];
-  const currentValues = [0.82, 0.72, 0.45, 0.65, 0.75];
-  const currentPoints = angles.map((a, i) => getPoint(a, currentValues[i])).map(p => `${p.x},${p.y}`).join(' ');
+  const levels = [0.25, 0.5, 0.75, 1.0];
+  const yourLevelValues = [0.85, 0.70, 0.48, 0.65, 0.78];
+  const yourPoints = angles.map((a, i) => getPoint(a, yourLevelValues[i])).map(p => `${p.x},${p.y}`).join(' ');
 
-  const targetValues = [0.90, 0.88, 0.80, 0.82, 0.85];
-  const targetPoints = angles.map((a, i) => getPoint(a, targetValues[i])).map(p => `${p.x},${p.y}`).join(' ');
+  const expectedValues = [0.90, 0.88, 0.82, 0.80, 0.85];
+  const expectedPoints = angles.map((a, i) => getPoint(a, expectedValues[i])).map(p => `${p.x},${p.y}`).join(' ');
 
   return (
-    <div className="relative w-full flex items-center justify-center py-3 select-none">
-      <svg viewBox="0 0 320 300" className="w-full max-w-[320px] h-auto overflow-visible">
-        {/* Concentric Grid Pentagons */}
-        {levels.map((level, idx) => {
-          const pts = angles.map(a => getPoint(a, level)).map(p => `${p.x},${p.y}`).join(' ');
-          return (
-            <polygon
-              key={idx}
-              points={pts}
-              fill={idx === levels.length - 1 ? '#F8FAFC' : 'none'}
-              stroke="#E2E8F0"
-              strokeWidth="1.2"
-              strokeDasharray={idx < levels.length - 1 ? '3 3' : 'none'}
-            />
-          );
-        })}
-
-        {/* Radial Axis Lines */}
-        {angles.map((a, idx) => {
-          const p = getPoint(a, 1.0);
-          return (
-            <line
-              key={idx}
-              x1={cx}
-              y1={cy}
-              x2={p.x}
-              y2={p.y}
-              stroke="#CBD5E1"
-              strokeWidth="1.2"
-            />
-          );
-        })}
-
-        {/* Expected Level Polygon (Dashed Orange Line) */}
-        <polygon
-          points={targetPoints}
-          fill="rgba(232, 135, 26, 0.08)"
-          stroke="#E8871A"
-          strokeWidth="1.8"
-          strokeDasharray="4 3"
-        />
-
-        {/* Current / Key Level Polygon (Solid Blue Filled) */}
-        <polygon
-          points={currentPoints}
-          fill="rgba(37, 99, 215, 0.22)"
-          stroke="#2563D9"
-          strokeWidth="2.5"
-        />
-
-        {/* Data Point Markers */}
-        {angles.map((a, idx) => {
-          const p = getPoint(a, currentValues[idx]);
-          return (
-            <circle
-              key={idx}
-              cx={p.x}
-              cy={p.y}
-              r="4.5"
-              fill="#2563D9"
-              stroke="#FFFFFF"
-              strokeWidth="2.5"
-            />
-          );
-        })}
-
-        {/* Labels */}
-        {labels.map((lbl, idx) => (
-          <text
+    <svg viewBox="0 0 260 220" className="w-full max-w-[240px] h-auto overflow-visible select-none">
+      {levels.map((lvl, idx) => {
+        const pts = angles.map(a => getPoint(a, lvl)).map(p => `${p.x},${p.y}`).join(' ');
+        return (
+          <polygon
             key={idx}
-            x={lbl.x}
-            y={lbl.y}
-            textAnchor={lbl.anchor as any}
-            className="text-[11px] font-semibold fill-slate-700 font-sans"
-          >
-            {lbl.text}
-          </text>
-        ))}
-      </svg>
-    </div>
+            points={pts}
+            fill={idx === levels.length - 1 ? '#F8FAFC' : 'none'}
+            stroke="#E2E8F0"
+            strokeWidth="1"
+            strokeDasharray={idx < levels.length - 1 ? '2 2' : 'none'}
+          />
+        );
+      })}
+
+      {angles.map((a, idx) => {
+        const p = getPoint(a, 1.0);
+        return <line key={idx} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#CBD5E1" strokeWidth="1" />;
+      })}
+
+      {/* Expected Level (Light Blue / Dashed) */}
+      <polygon
+        points={expectedPoints}
+        fill="rgba(56, 189, 248, 0.08)"
+        stroke="#93C5FD"
+        strokeWidth="1.5"
+        strokeDasharray="3 3"
+      />
+
+      {/* Your Level (Solid Blue Filled) */}
+      <polygon
+        points={yourPoints}
+        fill="rgba(37, 99, 215, 0.22)"
+        stroke="#2563D9"
+        strokeWidth="2.2"
+      />
+
+      {angles.map((a, idx) => {
+        const p = getPoint(a, yourLevelValues[idx]);
+        return <circle key={idx} cx={p.x} cy={p.y} r="3.5" fill="#2563D9" stroke="#FFFFFF" strokeWidth="1.5" />;
+      })}
+
+      {labels.map((lbl, idx) => (
+        <text
+          key={idx}
+          x={lbl.x}
+          y={lbl.y}
+          textAnchor={lbl.anchor as any}
+          className="text-[9px] font-semibold fill-slate-700 font-sans"
+        >
+          {lbl.text}
+        </text>
+      ))}
+    </svg>
   );
 };
 
@@ -231,7 +204,7 @@ export const LandingPage: React.FC = () => {
       </a>
 
       <div className="bg-[#071931] border-b border-white/10 text-slate-300 text-xs py-2 px-6 sm:px-10">
-        <div className="max-w-[1280px] mx-auto flex items-center justify-between">
+        <div className="max-w-[1240px] mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-medium tracking-wide">
@@ -296,16 +269,17 @@ export const LandingPage: React.FC = () => {
       </div>
 
       {/* ============================================================
-          NAVIGATION HEADER
+          NAVIGATION HEADER (top 24px, 1240px max width)
          ============================================================ */}
       <header className="sticky top-0 z-40 bg-[#071931]/95 backdrop-blur-md border-b border-white/10 transition-all duration-200">
-        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 py-6 flex items-center justify-between">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 py-5 flex items-center justify-between">
+          {/* Left: Ekalavya Logo (150-165px wide) */}
           <Link to="/" className="no-underline flex items-center">
             <EkalavyaLogo variant="dark" size="md" />
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-slate-200">
+          {/* Center: Desktop Navigation Links (28-34px spacing, 14-15px font) */}
+          <nav className="hidden md:flex items-center gap-8 text-[15px] font-medium text-slate-200">
             <button
               onClick={() => scrollToSection('how-it-works')}
               className="hover:text-white transition-colors cursor-pointer"
@@ -332,7 +306,7 @@ export const LandingPage: React.FC = () => {
             </button>
           </nav>
 
-          {/* Right Action: Language + Get Started Pill */}
+          {/* Right Action: Language + Get Started Button (~116x48px, 24px radius) */}
           <div className="hidden md:flex items-center gap-5">
             <span className="text-xs text-slate-300 font-semibold flex items-center gap-1 cursor-pointer hover:text-white">
               EN <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -340,7 +314,7 @@ export const LandingPage: React.FC = () => {
 
             <button
               onClick={() => navigate('/login')}
-              className="bg-white hover:bg-slate-100 text-[#102A43] font-semibold text-sm px-6 py-2.5 rounded-full transition-all duration-150 shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2"
+              className="bg-white hover:bg-slate-100 text-[#102A43] font-bold text-sm h-12 min-w-[116px] px-5 rounded-[24px] transition-all duration-150 shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-1.5"
             >
               <span>Get Started</span>
               <ArrowRight className="w-4 h-4 text-[#102A43]" />
@@ -387,7 +361,7 @@ export const LandingPage: React.FC = () => {
             <div className="pt-3 border-t border-white/10">
               <button
                 onClick={() => navigate('/login')}
-                className="w-full bg-white text-[#102A43] py-3.5 rounded-full font-semibold text-center flex items-center justify-center gap-2 text-base"
+                className="w-full bg-white text-[#102A43] py-3.5 rounded-full font-bold text-center flex items-center justify-center gap-2 text-base"
               >
                 <span>Get Started</span>
                 <ArrowRight className="w-4 h-4" />
@@ -398,52 +372,52 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* ============================================================
-          SECTION 01 — HERO (75–85vh Desktop Height, Generous Scale)
+          SECTION 01 — HERO (Exact UI Design Specs)
          ============================================================ */}
       <section
         id="hero-section"
-        className="relative overflow-hidden bg-[#071931] text-white min-h-[82vh] flex items-center pt-16 pb-28 lg:pt-20 lg:pb-36"
+        className="relative overflow-hidden bg-[#071931] text-white min-h-screen flex flex-col pt-14 pb-[160px] lg:pt-20"
       >
         <div
-          className="absolute inset-0 z-0 opacity-85 bg-cover bg-right lg:bg-center"
+          className="absolute inset-0 z-0 opacity-80 bg-cover bg-right lg:bg-center"
           style={{ backgroundImage: `url('/images/hero_official_desk.jpg')` }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#071931] via-[#071931]/90 to-[#071931]/40 z-0" />
 
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 relative z-10 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-            {/* Left Column: Hero Text & Single Primary CTA */}
-            <div className="lg:col-span-6 space-y-7">
-              {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm">
-                <span className="w-2 h-2 rounded-full bg-[#00B4D8] animate-pulse" />
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 relative z-10 w-full flex-1 flex flex-col justify-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center py-8">
+            {/* Left Column: Hero Text (Max-w ~620px, 64-68px headline) */}
+            <div className="lg:col-span-6 space-y-6 max-w-[620px]">
+              {/* Eyebrow (36-40px height, blue dot, dark translucent) */}
+              <div className="inline-flex items-center gap-2.5 h-9 px-4 rounded-full bg-white/10 border border-white/15 backdrop-blur-md">
+                <span className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
                 <span className="text-xs font-bold tracking-wider text-cyan-200 uppercase font-mono">
                   AI-POWERED COMPETENCY INTELLIGENCE
                 </span>
               </div>
 
-              {/* Main Headline */}
-              <h1 className="text-white text-4xl sm:text-5xl lg:text-[64px] font-extrabold leading-[1.08] tracking-tight font-['Noto_Sans',sans-serif]">
+              {/* Main Headline (64-68px, 700/750 weight, ~1.02 line height, clean light blue gradient #8CCBFF -> #4FA4F5) */}
+              <h1 className="text-white text-5xl sm:text-6xl lg:text-[66px] font-extrabold leading-[1.02] tracking-tight font-['Noto_Sans',sans-serif]">
                 Turn Your Potential{' '}
                 <br className="hidden sm:inline" />
                 Into{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#60A5FA] via-[#38BDF8] to-[#00B4D8]">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8CCBFF] to-[#4FA4F5]">
                   Greater Impact.
                 </span>
               </h1>
 
-              {/* Supporting Copy (Slightly wider, optimal readability) */}
-              <p className="text-base sm:text-lg lg:text-xl text-slate-300 leading-relaxed max-w-xl font-normal">
+              {/* Description (Max-w ~570px, 17-18px font, 1.5 line height, 85% white) */}
+              <p className="text-[17.5px] text-white/85 leading-relaxed max-w-[570px] font-normal">
                 Understand your competencies, identify skill gaps, get personalized learning, and
                 measure real progress — all in one place.
               </p>
 
-              {/* Single Primary CTA */}
+              {/* Get Started Button (54-58px height, ~165px width, white bg, navy text, pill radius, Arrow) */}
               <div className="pt-2 space-y-3">
                 <div className="flex items-center gap-5 flex-wrap">
                   <button
                     onClick={() => navigate('/login')}
-                    className="inline-flex items-center gap-3 bg-white hover:bg-slate-100 text-[#102A43] font-bold text-base px-8 py-4 rounded-full transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer"
+                    className="inline-flex items-center justify-center gap-3 bg-white hover:bg-slate-100 text-[#102A43] font-bold text-base h-14 min-w-[165px] px-7 rounded-full transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer"
                   >
                     <span>Get Started</span>
                     <ArrowRight className="w-5 h-5 text-[#102A43]" />
@@ -455,10 +429,10 @@ export const LandingPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Scroll prompt */}
-              <div className="pt-6 flex items-center gap-2 text-xs text-slate-400 font-medium">
+              {/* Scroll Indicator (Bottom-left, subtle, no bouncing animation) */}
+              <div className="pt-4 flex items-center gap-2.5 text-xs text-slate-400 font-medium">
                 <button
-                  onClick={() => scrollToSection('ecosystem')}
+                  onClick={() => scrollToSection('problem-section')}
                   className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer"
                 >
                   <span className="w-7 h-7 rounded-full border border-slate-600 flex items-center justify-center text-xs">
@@ -469,113 +443,129 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column: Hero Product Preview Card (25–35% Larger) */}
+            {/* Right Column: Realistic Laptop Frame + Flat Ekalavya Screen */}
             <div className="lg:col-span-6 flex flex-col items-center lg:items-end relative">
-              {/* Background Poster Overlay */}
-              <div className="absolute top-2 right-4 text-right opacity-20 pointer-events-none select-none hidden sm:block">
-                <div className="text-4xl font-extrabold tracking-tight text-white leading-tight font-mono">
-                  Skilled<br />Officials<br />Stronger<br />India
+              {/* Realistic Laptop Device Frame */}
+              <div className="w-full max-w-[530px] bg-[#1E293B] rounded-[20px] p-2.5 shadow-2xl border border-slate-700/60 relative">
+                {/* Camera dot */}
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-500 mx-auto mb-1.5" />
+
+                {/* Flat Ekalavya Dashboard Screen */}
+                <div className="bg-white rounded-xl overflow-hidden shadow-inner border border-slate-200">
+                  {/* Screen Header */}
+                  <div className="bg-[#F8FAFC] border-b border-slate-200 px-4 py-2 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <img src="/images/ekalavya_logo.png" alt="Ekalavya" className="w-4 h-4 object-contain" />
+                      <span className="font-bold text-xs text-[#102A43]">Ekalavya</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-medium">
+                      <div className="w-4 h-4 rounded-full bg-slate-300 text-[9px] font-bold text-[#102A43] flex items-center justify-center">
+                        AK
+                      </div>
+                      <span>Welcome, <strong className="text-[#102A43]">Arjun Kumar</strong></span>
+                      <ChevronDown className="w-3 h-3 text-slate-400" />
+                    </div>
+                  </div>
+
+                  {/* Screen Body */}
+                  <div className="grid grid-cols-12 min-h-[240px]">
+                    {/* Compact Sidebar */}
+                    <div className="col-span-3 bg-[#F8FAFC] border-r border-slate-200 p-2 space-y-1 text-[10px] font-medium text-slate-600">
+                      <div className="px-2 py-1.5 rounded-lg bg-[#2563D9] text-white font-semibold flex items-center gap-1">
+                        <span>📊</span> Dashboard
+                      </div>
+                      <div className="px-2 py-1.5 rounded-lg hover:bg-slate-200/60 flex items-center gap-1">
+                        <span>👤</span> My Profile
+                      </div>
+                      <div className="px-2 py-1.5 rounded-lg hover:bg-slate-200/60 flex items-center gap-1">
+                        <span>🎯</span> Learning Path
+                      </div>
+                      <div className="px-2 py-1.5 rounded-lg hover:bg-slate-200/60 flex items-center gap-1">
+                        <span>📝</span> Assessments
+                      </div>
+                      <div className="px-2 py-1.5 rounded-lg hover:bg-slate-200/60 flex items-center gap-1">
+                        <span>📈</span> Progress
+                      </div>
+                    </div>
+
+                    {/* Main Dashboard Area */}
+                    <div className="col-span-9 p-3 space-y-2 bg-white">
+                      {/* Title & Legend */}
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-[11px] font-bold text-[#102A43]">My Competency Profile</h4>
+                        <div className="flex items-center gap-2 text-[9px] font-semibold">
+                          <span className="flex items-center gap-1 text-[#2563D9]">
+                            <span className="w-2 h-2 rounded-full bg-[#2563D9]" /> Your Level
+                          </span>
+                          <span className="flex items-center gap-1 text-[#93C5FD]">
+                            <span className="w-2 h-2 rounded-full bg-[#93C5FD]" /> Expected Level
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Radar Chart + Insight Card Layout */}
+                      <div className="grid grid-cols-12 gap-2 items-center">
+                        <div className="col-span-7 flex justify-center">
+                          <HeroProductRadarChart />
+                        </div>
+
+                        <div className="col-span-5 space-y-2">
+                          <div className="p-2.5 rounded-xl bg-[#FFF8F0] border border-[#FDBA74] space-y-1">
+                            <div className="text-[10.5px] font-bold text-[#9A3A0A] flex items-center gap-1">
+                              <span>🎯</span> 3 Priority Gaps Identified
+                            </div>
+                            <p className="text-[9.5px] text-slate-600 leading-tight">
+                              Get a personalized learning path to bridge the gaps.
+                            </p>
+                          </div>
+
+                          <div className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-[9.5px] text-slate-500">
+                            <div className="font-semibold text-slate-700">Next Diagnostic:</div>
+                            <div>Technical Methods (Adaptive)</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Laptop Base Lip */}
+                <div className="w-20 h-1 bg-slate-600 rounded-full mx-auto mt-2" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ============================================================
+            HERO BOTTOM TRUST BAR — Absolutely positioned at bottom: 40px
+            Spec: ~1200px × 110px, translucent dark panel, 4 columns with
+            vertical dividers. Position: bottom 35–45px inside hero.
+           ============================================================ */}
+        <div className="absolute bottom-[40px] left-0 right-0 z-10 px-6 sm:px-8">
+          <div className="max-w-[1200px] mx-auto bg-[#071931]/90 backdrop-blur-md border border-white/[0.12] rounded-2xl shadow-2xl" style={{height: '110px'}}>
+            <div className="h-full grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/[0.10]">
+              {/* Column 1 */}
+              <div className="flex flex-col justify-center px-7 py-4 space-y-1">
+                <div className="font-bold text-[13px] text-white tracking-tight">Competency Framework</div>
+                <p className="text-[11.5px] text-slate-400 leading-snug">Role-based skill intelligence</p>
               </div>
 
-              {/* White Product UI Card (Enlarged to 540px) */}
-              <div className="w-full max-w-[540px] bg-white text-[#102A43] border border-slate-200 rounded-3xl p-7 sm:p-8 shadow-2xl relative z-10 space-y-4">
-                {/* Profile Header */}
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#102A43] text-white font-bold text-sm flex items-center justify-center">
-                      AK
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold text-[#102A43]">Amit Kumar</div>
-                      <div className="text-xs text-slate-500 font-medium">Deputy Director • MoSPI</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-[#102A43] font-mono leading-none">68%</div>
-                    <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Overall Competency</div>
-                  </div>
-                </div>
+              {/* Column 2 */}
+              <div className="flex flex-col justify-center px-7 py-4 space-y-1">
+                <div className="font-bold text-[13px] text-white tracking-tight">iGOT Karmayogi</div>
+                <p className="text-[11.5px] text-slate-400 leading-snug">Curated learning ecosystem</p>
+              </div>
 
-                {/* Radar Chart Title & Legend */}
-                <div className="flex items-center justify-between pt-1">
-                  <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-slate-800">
-                    MY COMPETENCY PROFILE
-                  </h2>
-                  <div className="flex items-center gap-3 text-[11px] font-semibold">
-                    <span className="flex items-center gap-1.5 text-[#2563D9]">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#2563D9]" /> Key Level
-                    </span>
-                    <span className="flex items-center gap-1.5 text-[#E8871A]">
-                      <span className="w-2.5 h-2.5 rounded-full border border-[#E8871A]" /> Expected Level
-                    </span>
-                  </div>
-                </div>
+              {/* Column 3 */}
+              <div className="flex flex-col justify-center px-7 py-4 space-y-1">
+                <div className="font-bold text-[13px] text-white tracking-tight">NSSTA</div>
+                <p className="text-[11.5px] text-slate-400 leading-snug">Domain-relevant resources</p>
+              </div>
 
-                {/* SVG Pentagon Radar Chart */}
-                <CompetencyRadarChart />
-
-                {/* Competency Score Bars Breakdown */}
-                <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 text-xs">
-                  <div>
-                    <div className="flex justify-between font-semibold mb-1">
-                      <span>Statistical Methods</span>
-                      <span className="font-mono text-emerald-700 font-bold">82%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                      <div className="bg-[#16845B] h-full" style={{ width: '82%' }} />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between font-semibold mb-1">
-                      <span>Python</span>
-                      <span className="font-mono text-amber-700 font-bold">42%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                      <div className="bg-[#E8871A] h-full" style={{ width: '42%' }} />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between font-semibold mb-1">
-                      <span>Cybersecurity</span>
-                      <span className="font-mono text-rose-600 font-bold">32%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                      <div className="bg-rose-500 h-full" style={{ width: '32%' }} />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between font-semibold mb-1">
-                      <span>Survey Design</span>
-                      <span className="font-mono text-blue-700 font-bold">54%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                      <div className="bg-[#2563D9] h-full" style={{ width: '54%' }} />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Insight Callout Card */}
-                <div className="p-4 rounded-2xl bg-[#FFF8F0] border border-[#FDBA74] flex items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#9A3A0A]">
-                      <Sparkles className="w-4 h-4 text-[#E8871A]" />
-                      <span>3 Priority Gaps Identified</span>
-                    </div>
-                    <p className="text-xs text-slate-600 mt-1 leading-snug">
-                      Your personalized learning path is ready.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => navigate('/demo')}
-                    className="text-xs font-bold text-white bg-[#2563D9] hover:bg-[#1D4ED8] px-4 py-2 rounded-xl transition-colors cursor-pointer flex-shrink-0"
-                  >
-                    View Learning Path
-                  </button>
-                </div>
+              {/* Column 4 */}
+              <div className="flex flex-col justify-center px-7 py-4 space-y-1">
+                <div className="font-bold text-[13px] text-white tracking-tight">AI-Powered Assessments</div>
+                <p className="text-[11.5px] text-slate-400 leading-snug">Adaptive & personalized</p>
               </div>
             </div>
           </div>
@@ -583,55 +573,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 02 — SOCIAL PROOF / TRUST STRIP (Minimal & Restrained)
+          SECTION 02 — PROBLEM (Clear Editorial Statements)
          ============================================================ */}
-      <section id="ecosystem" className="py-20 bg-white border-b border-[#DCE3EA] text-center">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
-          <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-[#52657A] mb-10">
-            BUILT FOR INDIA’S GOVERNMENT LEARNING ECOSYSTEM
-          </h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
-            {/* 01 Competency Framework */}
-            <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
-              <Compass className="w-7 h-7 text-[#2563D9] mb-3" />
-              <div className="font-bold text-base text-[#102A43]">Competency Framework</div>
-              <p className="text-xs text-[#52657A] mt-1">National Cadre Benchmark</p>
-            </div>
-
-            {/* 02 iGOT Karmayogi */}
-            <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
-              <BookOpen className="w-7 h-7 text-[#16845B] mb-3" />
-              <div className="font-bold text-base text-[#102A43]">iGOT Karmayogi</div>
-              <p className="text-xs text-[#52657A] mt-1">Integrated Module Sync</p>
-            </div>
-
-            {/* 03 NSSTA */}
-            <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
-              <Building2 className="w-7 h-7 text-[#E8871A] mb-3" />
-              <div className="font-bold text-base text-[#102A43]">NSSTA Academy</div>
-              <p className="text-xs text-[#52657A] mt-1">Specialized Methodologies</p>
-            </div>
-
-            {/* 04 AI-Powered Learning & Assessment */}
-            <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
-              <Brain className="w-7 h-7 text-[#2563D9] mb-3" />
-              <div className="font-bold text-base text-[#102A43]">AI Learning & Assessment</div>
-              <p className="text-xs text-[#52657A] mt-1">Adaptive Skill Diagnostics</p>
-            </div>
-          </div>
-
-          <p className="text-sm text-[#52657A] mt-8 font-medium">
-            Empowering a more skilled, capable and future-ready government workforce.
-          </p>
-        </div>
-      </section>
-
-      {/* ============================================================
-          SECTION 03 — PROBLEM (Clear Editorial Statements, Not SaaS Cards)
-         ============================================================ */}
-      <section className="py-24 lg:py-36 bg-[#F7F9FC]">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
+      <section id="problem-section" className="py-24 lg:py-36 bg-[#F7F9FC]">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center">
             {/* Left side: Problem Description & 3 Clear Editorial Statements */}
             <div className="lg:col-span-6 space-y-8">
@@ -722,10 +667,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 04 — SOLUTION (THE EKALAVYA APPROACH & PIPELINE)
+          SECTION 03 — SOLUTION (THE EKALAVYA APPROACH & PIPELINE)
          ============================================================ */}
       <section className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
           <div className="max-w-2xl mx-auto text-center space-y-4 mb-16">
             <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
               THE EKALAVYA APPROACH
@@ -740,7 +685,7 @@ export const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Central Product System Pipeline (6 Stages, Readable in <5s) */}
+          {/* Central Product System Pipeline */}
           <div className="bg-[#071931] text-white p-8 sm:p-12 lg:p-14 rounded-3xl border border-white/15 shadow-2xl relative overflow-hidden">
             <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-10">
               <div className="flex items-center gap-2.5">
@@ -753,42 +698,36 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-5 relative">
-              {/* Step 1 */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-cyan-300 mb-2">01</div>
                 <div className="font-bold text-base mb-1">ROLE</div>
                 <p className="text-xs text-slate-400">Designation & Cadre Framework</p>
               </div>
 
-              {/* Step 2 */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-blue-300 mb-2">02</div>
                 <div className="font-bold text-base mb-1">PROFILE</div>
                 <p className="text-xs text-slate-400">Baseline Competency Matrix</p>
               </div>
 
-              {/* Step 3 */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-amber-300 mb-2">03</div>
                 <div className="font-bold text-base mb-1">GAP ANALYSIS</div>
                 <p className="text-xs text-slate-400">AI-Ranked Skill Deficits</p>
               </div>
 
-              {/* Step 4 */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-emerald-300 mb-2">04</div>
                 <div className="font-bold text-base mb-1">LEARNING</div>
                 <p className="text-xs text-slate-400">Curated iGOT & NSSTA Modules</p>
               </div>
 
-              {/* Step 5 */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-purple-300 mb-2">05</div>
                 <div className="font-bold text-base mb-1">ASSESSMENT</div>
                 <p className="text-xs text-slate-400">Live Adaptive Diagnostic</p>
               </div>
 
-              {/* Step 6 */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-emerald-400 mb-2">06</div>
                 <div className="font-bold text-base mb-1">GROWTH</div>
@@ -814,10 +753,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 05 — FEATURES (Alternating Premium Editorial Showcases)
+          SECTION 04 — FEATURES (Alternating Editorial Showcases)
          ============================================================ */}
       <section id="for-officials" className="py-24 lg:py-36 bg-[#F7F9FC]">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 space-y-16 lg:space-y-24">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 space-y-16 lg:space-y-24">
           <div className="max-w-2xl">
             <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9] mb-2">
               CORE CAPABILITIES
@@ -830,9 +769,7 @@ export const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          {/* ============================================================
-              FEATURE 1: Text Left, Product Visualization Right
-             ============================================================ */}
+          {/* FEATURE 1: Text Left, Product Visualization Right */}
           <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-6 space-y-4">
@@ -884,9 +821,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ============================================================
-              FEATURE 2: Product Visualization Left, Text Right
-             ============================================================ */}
+          {/* FEATURE 2: Product Visualization Left, Text Right */}
           <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-6 order-2 lg:order-1">
@@ -937,9 +872,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ============================================================
-              FEATURE 3: Text Left, Product Visualization Right
-             ============================================================ */}
+          {/* FEATURE 3: Text Left, Product Visualization Right */}
           <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-6 space-y-4">
@@ -988,9 +921,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ============================================================
-              FEATURE 4: Large Full-Width Adaptive Assessment Showcase
-             ============================================================ */}
+          {/* FEATURE 4: Large Full-Width Adaptive Assessment Showcase */}
           <div className="bg-[#071931] text-white rounded-3xl p-8 sm:p-12 lg:p-16 border border-white/15 shadow-2xl relative overflow-hidden">
             <div className="max-w-2xl mb-12">
               <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-mono font-bold mb-4">
@@ -1005,7 +936,6 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Interactive Loop Visual Demonstration */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               {/* Left Column: 4 Diagnostic Steps */}
               <div className="lg:col-span-5 space-y-3.5">
@@ -1093,9 +1023,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ============================================================
-              FEATURE 5: Product Visualization Left, Text Right
-             ============================================================ */}
+          {/* FEATURE 5: Product Visualization Left, Text Right */}
           <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-6 order-2 lg:order-1">
@@ -1143,9 +1071,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ============================================================
-              FEATURE 6: Text Left, Organization Intelligence Right
-             ============================================================ */}
+          {/* FEATURE 6: Text Left, Organization Intelligence Right */}
           <div
             id="for-organizations"
             className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs"
@@ -1196,10 +1122,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 06 — HOW IT WORKS (Generous 4-Step Journey)
+          SECTION 05 — HOW IT WORKS
          ============================================================ */}
       <section id="how-it-works" className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
           <div className="max-w-2xl mx-auto text-center space-y-4 mb-20">
             <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
               HOW IT WORKS
@@ -1209,9 +1135,7 @@ export const LandingPage: React.FC = () => {
             </h2>
           </div>
 
-          {/* 4 Steps Horizontal Flow */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-7">
-            {/* Step 1 */}
             <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-[#102A43] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
@@ -1224,7 +1148,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Step 2 */}
             <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-[#2563D9] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
@@ -1237,7 +1160,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Step 3 */}
             <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-[#16845B] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
@@ -1250,7 +1172,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Step 4 */}
             <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-[#E8871A] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
@@ -1264,7 +1185,6 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Sub-reassurance Text */}
           <div className="mt-14 text-center text-sm font-semibold text-[#52657A]">
             No complicated setup. No course hunting. No one-size-fits-all assessment.
           </div>
@@ -1272,10 +1192,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 07 — OUTCOMES (WORKFORCE NEEDS)
+          SECTION 06 — OUTCOMES (WORKFORCE NEEDS)
          ============================================================ */}
       <section className="py-24 lg:py-36 bg-[#F7F9FC]">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
           <div className="max-w-2xl mx-auto text-center space-y-4 mb-20">
             <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
               Designed Around Real Workforce Needs.
@@ -1286,7 +1206,6 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Column 1: Government Officials */}
             <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
               <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#2563D9] flex items-center justify-center mb-7">
                 <Users className="w-7 h-7" />
@@ -1313,7 +1232,6 @@ export const LandingPage: React.FC = () => {
               </ul>
             </div>
 
-            {/* Column 2: Organizations */}
             <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
               <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16845B] flex items-center justify-center mb-7">
                 <Building2 className="w-7 h-7" />
@@ -1340,7 +1258,6 @@ export const LandingPage: React.FC = () => {
               </ul>
             </div>
 
-            {/* Column 3: Training Teams */}
             <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
               <div className="w-14 h-14 rounded-2xl bg-amber-50 text-[#E8871A] flex items-center justify-center mb-7">
                 <Award className="w-7 h-7" />
@@ -1371,10 +1288,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 08 — FAQ (ACCESSIBLE ACCORDION WITH GENEROUS ROW HEIGHT)
+          SECTION 07 — FAQ (Accessible Accordion)
          ============================================================ */}
       <section id="faq" className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
-        <div className="max-w-[1000px] mx-auto px-6 sm:px-10">
+        <div className="max-w-[1000px] mx-auto px-6 sm:px-8">
           <div className="text-center space-y-4 mb-16">
             <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
               FREQUENTLY ASKED QUESTIONS
@@ -1419,7 +1336,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 09 — FINAL CTA (MOUNTAIN BACKGROUND WITH MORE WHITESPACE)
+          SECTION 08 — FINAL CTA (Mountain Landscape)
          ============================================================ */}
       <section
         className="relative py-28 lg:py-36 bg-[#071931] text-white overflow-hidden"
@@ -1429,9 +1346,8 @@ export const LandingPage: React.FC = () => {
           backgroundPosition: 'center'
         }}
       >
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 relative z-10">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Side Text & Primary CTA */}
             <div className="lg:col-span-8 space-y-7">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-['Noto_Sans',sans-serif] leading-tight">
                 Ready to Build Your Skills <br />
@@ -1459,7 +1375,6 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Side Stacked Typography Graphic */}
             <div className="lg:col-span-4 flex flex-col justify-center items-start lg:items-end border-l lg:border-l-0 border-white/10 pl-8 lg:pl-0">
               <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-300 leading-tight space-y-1.5 font-mono">
                 <div className="text-white">Learn</div>
@@ -1473,12 +1388,11 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 10 — FOOTER (DEEP NAVY, SPACIOUS COLUMNS)
+          SECTION 09 — FOOTER (DEEP NAVY)
          ============================================================ */}
       <footer className="bg-[#071931] text-slate-400 text-xs sm:text-sm border-t border-white/10 pt-20 pb-14">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 mb-16">
-            {/* Left Brand info */}
             <div className="md:col-span-4 space-y-5">
               <EkalavyaLogo variant="dark" size="md" />
               <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm mt-3">
@@ -1487,7 +1401,6 @@ export const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Platform Links */}
             <div className="md:col-span-3 space-y-4">
               <div className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200">
                 PLATFORM
@@ -1520,7 +1433,6 @@ export const LandingPage: React.FC = () => {
               </ul>
             </div>
 
-            {/* Support Links */}
             <div className="md:col-span-3 space-y-4">
               <div className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200">
                 SUPPORT
@@ -1555,7 +1467,6 @@ export const LandingPage: React.FC = () => {
               </ul>
             </div>
 
-            {/* Legal Links */}
             <div className="md:col-span-2 space-y-4">
               <div className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200">
                 LEGAL
