@@ -1,0 +1,382 @@
+[
+  {
+    "title": "Foundations of Survey Design for Official Statistics",
+    "description": "Principles of designing sample surveys for government statistical collection, questionnaire design, and field methodology.",
+    "domain": "Statistical",
+    "sub_skill": "Survey Design",
+    "level": "Beginner",
+    "duration_hrs": 6,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Advanced Sample Survey Design",
+    "description": "Complex survey designs including stratification, clustering, and multi-stage sampling for national surveys.",
+    "domain": "Statistical",
+    "sub_skill": "Survey Design",
+    "level": "Advanced",
+    "duration_hrs": 10,
+    "source": "NSSTA",
+    "url": "https://nssta.gov.in/"
+  },
+  {
+    "title": "Foundations of Survey Sampling",
+    "description": "Introduction to sample design, probability sampling methods, and estimation for official surveys.",
+    "domain": "Statistical",
+    "sub_skill": "Sampling",
+    "level": "Beginner",
+    "duration_hrs": 6,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "TPAC Advanced Statistical Sampling Methods Programme",
+    "description": "NSSTA classroom training on advanced probability sampling and estimation, recommended by the Training Programme Advisory Committee.",
+    "domain": "Statistical",
+    "sub_skill": "Sampling",
+    "level": "Advanced",
+    "duration_hrs": 20,
+    "source": "NSSTA",
+    "url": "https://nssta.gov.in/"
+  },
+  {
+    "title": "National Accounts Compilation Practices",
+    "description": "Methodology for compiling GDP and national accounts aggregates as per MoSPI standards.",
+    "domain": "Statistical",
+    "sub_skill": "National Accounts",
+    "level": "Intermediate",
+    "duration_hrs": 8,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Price Statistics and Index Number Construction",
+    "description": "Constructing and maintaining CPI/WPI price indices for official reporting.",
+    "domain": "Statistical",
+    "sub_skill": "Price Statistics",
+    "level": "Intermediate",
+    "duration_hrs": 7,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Labour Force Survey Methodology",
+    "description": "Employment, unemployment, and labour force statistics collection and analysis (PLFS methodology).",
+    "domain": "Statistical",
+    "sub_skill": "Labour Statistics",
+    "level": "Intermediate",
+    "duration_hrs": 8,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "GIS Applications in Agricultural Statistics",
+    "description": "Using GIS tools for spatial analysis of agricultural survey and crop estimation data.",
+    "domain": "Statistical",
+    "sub_skill": "Agricultural Statistics",
+    "level": "Intermediate",
+    "duration_hrs": 9,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Index of Industrial Production (IIP) Methodology",
+    "description": "Compilation methodology and use-based classification for industrial production statistics.",
+    "domain": "Statistical",
+    "sub_skill": "Industrial Statistics",
+    "level": "Intermediate",
+    "duration_hrs": 7,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "SDG Indicator Framework and National Reporting",
+    "description": "Understanding SDG indicator definitions, data sources, and national/state reporting requirements.",
+    "domain": "Statistical",
+    "sub_skill": "SDG Indicators",
+    "level": "Intermediate",
+    "duration_hrs": 6,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Statistical Metadata Standards (SDMX/DDI)",
+    "description": "Applying international metadata standards for statistical data documentation and exchange.",
+    "domain": "Statistical",
+    "sub_skill": "Metadata Standards",
+    "level": "Advanced",
+    "duration_hrs": 8,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "TPAC Data Quality and Metadata Standards Workshop",
+    "description": "NSSTA in-person workshop on data quality assurance frameworks and metadata standards for official statistics.",
+    "domain": "Statistical",
+    "sub_skill": "Data Quality Frameworks",
+    "level": "Intermediate",
+    "duration_hrs": 16,
+    "source": "NSSTA",
+    "url": "https://nssta.gov.in/"
+  },
+  {
+    "title": "Python for Data Analysis in Official Statistics",
+    "description": "Hands-on Python (pandas, numpy) for cleaning and analyzing statistical survey data.",
+    "domain": "Technical",
+    "sub_skill": "Python",
+    "level": "Beginner",
+    "duration_hrs": 10,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Advanced Python for Statistical Modeling",
+    "description": "Statistical modeling, automation, and pipeline building in Python for large-scale survey data.",
+    "domain": "Technical",
+    "sub_skill": "Python",
+    "level": "Advanced",
+    "duration_hrs": 14,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "R Programming for Statistical Analysis",
+    "description": "Data manipulation, visualization, and statistical modeling using R.",
+    "domain": "Technical",
+    "sub_skill": "R",
+    "level": "Beginner",
+    "duration_hrs": 9,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "SQL for Statistical Data Management",
+    "description": "Writing and optimizing SQL queries for large statistical datasets and government data warehouses.",
+    "domain": "Technical",
+    "sub_skill": "SQL",
+    "level": "Beginner",
+    "duration_hrs": 6,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Stata for Survey Data Analysis",
+    "description": "Using Stata for cleaning, weighting, and analyzing large-scale survey datasets.",
+    "domain": "Technical",
+    "sub_skill": "Stata",
+    "level": "Intermediate",
+    "duration_hrs": 8,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "SPSS for Statistical Reporting",
+    "description": "Descriptive and inferential statistics using SPSS for departmental reporting.",
+    "domain": "Technical",
+    "sub_skill": "SPSS",
+    "level": "Beginner",
+    "duration_hrs": 6,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "SAS Programming for Official Statistics",
+    "description": "SAS base programming for large administrative and survey dataset processing.",
+    "domain": "Technical",
+    "sub_skill": "SAS",
+    "level": "Intermediate",
+    "duration_hrs": 8,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "GIS Fundamentals for Spatial Statistics",
+    "description": "Core GIS concepts and tools for mapping and spatial analysis of statistical indicators.",
+    "domain": "Technical",
+    "sub_skill": "GIS",
+    "level": "Beginner",
+    "duration_hrs": 7,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Data Visualization with Power BI and Dashboards",
+    "description": "Building interactive dashboards for statistical reporting and stakeholder communication.",
+    "domain": "Technical",
+    "sub_skill": "Data Visualization",
+    "level": "Intermediate",
+    "duration_hrs": 8,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Introduction to Machine Learning for Public Sector Analytics",
+    "description": "Core ML concepts applied to public sector data problems, including basic model evaluation.",
+    "domain": "Technical",
+    "sub_skill": "AI/ML",
+    "level": "Intermediate",
+    "duration_hrs": 12,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Applied NLP and LLMs for Government Data Systems",
+    "description": "Practical use of NLP and large language models for document processing and automation in government workflows.",
+    "domain": "Technical",
+    "sub_skill": "AI/ML",
+    "level": "Advanced",
+    "duration_hrs": 12,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Government Cloud (MeghRaj) Fundamentals",
+    "description": "Overview of India's government cloud infrastructure and adoption practices.",
+    "domain": "Technical",
+    "sub_skill": "Cloud Computing",
+    "level": "Beginner",
+    "duration_hrs": 4,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Building and Consuming APIs for Government Data Systems",
+    "description": "REST API design principles and integration patterns for interoperable government platforms.",
+    "domain": "Technical",
+    "sub_skill": "APIs",
+    "level": "Intermediate",
+    "duration_hrs": 7,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Open Data Publishing Standards and Practices",
+    "description": "Principles and standards for publishing government datasets as open data (data.gov.in practices).",
+    "domain": "Technical",
+    "sub_skill": "Open Data",
+    "level": "Beginner",
+    "duration_hrs": 5,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Cybersecurity Essentials for Government Officials",
+    "description": "Practical cybersecurity hygiene, threat awareness, and secure data handling for public officials.",
+    "domain": "DigitalGovernance",
+    "sub_skill": "Cybersecurity",
+    "level": "Beginner",
+    "duration_hrs": 5,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Data Privacy and Protection in Government Systems",
+    "description": "Understanding data privacy regulations and secure handling of citizen data.",
+    "domain": "DigitalGovernance",
+    "sub_skill": "Data Privacy",
+    "level": "Intermediate",
+    "duration_hrs": 6,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Digital Signature Infrastructure for Government Workflows",
+    "description": "Implementation and use of digital signatures (DSC/eSign) in official document workflows.",
+    "domain": "DigitalGovernance",
+    "sub_skill": "Digital Signatures",
+    "level": "Beginner",
+    "duration_hrs": 3,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Government Cloud Architecture and Adoption",
+    "description": "Deep dive into government cloud (GI Cloud/MeghRaj) architecture and migration practices.",
+    "domain": "DigitalGovernance",
+    "sub_skill": "Government Cloud",
+    "level": "Intermediate",
+    "duration_hrs": 8,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Digital Public Infrastructure (DPI) Concepts and Implementation",
+    "description": "Understanding India's DPI stack and its application to statistical and government service delivery.",
+    "domain": "DigitalGovernance",
+    "sub_skill": "Digital Public Infrastructure",
+    "level": "Intermediate",
+    "duration_hrs": 6,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Leadership for Public Sector Managers",
+    "description": "Leadership fundamentals tailored for mid and senior-level government officials.",
+    "domain": "Behavioural",
+    "sub_skill": "Leadership",
+    "level": "Intermediate",
+    "duration_hrs": 6,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "TPAC Senior Leadership Development Programme",
+    "description": "NSSTA residential leadership programme for senior officials, recommended by TPAC.",
+    "domain": "Behavioural",
+    "sub_skill": "Leadership",
+    "level": "Advanced",
+    "duration_hrs": 24,
+    "source": "NSSTA",
+    "url": "https://nssta.gov.in/"
+  },
+  {
+    "title": "Professional Communication for Government Officials",
+    "description": "Written and verbal communication skills for stakeholder and public engagement.",
+    "domain": "Behavioural",
+    "sub_skill": "Communication",
+    "level": "Beginner",
+    "duration_hrs": 4,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Project Management for Government Programmes",
+    "description": "Applied project management practices for public-sector programme delivery.",
+    "domain": "Behavioural",
+    "sub_skill": "Project Management",
+    "level": "Beginner",
+    "duration_hrs": 7,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Public Service Ethics and Integrity",
+    "description": "Ethical decision-making frameworks and integrity standards for government officials.",
+    "domain": "Behavioural",
+    "sub_skill": "Ethics",
+    "level": "Beginner",
+    "duration_hrs": 3,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Data-Driven Decision Making for Policy Officials",
+    "description": "Using statistical evidence and analytics to inform policy decisions.",
+    "domain": "Behavioural",
+    "sub_skill": "Decision Making",
+    "level": "Intermediate",
+    "duration_hrs": 5,
+    "source": "iGOT",
+    "url": "https://igotkarmayogi.gov.in/"
+  },
+  {
+    "title": "Change Management in Government Digital Transformation",
+    "description": "Managing organizational change during technology adoption in government departments.",
+    "domain": "Behavioural",
+    "sub_skill": "Change Management",
+    "level": "Intermediate",
+    "duration_hrs": 6,
+    "source": "NSSTA",
+    "url": "https://nssta.gov.in/"
+  }
+]

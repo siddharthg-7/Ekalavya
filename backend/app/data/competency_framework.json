@@ -1,0 +1,38 @@
+[
+  {"domain": "Statistical", "name": "Survey Design", "description": "Designing sample surveys for official statistics collection."},
+  {"domain": "Statistical", "name": "Sampling", "description": "Sampling theory and methodology."},
+  {"domain": "Statistical", "name": "National Accounts", "description": "Compilation and analysis of national accounts."},
+  {"domain": "Statistical", "name": "Price Statistics", "description": "Price index construction and analysis."},
+  {"domain": "Statistical", "name": "Labour Statistics", "description": "Employment/unemployment and labour force statistics."},
+  {"domain": "Statistical", "name": "Agricultural Statistics", "description": "Agriculture sector data collection and analysis."},
+  {"domain": "Statistical", "name": "Industrial Statistics", "description": "Industrial production and IIP methodology."},
+  {"domain": "Statistical", "name": "SDG Indicators", "description": "Sustainable Development Goal indicator frameworks."},
+  {"domain": "Statistical", "name": "Metadata Standards", "description": "Statistical metadata standards (SDMX, DDI, etc.)."},
+  {"domain": "Statistical", "name": "Data Quality Frameworks", "description": "Data quality assurance frameworks for official statistics."},
+
+  {"domain": "Technical", "name": "Python", "description": "Python for data processing and analysis."},
+  {"domain": "Technical", "name": "R", "description": "R for statistical computing."},
+  {"domain": "Technical", "name": "SQL", "description": "SQL for data querying and management."},
+  {"domain": "Technical", "name": "Stata", "description": "Stata for statistical analysis."},
+  {"domain": "Technical", "name": "SPSS", "description": "SPSS for statistical analysis."},
+  {"domain": "Technical", "name": "SAS", "description": "SAS for statistical analysis."},
+  {"domain": "Technical", "name": "GIS", "description": "Geographic Information Systems for spatial statistics."},
+  {"domain": "Technical", "name": "Data Visualization", "description": "Dashboards and visual analytics."},
+  {"domain": "Technical", "name": "AI/ML", "description": "Applied AI/ML for statistical analysis."},
+  {"domain": "Technical", "name": "Cloud Computing", "description": "Cloud platforms for data infrastructure."},
+  {"domain": "Technical", "name": "APIs", "description": "API design and integration."},
+  {"domain": "Technical", "name": "Open Data", "description": "Open data publishing standards and practices."},
+
+  {"domain": "DigitalGovernance", "name": "Cybersecurity", "description": "Government cybersecurity practices."},
+  {"domain": "DigitalGovernance", "name": "Data Privacy", "description": "Data privacy regulations and practices."},
+  {"domain": "DigitalGovernance", "name": "Digital Signatures", "description": "Digital signature infrastructure."},
+  {"domain": "DigitalGovernance", "name": "Government Cloud", "description": "GI Cloud / MeghRaj and government cloud policy."},
+  {"domain": "DigitalGovernance", "name": "Digital Public Infrastructure", "description": "DPI concepts and implementation."},
+
+  {"domain": "Behavioural", "name": "Leadership", "description": "Leadership and team management."},
+  {"domain": "Behavioural", "name": "Communication", "description": "Professional and stakeholder communication."},
+  {"domain": "Behavioural", "name": "Project Management", "description": "Project planning and execution."},
+  {"domain": "Behavioural", "name": "Ethics", "description": "Public service ethics and integrity."},
+  {"domain": "Behavioural", "name": "Decision Making", "description": "Data-driven decision making."},
+  {"domain": "Behavioural", "name": "Change Management", "description": "Managing organizational change."}
+]
