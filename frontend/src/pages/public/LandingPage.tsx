@@ -760,55 +760,136 @@ export const LandingPage: React.FC = () => {
           style={{ bottom: '40px' }}
         >
           <div
-            className="max-w-[1200px] mx-auto backdrop-blur-md"
+            className="max-w-[1200px] mx-auto backdrop-blur-md overflow-hidden"
             style={{
-              height: '110px',
-              background: 'rgba(7,25,49,0.88)',
+              background: 'rgba(10,22,40,0.92)',
               border: '1px solid rgba(255,255,255,0.10)',
               borderRadius: '16px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
-              overflow: 'hidden',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.45)',
             }}
           >
+            {/* Main 5-column row */}
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                height: '100%',
+                gridTemplateColumns: '1fr 1fr 1fr 1fr 160px',
+                borderBottom: '1px solid rgba(255,255,255,0.08)',
               }}
             >
               {[
-                { title: 'Competency Framework', sub: 'Role-based skill intelligence' },
-                { title: 'iGOT Karmayogi',       sub: 'Curated learning ecosystem' },
-                { title: 'NSSTA',                 sub: 'Domain-relevant resources' },
-                { title: 'AI-Powered Assessments', sub: 'Adaptive & personalized' },
+                {
+                  title: 'Competency Framework',
+                  sub: 'Role-based skill intelligence',
+                  icon: (
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                      <rect x="3" y="4" width="22" height="17" rx="2" stroke="#2563D9" strokeWidth="1.6"/>
+                      <path d="M8 9h12M8 13h8" stroke="#2563D9" strokeWidth="1.6" strokeLinecap="round"/>
+                      <path d="M10 21l4 3 4-3" stroke="#2563D9" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                },
+                {
+                  title: 'iGOT Karmayogi',
+                  sub: 'Curated learning ecosystem',
+                  icon: (
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                      <path d="M5 7.5C5 7.5 9 6 14 6s9 1.5 9 1.5V22s-4-1-9-1-9 1-9 1V7.5Z" stroke="#16845B" strokeWidth="1.6"/>
+                      <path d="M14 6v16" stroke="#16845B" strokeWidth="1.4" strokeDasharray="2 1.5"/>
+                    </svg>
+                  ),
+                },
+                {
+                  title: 'NSSTA',
+                  sub: 'Domain-relevant resources',
+                  icon: (
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                      <rect x="5" y="17" width="4" height="7" rx="1" fill="#2563D9" opacity=".7"/>
+                      <rect x="12" y="11" width="4" height="13" rx="1" fill="#2563D9" opacity=".85"/>
+                      <rect x="19" y="5"  width="4" height="19" rx="1" fill="#2563D9"/>
+                    </svg>
+                  ),
+                },
+                {
+                  title: 'AI-Powered Assessments',
+                  sub: 'Adaptive & personalized',
+                  icon: (
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                      <path d="M14 4l8 4v7c0 4.4-3.4 8.5-8 9.5-4.6-1-8-5.1-8-9.5V8l8-4Z" stroke="#16845B" strokeWidth="1.6" strokeLinejoin="round"/>
+                      <path d="M10 14l3 3 5-5" stroke="#16845B" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                },
               ].map((col, idx) => (
                 <div
                   key={col.title}
                   style={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    padding: '0 28px',
-                    borderLeft: idx > 0 ? '1px solid rgba(255,255,255,0.10)' : 'none',
+                    alignItems: 'center',
+                    gap: '14px',
+                    padding: '18px 22px',
+                    borderLeft: idx > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none',
                   }}
                 >
-                  <div
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 700,
-                      color: '#FFFFFF',
-                      letterSpacing: '-0.01em',
-                      marginBottom: '5px',
-                    }}
-                  >
-                    {col.title}
-                  </div>
-                  <div style={{ fontSize: '11.5px', color: '#94A3B8', lineHeight: 1.35 }}>
-                    {col.sub}
+                  <div style={{ flexShrink: 0 }}>{col.icon}</div>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.01em', marginBottom: '3px' }}>
+                      {col.title}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#94A3B8', lineHeight: 1.3 }}>
+                      {col.sub}
+                    </div>
                   </div>
                 </div>
               ))}
+
+              {/* Right branding column — "LEARN GROW SERVE A STRONGER INDIA" */}
+              <div
+                style={{
+                  borderLeft: '1px solid rgba(255,255,255,0.08)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '12px 16px',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  background: 'rgba(255,255,255,0.03)',
+                }}
+              >
+                {/* Government building silhouette */}
+                <svg width="64" height="42" viewBox="0 0 64 42" fill="none" style={{ opacity: 0.18, position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)' }}>
+                  <rect x="28" y="4" width="8" height="38" fill="white"/>
+                  <rect x="20" y="12" width="24" height="30" fill="white"/>
+                  <rect x="12" y="18" width="40" height="24" fill="white"/>
+                  <rect x="4" y="24" width="56" height="18" fill="white"/>
+                  <rect x="30" y="1" width="4" height="6" rx="2" fill="white"/>
+                </svg>
+                <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+                  {['LEARN', 'GROW', 'SERVE'].map(word => (
+                    <div key={word} style={{ fontSize: '9px', fontWeight: 800, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.14em', lineHeight: 1.6 }}>
+                      {word}
+                    </div>
+                  ))}
+                  <div style={{ fontSize: '7.5px', color: 'rgba(255,255,255,0.50)', letterSpacing: '0.06em', marginTop: '3px', lineHeight: 1.4 }}>
+                    A STRONGER<br/>INDIA
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Full-width bottom tagline */}
+            <div
+              style={{
+                padding: '9px 24px',
+                textAlign: 'center',
+                fontSize: '10.5px',
+                fontWeight: 600,
+                color: '#4FA4F5',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Empowering a more skilled, capable and future-ready government workforce.
             </div>
           </div>
         </div>
