@@ -299,7 +299,7 @@ export const LandingPage: React.FC = () => {
           NAVIGATION HEADER
          ============================================================ */}
       <header className="sticky top-0 z-40 bg-[#071931]/95 backdrop-blur-md border-b border-white/10 transition-all duration-200">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 py-4 flex items-center justify-between">
+        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 py-6 flex items-center justify-between">
           <Link to="/" className="no-underline flex items-center">
             <EkalavyaLogo variant="dark" size="md" />
           </Link>

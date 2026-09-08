@@ -16,39 +16,39 @@ export const EkalavyaLogo: React.FC<EkalavyaLogoProps> = ({
   const isDark = variant === 'dark';
 
   const markSizes = {
-    sm: { w: 32, h: 32, className: 'w-8 h-8' },
-    md: { w: 42, h: 42, className: 'w-[42px] h-[42px]' },
-    lg: { w: 54, h: 54, className: 'w-[54px] h-[54px]' }
+    sm: { w: 32, h: 32, className: 'w-8 h-8', totalW: 'w-[140px]' },
+    md: { w: 40, h: 40, className: 'w-10 h-10', totalW: 'w-[160px]' },
+    lg: { w: 48, h: 48, className: 'w-12 h-12', totalW: 'w-[175px]' }
   };
 
   const titleSizes = {
     sm: 'text-base',
-    md: 'text-xl',
-    lg: 'text-2xl'
+    md: 'text-lg',
+    lg: 'text-xl'
   };
 
   const taglineSizes = {
-    sm: 'text-[10px]',
-    md: 'text-xs',
-    lg: 'text-sm'
+    sm: 'text-[9.5px]',
+    md: 'text-[10.5px]',
+    lg: 'text-xs'
   };
 
   const currentMarkSize = markSizes[size];
 
   return (
-    <div className={`flex items-center gap-2.5 select-none ${className}`}>
+    <div className={`flex items-center gap-2.5 select-none ${currentMarkSize.totalW} ${className}`}>
       {/* Official Ekalavya Brand Logo Emblem */}
       <img
         src="/images/ekalavya_logo.png"
-        alt="Ekalavya Official Logo"
+        alt="Ekalavya Logo"
         width={currentMarkSize.w}
         height={currentMarkSize.h}
-        className={`${currentMarkSize.className} object-contain flex-shrink-0 drop-shadow-xs`}
+        className={`${currentMarkSize.className} object-contain flex-shrink-0`}
         loading="eager"
       />
 
       {/* Brand Typography */}
-      <div className="flex flex-col leading-none">
+      <div className="flex flex-col justify-center leading-none">
         <span
           className={`font-['Noto_Sans',sans-serif] font-bold tracking-tight ${titleSizes[size]} ${
             isDark ? 'text-white' : 'text-[#102A43]'
@@ -58,7 +58,7 @@ export const EkalavyaLogo: React.FC<EkalavyaLogoProps> = ({
         </span>
         {showTagline && (
           <span
-            className={`font-['Noto_Sans',sans-serif] font-medium tracking-normal mt-1 ${taglineSizes[size]} ${
+            className={`font-['Noto_Sans',sans-serif] font-medium tracking-normal mt-1 whitespace-nowrap ${taglineSizes[size]} ${
               isDark ? 'text-slate-300' : 'text-[#52657A]'
             }`}
           >
