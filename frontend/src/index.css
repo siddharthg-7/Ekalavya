@@ -5,46 +5,19 @@
    ===================================================================== */
 
 :root {
-  /* Surface & Canvas */
-  --mc-canvas: #F3F0EE;
-  --mc-surface-lifted: #FCFBFA;
-  --mc-surface-white: #FFFFFF;
-  --mc-surface-soft: #F4F4F4;
-  --mc-ink: #141413;
-  --mc-charcoal: #262627;
-
-  /* Accent & Signal */
-  --mc-signal-orange: #CF4500;
-  --mc-light-orange: #F37338;
-  --mc-clay-brown: #9A3A0A;
-  --mc-link-blue: #3860BE;
-
-  /* Neutrals */
-  --mc-slate-gray: #696969;
-  --mc-granite: #555555;
-  --mc-dust-taupe: #D1CDC7;
-  --mc-watermark: #E8E2DA;
-  --mc-border-light: rgba(20, 20, 19, 0.12);
-
-  /* Brand Mark Dual Colors */
-  --mc-red: #EB001B;
-  --mc-yellow: #F79E1B;
-
-  /* Radii */
-  --mc-radius-sm: 4px;
-  --mc-radius-btn: 20px;
-  --mc-radius-action: 24px;
-  --mc-radius-stadium: 40px;
-  --mc-radius-pill: 999px;
-  --mc-radius-circle: 50%;
-
-  /* Shadows */
-  --mc-shadow-1: 0px 4px 24px 0px rgba(0, 0, 0, 0.04);
-  --mc-shadow-2: 0px 24px 48px 0px rgba(0, 0, 0, 0.08);
-  --mc-shadow-3: 0px 70px 110px 0px rgba(0, 0, 0, 0.25);
+  /* Ekalavya Core Design Tokens */
+  --ek-primary-navy: #102A43;
+  --ek-intelligence-blue: #2563D9;
+  --ek-growth-green: #16845B;
+  --ek-saffron: #E8871A;
+  --ek-page-bg: #F7F9FC;
+  --ek-white: #FFFFFF;
+  --ek-primary-text: #102A43;
+  --ek-secondary-text: #52657A;
+  --ek-border: #DCE3EA;
 
   /* Typography */
-  --mc-font-sans: 'Sofia Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Noto Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {
@@ -54,11 +27,11 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--mc-canvas);
-  color: var(--mc-ink);
-  font-family: var(--mc-font-sans);
-  font-weight: 450;
-  line-height: 1.4;
+  background-color: var(--ek-page-bg);
+  color: var(--ek-primary-text);
+  font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;

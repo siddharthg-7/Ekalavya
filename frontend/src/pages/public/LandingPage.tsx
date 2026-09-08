@@ -778,37 +778,35 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-[#102A43] mb-2">AI Skill-Gap Analysis</h3>
                 <p className="text-sm text-[#52657A] mb-6">
-                  “Focus development where it matters most.”
+                  Focus development where it matters most.
                 </p>
 
-                {/* Visual: Current vs Required Competency Bars */}
-                <div className="p-4 rounded-xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-4">
-                  <div className="border-b border-slate-200 pb-3">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="font-bold text-[#102A43]">Small Area Estimation</span>
-                      <span className="font-mono font-bold text-rose-600">-22 pt Gap</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-[11px] text-[#52657A]">
-                      <span>Current: 58</span>
-                      <span className="text-slate-300">•</span>
-                      <span>Target: 80</span>
-                    </div>
-                    <p className="text-[11px] text-[#52657A] mt-1.5 italic bg-white p-2 rounded border border-slate-200">
-                      Rationale: Fay-Herriot sub-district statistical releases required for FY 2026.
-                    </p>
+                {/* Visual: Current vs Required Competency Bar */}
+                <div className="p-5 rounded-xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-base text-[#102A43]">Python</span>
+                    <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700">
+                      Gap: 38%
+                    </span>
                   </div>
 
-                  <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="font-bold text-[#102A43]">Python Survey Processing</span>
-                      <span className="font-mono font-bold text-rose-600">-30 pt Gap</span>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-[#52657A]">Current: <strong className="text-[#102A43]">42%</strong></span>
+                      <span className="text-[#52657A]">Target: <strong className="text-[#16845B]">80%</strong></span>
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] text-[#52657A]">
-                      <span>Current: 45</span>
-                      <span className="text-slate-300">•</span>
-                      <span>Target: 75</span>
+
+                    <div className="w-full bg-slate-200 h-3 rounded-full overflow-hidden relative">
+                      {/* Current proficiency bar */}
+                      <div className="bg-[#E8871A] h-full rounded-full transition-all duration-500" style={{ width: '42%' }} />
+                      {/* Target threshold line */}
+                      <div className="absolute top-0 bottom-0 left-[80%] w-1 bg-[#16845B] z-10" title="Target Benchmark (80%)" />
                     </div>
                   </div>
+
+                  <p className="text-xs text-[#52657A] bg-white p-3 rounded-lg border border-[#DCE3EA]">
+                    AI analysis flags Python data processing as a priority bottleneck for upcoming PLFS survey automated releases.
+                  </p>
                 </div>
               </div>
 
@@ -830,7 +828,7 @@ export const LandingPage: React.FC = () => {
                   Relevant Learning Recommendations
                 </h3>
                 <p className="text-sm text-[#52657A] leading-relaxed">
-                  “Spend less time searching and more time learning.”
+                  Spend less time searching and more time learning.
                 </p>
                 <p className="text-xs text-[#52657A] leading-relaxed">
                   Instead of scrolling through thousands of unrelated courses, Ekalavya extracts
@@ -839,42 +837,31 @@ export const LandingPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Course card 1 */}
-                <div className="p-5 rounded-xl border border-[#DCE3EA] bg-[#F7F9FC]">
-                  <div className="flex items-center justify-between text-[11px] font-mono mb-2">
-                    <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">
-                      NSSTA
+              <div className="lg:col-span-7">
+                {/* Course Recommendation Card matching prompt specs */}
+                <div className="p-6 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-mono font-bold text-xs flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>94% Competency Match</span>
                     </span>
-                    <span className="text-slate-500">24 hrs</span>
+                    <span className="text-xs font-mono font-semibold text-[#52657A]">iGOT Karmayogi</span>
                   </div>
-                  <h4 className="text-sm font-bold text-[#102A43] mb-1">
-                    Small Area Estimation with R
-                  </h4>
-                  <p className="text-xs text-[#52657A] line-clamp-2">
-                    Directly bridges your 22-point gap in Fay-Herriot sub-district modeling.
-                  </p>
-                  <div className="mt-3 text-[11px] font-semibold text-emerald-700">
-                    Bridges: Small Area Estimation
-                  </div>
-                </div>
 
-                {/* Course card 2 */}
-                <div className="p-5 rounded-xl border border-[#DCE3EA] bg-[#F7F9FC]">
-                  <div className="flex items-center justify-between text-[11px] font-mono mb-2">
-                    <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">
-                      iGOT Karmayogi
-                    </span>
-                    <span className="text-slate-500">18 hrs</span>
-                  </div>
-                  <h4 className="text-sm font-bold text-[#102A43] mb-1">
-                    Python for Data Processing & ETL
+                  <h4 className="text-lg font-bold text-[#102A43]">
+                    Python for Government Data Analysis
                   </h4>
-                  <p className="text-xs text-[#52657A] line-clamp-2">
-                    Targets high-priority gap in automated pipelines for PLFS releases.
-                  </p>
-                  <div className="mt-3 text-[11px] font-semibold text-emerald-700">
-                    Bridges: Python for Data Processing
+
+                  <div className="flex flex-wrap gap-2 text-xs font-medium text-[#16845B]">
+                    <span className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200">
+                      ✓ Python
+                    </span>
+                    <span className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200">
+                      ✓ Data Processing
+                    </span>
+                    <span className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200">
+                      ✓ Statistical Analysis
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1011,28 +998,30 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-[#102A43] mb-2">Measure Your Progress</h3>
                 <p className="text-sm text-[#52657A] mb-6">
-                  “See demonstrated learning reflected in your competency profile.”
+                  See demonstrated learning reflected in your competency profile.
                 </p>
 
-                {/* Visual: Before / After progression */}
-                <div className="p-5 rounded-xl bg-[#F7F9FC] border border-[#DCE3EA]">
-                  <div className="flex items-center justify-between text-xs mb-3 font-semibold">
-                    <span className="text-[#102A43]">Official Growth Trajectory</span>
-                    <span className="text-emerald-700 font-mono">+14.2% Past Quarter</span>
+                {/* Visual: Before / After progression matching prompt spec */}
+                <div className="p-5 rounded-xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-4">
+                  <div className="flex items-center justify-between font-bold text-base text-[#102A43]">
+                    <span>Cybersecurity</span>
+                    <span className="font-mono text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-full">
+                      +16 points
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="bg-white p-3 rounded-lg border border-slate-200">
-                      <div className="text-[11px] text-slate-400 font-mono">BASELINE</div>
-                      <div className="text-2xl font-bold text-[#102A43] font-mono mt-1">54%</div>
-                      <span className="text-[10px] text-slate-500">Initial Diagnostic</span>
+                    <div className="bg-white p-4 rounded-xl border border-slate-200">
+                      <div className="text-xs text-[#52657A] font-mono font-semibold">BEFORE</div>
+                      <div className="text-3xl font-bold text-[#102A43] font-mono mt-1">32%</div>
+                      <span className="text-[11px] text-slate-500">Initial Diagnostic</span>
                     </div>
 
-                    <div className="bg-white p-3 rounded-lg border border-emerald-300 bg-emerald-50/50">
-                      <div className="text-[11px] text-emerald-700 font-mono font-bold">CURRENT</div>
-                      <div className="text-2xl font-bold text-emerald-700 font-mono mt-1">68%</div>
-                      <span className="text-[10px] text-emerald-800 font-semibold">
-                        Post-Intervention
+                    <div className="bg-white p-4 rounded-xl border border-emerald-300 bg-emerald-50/50">
+                      <div className="text-xs text-emerald-700 font-mono font-bold">AFTER</div>
+                      <div className="text-3xl font-bold text-emerald-700 font-mono mt-1">48%</div>
+                      <span className="text-[11px] text-emerald-800 font-semibold">
+                        Post-Assessment
                       </span>
                     </div>
                   </div>
