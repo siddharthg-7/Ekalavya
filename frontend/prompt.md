@@ -1,1189 +1,370 @@
-You are now responsible for correcting and establishing the COMPLETE
-USER FLOW of the Ekalavya frontend.
+The landing page structure is correct.
 
-IMPORTANT:
+DO NOT redesign the page.
 
-Do NOT redesign the UI.
+DO NOT add new sections.
 
-Do NOT create new visual designs.
+DO NOT add new features.
 
-Do NOT add decorative components.
+DO NOT change the approved copy.
 
-Do NOT create random dashboards.
+DO NOT change the Ekalavya brand identity.
 
-Do NOT improve the landing page yet.
+This is a refinement pass focused entirely on visual hierarchy,
+readability, whitespace and premium product presentation.
 
-This task is ONLY about:
+The current implementation feels too compressed and information-dense.
 
-ROUTING
-NAVIGATION
-USER STATES
-DEMO LOGIN FLOW
-ROLE FLOW
-PAGE TRANSITIONS
-PROTECTED ROUTES
-BACK NAVIGATION
-SESSION STATE
-ERROR/LOADING STATES
-AND THE COMPLETE PRODUCT JOURNEY.
+Apply the following corrections:
 
-The visual design of each page will be implemented later,
-one page at a time.
+==================================================
+1. GLOBAL SCALE
+==================================================
 
-============================================================
-PRODUCT
-============================================================
+Increase the overall visual breathing room.
 
-Name:
+The current landing page feels like a compressed dashboard.
 
-Ekalavya
+It must feel like a premium editorial product landing page.
 
-Tagline:
+Increase:
 
-Learn Today. Serve Better.
+- section vertical padding
+- heading sizes
+- body text sizes
+- card internal padding
+- spacing between visual groups
+- whitespace between sections
 
-Ekalavya is an AI-powered competency intelligence and
-personalized learning platform.
+Do NOT simply increase everything proportionally.
 
-The core learner journey is:
+Maintain a clear hierarchy.
 
-Official Profile
-→ Competency Profile
-→ Skill Gap Analysis
-→ Personalized Learning
-→ Adaptive Assessment
-→ Assessment Result
-→ Competency Improvement
+==================================================
+2. HERO
+==================================================
 
-The administrator journey is:
+Make the hero the strongest section.
 
-Admin Access
-→ Organization Dashboard
-→ Workforce Competency Gaps
-→ Training Effectiveness
-→ Skill Demand / Priorities
-→ Official Detail
+Increase hero height.
 
-============================================================
-SOURCE OF TRUTH
-============================================================
+Desktop:
+approximately 75–85vh.
 
-The existing backend and project documentation are the source
-of truth for available functionality.
+Increase hero headline size and line-height.
 
-DO NOT invent backend endpoints.
+The headline:
 
-DO NOT invent API response fields.
+Turn Your Potential
+Into Greater Impact.
 
-DO NOT create fake authentication behavior that pretends to
-be real government authentication.
+must be immediately readable.
 
-Inspect the existing backend before connecting frontend routes.
+Increase the supporting paragraph width slightly.
 
-If an endpoint does not exist, do not invent it.
+Keep only:
 
-Create a clean abstraction/place-holder until the actual endpoint
-is available.
+[ Get Started ]
 
-============================================================
-IMPORTANT PROTOTYPE AUTHENTICATION MODEL
-============================================================
+Do NOT add another primary CTA.
 
-This project is a prototype.
+Keep:
 
-We need TWO access paths:
+Free to use • No complicated setup
 
-1. Normal Login
-2. Demo Access
+The product preview on the right should be approximately
+25–35% larger.
 
-Normal Login:
+The product preview must feel like the actual Ekalavya product,
+not a tiny floating screenshot.
 
-/login
+Maintain strong contrast between the hero content and background.
 
-The UI can contain:
+==================================================
+3. SOCIAL PROOF
+==================================================
 
-Official ID
-Password
-Sign In
+Keep this section minimal.
 
-But do not pretend this is connected to real government SSO
-unless the backend actually supports it.
+Do not make it look like a logo wall.
 
-Demo Access:
+Increase vertical spacing slightly.
 
-The user can explicitly choose:
+Keep the four ecosystem references restrained.
 
-“Continue with Demo”
+Do not add statistics or fabricated claims.
 
-This routes to:
+==================================================
+4. PROBLEM SECTION
+==================================================
 
-/demo
+Reduce the feeling of a card grid.
 
-============================================================
-DEMO FLOW
-============================================================
+Keep the three problems but make them feel like three
+clear statements rather than three SaaS cards.
 
-/demo
+Use:
 
-Display:
+01 — Unclear Skill Gaps
+02 — One-Size-Fits-All Learning
+03 — Limited Feedback
 
-“Explore Ekalavya Demo”
+Increase heading and body readability.
 
-Role selection:
+Give the section more whitespace.
 
-Government Official
-Administrator
+The supporting image should be larger and more visually meaningful.
 
-The user must select one role.
+==================================================
+5. SOLUTION SECTION
+==================================================
 
---------------------------------
-IF GOVERNMENT OFFICIAL
---------------------------------
+Increase the size of:
 
-Fetch available synthetic officials from the backend if an
-official-list endpoint exists.
+From Competency Gaps
+to Measurable Growth.
 
-Do not hard-code a fake list if the backend already provides it.
+Give the competency journey more breathing room.
 
-Display:
+The system:
 
-Name
-Designation
-Department
-
-Example synthetic data may look like:
-
-Dr. Ananya Sharma
-Statistical Officer
-Department of Statistics
-
-But only use actual backend data when available.
-
-User selects an official.
-
-Store:
-
-role = learner
-officialId = selected official ID
-mode = demo
-
-Then route:
-
-/learner
-
---------------------------------
-IF ADMINISTRATOR
---------------------------------
-
-Store:
-
-role = admin
-mode = demo
-
-Then route:
-
-/admin
-
-============================================================
-SESSION STATE
-============================================================
-
-Create one centralized frontend session/auth state.
-
-Conceptually:
-
-{
-  mode: "demo" | "authenticated",
-  role: "learner" | "admin",
-  officialId?: string
-}
-
-Do not duplicate this state independently across pages.
-
-Use a central state/context/store appropriate to the existing
-project architecture.
-
-The selected official ID must remain available while the learner
-is navigating between learner pages.
-
-If the user refreshes the page, preserve the demo session if
-appropriate for the existing application architecture.
-
-If no valid session exists, protected routes must redirect
-appropriately.
-
-============================================================
-PUBLIC ROUTES
-============================================================
-
-/
-
-Landing Page
-
-/login
-
-Login Page
-
-/demo
-
-Demo Access
-
-/help
-
-Help
-
-/accessibility
-
-Accessibility
-
-============================================================
-LEARNER ROUTES
-============================================================
-
-All learner routes require:
-
-role = learner
-
-and a valid officialId.
-
-Routes:
-
-/learner
-
-Learner Dashboard
-
-/learner/profile
-
-Competency Profile
-
-/learner/gaps
-
-Skill Gap Analysis
-
-/learner/learning
-
-Personalized Learning
-
-/learner/learning/:id
-
-Learning Resource Detail
-
-/learner/assessments
-
-Assessments
-
-/learner/assessments/new
-
-Assessment Generation
-
-/learner/assessments/:sessionId
-
-Adaptive Assessment
-
-/learner/assessments/:sessionId/result
-
-Assessment Result
-
-/learner/progress
-
-Progress
-
-============================================================
-ADMIN ROUTES
-============================================================
-
-All admin routes require:
-
-role = admin
-
-Routes:
-
-/admin
-
-Admin Dashboard
-
-/admin/competencies
-
-Organization Competency Gaps
-
-/admin/training
-
-Training Effectiveness
-
-/admin/demand
-
-Skill Demand / Priorities
-
-/admin/officials
-
-Officials
-
-/admin/officials/:id
-
-Official Detail
-
-============================================================
-PROTECTED ROUTE RULES
-============================================================
-
-If a learner attempts to access:
-
-/admin
-
-redirect to:
-
-/learner
-
-If an administrator attempts to access:
-
-/learner
-
-redirect to:
-
-/admin
-
-If no session exists and the user tries to access a protected
-route:
-
-redirect to:
-
-/login
-
-Do not show broken or empty dashboards.
-
-============================================================
-LANDING → LOGIN FLOW
-============================================================
-
-/
-
-Landing
-
-Primary CTA:
-
-Get Started
-
-When clicked:
-
-→ /login
-
-The landing page must NOT directly bypass the login flow.
-
-============================================================
-LOGIN FLOW
-============================================================
-
-/login
-
-Two possible actions:
-
-Sign In
-
-OR
-
-Continue with Demo
-
-If real authentication is not available:
-
-Sign In should not fake a successful government login.
-
-Instead show an appropriate prototype state or disabled/
-not-configured message based on the actual backend capabilities.
-
-Continue with Demo:
-
-→ /demo
-
-============================================================
-DEMO ROLE FLOW
-============================================================
-
-/demo
-
-Step 1:
-
-Choose role.
-
-If:
-
-Government Official
-
-→ select official
-
-→ continue
-
-→ /learner
-
-If:
-
-Administrator
-
-→ continue
-
-→ /admin
-
-The transition must be clean and deterministic.
-
-Do not allow the user to reach /learner without an officialId.
-
-============================================================
-LEARNER NAVIGATION
-============================================================
-
-Once inside /learner, the learner navigation must be consistent.
-
-Navigation:
-
-Dashboard
-Competencies
-Skill Gaps
-Learning
-Assessments
-Progress
-
-Clicking:
-
-Dashboard
-→ /learner
-
-Competencies
-→ /learner/profile
-
-Skill Gaps
-→ /learner/gaps
-
-Learning
-→ /learner/learning
-
-Assessments
-→ /learner/assessments
-
-Progress
-→ /learner/progress
-
-The active navigation item must reflect the current route.
-
-============================================================
-LEARNER FLOW
-============================================================
-
-START:
-
-/learner
-
-Dashboard must eventually consume:
-
-GET /officials/{id}/competency-gaps
-
-and
-
-GET /recommendations/{id}
-
-when those endpoints are available.
-
-The dashboard provides entry points to:
-
-Competency Profile
-
-Skill Gap Analysis
-
-Recommended Learning
-
-Assessments
-
-Progress
-
-------------------------------------------------------------
+ROLE
+↓
 COMPETENCY PROFILE
-------------------------------------------------------------
-
-/learner/profile
-
-Display the selected official's competency profile.
-
-From here:
-
-“View Skill Gaps”
-
-→ /learner/gaps
-
-------------------------------------------------------------
-SKILL GAP ANALYSIS
-------------------------------------------------------------
-
-/learner/gaps
-
-Display competency gaps.
-
-From a gap:
-
-“Find Learning”
-
-→ /learner/learning
-
-The selected gap/context should be preserved if needed so
-the learning page can show why a resource was recommended.
-
-------------------------------------------------------------
+↓
+AI GAP ANALYSIS
+↓
 PERSONALIZED LEARNING
-------------------------------------------------------------
-
-/learner/learning
-
-Display recommended learning resources.
-
-Each recommendation should eventually be able to show:
-
-Title
-Domain
-Level
-Duration
-Competency match
-Why recommended
-
-Clicking a resource:
-
-→ /learner/learning/:id
-
-The detail page may contain:
-
-Start Learning
-View Resource
-Take Assessment
-
-depending on actual backend functionality.
-
-------------------------------------------------------------
-ASSESSMENT FLOW
-------------------------------------------------------------
-
-/learner/assessments
-
-Show available assessments and the option:
-
-“Create Assessment”
-
-→ /learner/assessments/new
-
-------------------------------------------------------------
-ASSESSMENT GENERATION
-------------------------------------------------------------
-
-/learner/assessments/new
-
-User uploads PDF/PPT.
-
-The frontend must eventually call:
-
-POST /quiz/generate
-
-with the required file and official ID.
-
-The response provides:
-
-session_id
-
-After successful generation:
-
-→ /learner/assessments/:sessionId
-
-Do not create a fake session ID.
-
-Use the actual backend response.
-
-------------------------------------------------------------
+↓
 ADAPTIVE ASSESSMENT
-------------------------------------------------------------
-
-/learner/assessments/:sessionId
-
-IMPORTANT:
-
-This is NOT a traditional quiz form.
-
-Never display all questions at once.
-
-The actual flow is:
-
-GET /quiz/session/{id}/next
-
 ↓
+MEASURED IMPROVEMENT
 
-Display ONE question
+should be visually understandable in under five seconds.
 
+Do not make each stage tiny.
+
+==================================================
+6. FEATURES
+==================================================
+
+This is the most important layout refinement.
+
+Do NOT display all six features as identical cards.
+
+Convert the feature presentation into premium editorial
+product showcases.
+
+Use alternating layouts:
+
+Feature 1:
+Text left
+Product visualization right
+
+Feature 2:
+Product visualization left
+Text right
+
+Feature 3:
+Text left
+Product visualization right
+
+Feature 4:
+Large full-width adaptive assessment showcase
+
+Feature 5:
+Product visualization left
+Text right
+
+Feature 6:
+Text left
+Organization intelligence visualization right
+
+Maintain the same design system throughout.
+
+==================================================
+7. ADAPTIVE ASSESSMENT
+==================================================
+
+Make this the strongest feature visual.
+
+It should clearly communicate:
+
+Question
 ↓
-
-User selects answer
-
+Wrong Answer
 ↓
-
-POST /quiz/session/answer
-
+Concept Identified
 ↓
-
-Receive result/action
-
+Difficulty Adjusted
 ↓
-
-Show:
-
-Correct / Incorrect
-
-Explanation
-
-Adaptive feedback
-
+Reinforcement Question
 ↓
+Mastery
 
-If action = remediate:
+Use a polished product UI.
 
-show a visible contextual message such as:
+Make this section visually distinctive.
 
-“Reinforcing: Sampling”
+Do NOT add flashy AI effects.
 
-↓
+Do NOT use neon.
 
-Fetch the next question
+Do NOT use excessive animation.
 
-↓
+==================================================
+8. HOW IT WORKS
+==================================================
 
-Repeat
+Keep exactly four steps.
 
-until:
+Make them larger and easier to scan.
 
-session_status = completed
+01
+CREATE YOUR PROFILE
 
-This behavior is a core product requirement.
+02
+IDENTIFY YOUR GAPS
 
-Do not replace it with a static 10-question form.
+03
+LEARN & ASSESS
 
-============================================================
-ASSESSMENT RESULT
-============================================================
+04
+TRACK YOUR GROWTH
 
-When the assessment session is completed:
+Use generous spacing.
 
-GET /quiz/session/{id}/summary
+Do not make them tiny cards.
 
-Then route:
+==================================================
+9. OUTCOMES
+==================================================
 
-/learner/assessments/:sessionId/result
+Keep the three audiences.
 
-Display:
+Increase readability.
 
-Score
+Give each audience enough whitespace.
 
-Concepts mastered
+Do not add statistics.
 
-Concepts needing practice
+==================================================
+10. FAQ
+==================================================
 
-Assessment summary
+Keep the current FAQ structure.
 
-Recommended next action
+Increase row height.
 
-The result screen should provide a clear path back to:
+Increase question readability.
 
-Learning
+Use subtle dividers.
 
-or
+Ensure accessible keyboard focus.
 
-Dashboard
+Keep animation subtle.
 
-============================================================
-COMPETENCY UPDATE
-============================================================
+==================================================
+11. FINAL CTA
+==================================================
 
-After assessment completion, the learner dashboard/profile
-should eventually reflect the updated competency state returned
-by the backend.
+Keep the existing final CTA.
 
-Do not artificially animate a competency increase on the
-frontend.
+Make it visually stronger through:
 
-Do not invent score changes.
+- more whitespace
+- larger heading
+- clearer CTA
+- stronger image treatment
 
-The backend is responsible for competency updates.
+Do not add another CTA.
 
-The UI only displays the resulting state.
+==================================================
+12. FOOTER
+==================================================
 
-============================================================
-ADMIN FLOW
-============================================================
+Keep the current footer structure.
 
-/admin
+Ensure the full footer is visible.
 
-Administrator dashboard.
+Increase spacing between columns.
 
-Eventually consume:
+Maintain a clean deep-navy appearance.
 
-GET /dashboard/admin
+==================================================
+13. TYPOGRAPHY
+==================================================
 
-Display organization-level intelligence.
+Use Noto Sans.
 
-Navigation:
+Do not make body text too small.
 
-Dashboard
-Competency Gaps
-Training Effectiveness
-Skill Demand
-Officials
+Minimum normal body text target:
+16px desktop.
 
-------------------------------------------------------------
-ADMIN COMPETENCY GAPS
-------------------------------------------------------------
+Mobile:
+16px minimum for normal body copy.
 
-/admin/competencies
+Section headings should have clear visual dominance.
 
-Show organization-wide competency gaps.
+==================================================
+14. DESIGN PRINCIPLES
+==================================================
 
-Clicking an official or relevant item:
+Re-evaluate the entire page against:
 
-→ /admin/officials/:id
+1. If you have to explain it, simplify it.
+2. White space is part of the design.
+3. If everything stands out, nothing does.
+4. Two focal points = zero focus.
+5. Use color with purpose.
+6. Simplicity is earned.
+7. The best typography feels invisible.
+8. Good design solves a problem.
 
-------------------------------------------------------------
-TRAINING EFFECTIVENESS
-------------------------------------------------------------
+The most important correction is:
 
-/admin/training
+LESS INFORMATION DENSITY.
 
-Show available training effectiveness information returned
-by the backend.
+Do not remove the approved content.
 
-Do not fabricate metrics.
+Instead, give the existing content more space,
+stronger hierarchy and better visual grouping.
 
-------------------------------------------------------------
-SKILL DEMAND
-------------------------------------------------------------
+==================================================
+15. FINAL TEST
+==================================================
 
-/admin/demand
+After implementing the refinement:
 
-Show projected/priority competency information if the backend
-supports it.
+Check at:
 
-If unavailable, display a proper empty/not-configured state.
+1920px
+1440px
+1280px
+1024px
+768px
+390px
 
-Do not create fake predictive data merely to fill the screen.
+The page should feel:
 
-------------------------------------------------------------
-OFFICIALS
-------------------------------------------------------------
+calm
+premium
+professional
+credible
+accessible
+modern
+original
 
-/admin/officials
+It should NOT feel:
 
-List officials using actual backend data.
+crowded
+template-like
+dashboard-like
+over-designed
+government-website-like
+startup-like
 
-Click official:
+DO NOT STOP AFTER MAKING THE PAGE FUNCTIONAL.
 
-→ /admin/officials/:id
-
-------------------------------------------------------------
-OFFICIAL DETAIL
-------------------------------------------------------------
-
-/admin/officials/:id
-
-Show the selected official's competency information using
-actual backend data.
-
-Do not allow an invalid ID to produce a broken screen.
-
-============================================================
-BACK NAVIGATION
-============================================================
-
-Browser back navigation must work naturally.
-
-Internal navigation must preserve the user's role/session.
-
-Examples:
-
-Dashboard
-→ Skill Gaps
-→ Learning
-→ Back
-
-must return to Skill Gaps.
-
-Assessment:
-
-Assessments
-→ Generate
-→ Quiz
-→ Result
-
-must preserve the assessment session.
-
-Do not lose sessionId during navigation.
-
-============================================================
-LOGOUT / EXIT DEMO
-============================================================
-
-Provide a clean way to:
-
-“Exit Demo”
-
-or
-
-“Sign Out”
-
-When clicked:
-
-Clear:
-
-role
-officialId
-mode
-
-Then:
-
-→ /login
-
-Do not leave protected session state behind.
-
-============================================================
-404 / INVALID ROUTES
-============================================================
-
-Create a clean:
-
-404 Not Found
-
-page.
-
-Do not expose raw errors.
-
-Provide:
-
-“Return to Dashboard”
-
-based on the current valid role,
-or
-
-“Return to Login”
-
-if no session exists.
-
-============================================================
-LOADING STATES
-============================================================
-
-Every API-dependent page must have a loading state.
-
-Examples:
-
-Loading competency profile...
-
-Loading skill gaps...
-
-Finding learning recommendations...
-
-Generating assessment...
-
-Loading next question...
-
-Updating your progress...
-
-Do not freeze the interface.
-
-============================================================
-ERROR STATES
-============================================================
-
-Every API-dependent page must have a meaningful error state.
-
-Examples:
-
-Unable to load competency information.
-
-Unable to load recommendations.
-
-Assessment generation failed.
-
-Unable to load the next question.
-
-Unable to submit your answer.
-
-Provide:
-
-Retry
-
-where appropriate.
-
-Never display raw stack traces to the user.
-
-============================================================
-EMPTY STATES
-============================================================
-
-Create meaningful empty states.
-
-Examples:
-
-No competency gaps found.
-
-No learning recommendations available.
-
-No assessments yet.
-
-No officials available.
-
-Do not fill empty states with fake data.
-
-============================================================
-ASYNC AI STATES
-============================================================
-
-AI operations can take time.
-
-The UI should distinguish:
-
-normal loading
-
-from
-
-AI processing.
-
-For example:
-
-“Analysing your competency profile...”
-
-“Generating personalized assessment...”
-
-“Adapting your next question...”
-
-Do not pretend AI completed instantly if the backend is processing.
-
-============================================================
-ROUTE GUARDS
-============================================================
-
-Implement route guards cleanly.
-
-Public:
-
-/
- /login
- /demo
- /help
- /accessibility
-
-Learner protected:
-
-/learner/*
-
-Admin protected:
-
-/admin/*
-
-Unknown:
-
-/404
-
-Do not duplicate guard logic in every page.
-
-============================================================
-NO PAGE DESIGN YET
-============================================================
-
-This is extremely important.
-
-At this stage:
-
-DO NOT spend time making the pages beautiful.
-
-Use simple temporary shells.
-
-Example:
-
-Learner Dashboard
-“Design pending”
-
-Competency Profile
-“Design pending”
-
-Skill Gap Analysis
-“Design pending”
-
-Learning
-“Design pending”
-
-Assessment
-“Design pending”
-
-Admin Dashboard
-“Design pending”
-
-The purpose of these shells is to verify that the flow works.
-
-============================================================
-FLOW TESTING
-============================================================
-
-After implementation, manually test this complete path:
-
-TEST 1 — LEARNER
-
-Landing
-→ Login
-→ Demo Access
-→ Government Official
-→ Select Official
-→ Learner Dashboard
-→ Competency Profile
-→ Skill Gap Analysis
-→ Learning
-→ Assessments
-→ Assessment Generation
-→ Adaptive Assessment
-→ Result
-→ Dashboard
-
-TEST 2 — ADMIN
-
-Landing
-→ Login
-→ Demo Access
-→ Administrator
-→ Admin Dashboard
-→ Competency Gaps
-→ Training
-→ Skill Demand
-→ Officials
-→ Official Detail
-
-TEST 3 — PROTECTION
-
-No session
-→ /learner
-→ redirect /login
-
-Learner
-→ /admin
-→ redirect /learner
-
-Admin
-→ /learner
-→ redirect /admin
-
-TEST 4 — LOGOUT
-
-Learner
-→ Exit Demo
-→ session cleared
-→ /login
-
-Then attempt:
-
-/learner
-
-Must redirect to /login.
-
-TEST 5 — REFRESH
-
-Select demo official
-→ /learner
-→ refresh
-
-The session should remain valid if the selected demo state is
-designed to persist.
-
-============================================================
-BACKEND VALIDATION
-============================================================
-
-Before connecting each real screen to an endpoint:
-
-Inspect the backend route and response schema.
-
-Do not guess.
-
-The known adaptive quiz endpoints are conceptually:
-
-POST /quiz/generate
-
-GET /quiz/session/{id}/next
-
-POST /quiz/session/answer
-
-GET /quiz/session/{id}/summary
-
-Use the actual implementation in the repository as the final
-authority.
-
-============================================================
-IMPORTANT PRODUCT RULE
-============================================================
-
-The application must feel like ONE product.
-
-Do not create independent mini-applications for:
-
-Learner
-Admin
-Assessment
-
-They share:
-
-Ekalavya branding
-design system
-session architecture
-navigation principles
-API client
-error handling
-accessibility
-responsive behavior
-
-The visual design will be established later.
-
-============================================================
-FINAL CHECK
-============================================================
-
-Before stopping:
-
-1. Verify all routes.
-2. Verify route guards.
-3. Verify demo login.
-4. Verify learner role selection.
-5. Verify admin role selection.
-6. Verify session persistence.
-7. Verify logout.
-8. Verify browser back navigation.
-9. Verify protected routes.
-10. Verify invalid routes.
-11. Verify loading states.
-12. Verify error states.
-13. Verify no fake API calls.
-14. Verify no fake authentication claims.
-15. Verify backend has not been modified unnecessarily.
-16. Verify application builds successfully.
-
-============================================================
-STOP CONDITION
-============================================================
-
-STOP after the flow is working.
-
-DO NOT start designing:
-
-Landing Page
-Login Page
-Dashboard
-Competency Profile
-or any other page.
-
-Report:
-
-1. Final route tree.
-2. Learner flow.
-3. Admin flow.
-4. Demo login flow.
-5. Session/state mechanism.
-6. Route protection mechanism.
-7. API endpoints actually connected.
-8. Tests performed.
-9. Build status.
-10. Any issues remaining.
-
-Then WAIT for my next instruction.
+Perform a visual polish pass after implementation.

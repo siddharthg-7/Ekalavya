@@ -19,21 +19,21 @@ import {
 } from 'lucide-react';
 
 /* =====================================================================
-   SVG PENTAGON RADAR CHART COMPONENT
+   SVG PENTAGON RADAR CHART COMPONENT (Large, Crisp & Generous)
    ===================================================================== */
 const CompetencyRadarChart: React.FC = () => {
-  const cx = 140;
-  const cy = 135;
-  const r = 80;
+  const cx = 160;
+  const cy = 150;
+  const r = 95;
 
   const angles = [-90, -18, 54, 126, 198];
 
   const labels = [
-    { text: 'Statistical Methods', x: cx, y: cy - r - 14, anchor: 'middle' },
-    { text: 'Data Analysis', x: cx + r + 18, y: cy - 10, anchor: 'start' },
-    { text: 'Digital Skills', x: cx + r * Math.cos((54 * Math.PI) / 180) + 14, y: cy + r * Math.sin((54 * Math.PI) / 180) + 14, anchor: 'start' },
-    { text: 'Administration', x: cx + r * Math.cos((126 * Math.PI) / 180) - 14, y: cy + r * Math.sin((126 * Math.PI) / 180) + 14, anchor: 'end' },
-    { text: 'Domain Knowledge', x: cx - r - 18, y: cy - 10, anchor: 'end' }
+    { text: 'Statistical Methods', x: cx, y: cy - r - 16, anchor: 'middle' },
+    { text: 'Data Analysis', x: cx + r + 24, y: cy - 10, anchor: 'start' },
+    { text: 'Digital Skills', x: cx + r * Math.cos((54 * Math.PI) / 180) + 16, y: cy + r * Math.sin((54 * Math.PI) / 180) + 16, anchor: 'start' },
+    { text: 'Administration', x: cx + r * Math.cos((126 * Math.PI) / 180) - 16, y: cy + r * Math.sin((126 * Math.PI) / 180) + 16, anchor: 'end' },
+    { text: 'Domain Knowledge', x: cx - r - 24, y: cy - 10, anchor: 'end' }
   ];
 
   const getPoint = (angleDeg: number, valRatio: number) => {
@@ -52,8 +52,8 @@ const CompetencyRadarChart: React.FC = () => {
   const targetPoints = angles.map((a, i) => getPoint(a, targetValues[i])).map(p => `${p.x},${p.y}`).join(' ');
 
   return (
-    <div className="relative w-full flex items-center justify-center py-2 select-none">
-      <svg viewBox="0 0 280 270" className="w-full max-w-[280px] h-auto overflow-visible">
+    <div className="relative w-full flex items-center justify-center py-3 select-none">
+      <svg viewBox="0 0 320 300" className="w-full max-w-[320px] h-auto overflow-visible">
         {/* Concentric Grid Pentagons */}
         {levels.map((level, idx) => {
           const pts = angles.map(a => getPoint(a, level)).map(p => `${p.x},${p.y}`).join(' ');
@@ -63,7 +63,7 @@ const CompetencyRadarChart: React.FC = () => {
               points={pts}
               fill={idx === levels.length - 1 ? '#F8FAFC' : 'none'}
               stroke="#E2E8F0"
-              strokeWidth="1"
+              strokeWidth="1.2"
               strokeDasharray={idx < levels.length - 1 ? '3 3' : 'none'}
             />
           );
@@ -80,7 +80,7 @@ const CompetencyRadarChart: React.FC = () => {
               x2={p.x}
               y2={p.y}
               stroke="#CBD5E1"
-              strokeWidth="1"
+              strokeWidth="1.2"
             />
           );
         })}
@@ -90,7 +90,7 @@ const CompetencyRadarChart: React.FC = () => {
           points={targetPoints}
           fill="rgba(232, 135, 26, 0.08)"
           stroke="#E8871A"
-          strokeWidth="1.5"
+          strokeWidth="1.8"
           strokeDasharray="4 3"
         />
 
@@ -110,10 +110,10 @@ const CompetencyRadarChart: React.FC = () => {
               key={idx}
               cx={p.x}
               cy={p.y}
-              r="4"
+              r="4.5"
               fill="#2563D9"
               stroke="#FFFFFF"
-              strokeWidth="2"
+              strokeWidth="2.5"
             />
           );
         })}
@@ -125,7 +125,7 @@ const CompetencyRadarChart: React.FC = () => {
             x={lbl.x}
             y={lbl.y}
             textAnchor={lbl.anchor as any}
-            className="text-[10px] font-semibold fill-slate-700 font-sans"
+            className="text-[11px] font-semibold fill-slate-700 font-sans"
           >
             {lbl.text}
           </text>
@@ -230,9 +230,9 @@ export const LandingPage: React.FC = () => {
         Skip to main content
       </a>
 
-      <div className="bg-[#071931] border-b border-white/10 text-slate-300 text-xs py-1.5 px-6 sm:px-10">
+      <div className="bg-[#071931] border-b border-white/10 text-slate-300 text-xs py-2 px-6 sm:px-10">
         <div className="max-w-[1280px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-medium tracking-wide">
               {language === 'EN'
@@ -241,13 +241,13 @@ export const LandingPage: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             {/* Font Size Controls */}
             <div className="flex items-center gap-1.5" aria-label="Text Size Controls">
               <span className="text-slate-400 text-[11px] mr-1">Text:</span>
               <button
                 onClick={() => handleFontSizeChange('normal')}
-                className={`px-1.5 py-0.5 rounded text-[11px] font-bold transition-colors ${
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
                   fontSize === 'normal'
                     ? 'bg-[#2563D9] text-white'
                     : 'text-slate-400 hover:text-white'
@@ -258,7 +258,7 @@ export const LandingPage: React.FC = () => {
               </button>
               <button
                 onClick={() => handleFontSizeChange('large')}
-                className={`px-1.5 py-0.5 rounded text-[11px] font-bold transition-colors ${
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
                   fontSize === 'large'
                     ? 'bg-[#2563D9] text-white'
                     : 'text-slate-400 hover:text-white'
@@ -269,7 +269,7 @@ export const LandingPage: React.FC = () => {
               </button>
               <button
                 onClick={() => handleFontSizeChange('larger')}
-                className={`px-1.5 py-0.5 rounded text-[11px] font-bold transition-colors ${
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
                   fontSize === 'larger'
                     ? 'bg-[#2563D9] text-white'
                     : 'text-slate-400 hover:text-white'
@@ -281,14 +281,14 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Language Switcher */}
-            <div className="flex items-center border-l border-white/15 pl-3">
+            <div className="flex items-center border-l border-white/15 pl-4">
               <button
                 onClick={() => setLanguage(language === 'EN' ? 'HI' : 'EN')}
-                className="hover:text-white flex items-center gap-1 font-semibold text-xs transition-colors"
+                className="hover:text-white flex items-center gap-1.5 font-semibold text-xs transition-colors"
                 title="Toggle Language"
               >
                 <span>{language === 'EN' ? 'English (EN)' : 'हिंदी (HI)'}</span>
-                <ChevronDown className="w-3 h-3" />
+                <ChevronDown className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -299,13 +299,13 @@ export const LandingPage: React.FC = () => {
           NAVIGATION HEADER
          ============================================================ */}
       <header className="sticky top-0 z-40 bg-[#071931]/95 backdrop-blur-md border-b border-white/10 transition-all duration-200">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 py-3.5 flex items-center justify-between">
+        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 py-4 flex items-center justify-between">
           <Link to="/" className="no-underline flex items-center">
             <EkalavyaLogo variant="dark" size="md" />
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-200">
+          <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-slate-200">
             <button
               onClick={() => scrollToSection('how-it-works')}
               className="hover:text-white transition-colors cursor-pointer"
@@ -333,14 +333,14 @@ export const LandingPage: React.FC = () => {
           </nav>
 
           {/* Right Action: Language + Get Started Pill */}
-          <div className="hidden md:flex items-center gap-4">
-            <span className="text-xs text-slate-300 font-semibold flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-5">
+            <span className="text-xs text-slate-300 font-semibold flex items-center gap-1 cursor-pointer hover:text-white">
               EN <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
             </span>
 
             <button
               onClick={() => navigate('/login')}
-              className="bg-white hover:bg-slate-100 text-[#102A43] font-semibold text-sm px-5 py-2.5 rounded-full transition-all duration-150 shadow-md hover:shadow-lg cursor-pointer flex items-center gap-1.5"
+              className="bg-white hover:bg-slate-100 text-[#102A43] font-semibold text-sm px-6 py-2.5 rounded-full transition-all duration-150 shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2"
             >
               <span>Get Started</span>
               <ArrowRight className="w-4 h-4 text-[#102A43]" />
@@ -359,35 +359,35 @@ export const LandingPage: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#071931] border-b border-white/10 px-6 py-4 space-y-3">
+          <div className="md:hidden bg-[#071931] border-b border-white/10 px-6 py-5 space-y-4">
             <button
               onClick={() => scrollToSection('how-it-works')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-sm font-medium"
+              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
             >
               How it works
             </button>
             <button
               onClick={() => scrollToSection('for-officials')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-sm font-medium"
+              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
             >
               For Officials
             </button>
             <button
               onClick={() => scrollToSection('for-organizations')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-sm font-medium"
+              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
             >
               For Organizations
             </button>
             <button
               onClick={() => scrollToSection('faq')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-sm font-medium"
+              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
             >
               FAQ
             </button>
-            <div className="pt-2 border-t border-white/10">
+            <div className="pt-3 border-t border-white/10">
               <button
                 onClick={() => navigate('/login')}
-                className="w-full bg-white text-[#102A43] py-3 rounded-full font-semibold text-center flex items-center justify-center gap-2"
+                className="w-full bg-white text-[#102A43] py-3.5 rounded-full font-semibold text-center flex items-center justify-center gap-2 text-base"
               >
                 <span>Get Started</span>
                 <ArrowRight className="w-4 h-4" />
@@ -398,11 +398,11 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* ============================================================
-          SECTION 01 — HERO
+          SECTION 01 — HERO (75–85vh Desktop Height, Generous Scale)
          ============================================================ */}
       <section
         id="hero-section"
-        className="relative overflow-hidden bg-[#071931] text-white pt-12 pb-24 lg:pt-16 lg:pb-28"
+        className="relative overflow-hidden bg-[#071931] text-white min-h-[78vh] flex items-center pt-16 pb-28 lg:pt-20 lg:pb-36"
       >
         <div
           className="absolute inset-0 z-0 opacity-35 mix-blend-luminosity bg-cover bg-center"
@@ -410,12 +410,12 @@ export const LandingPage: React.FC = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#071931] via-[#071931]/95 to-[#071931]/80 z-0" />
 
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Column: Hero Text & White Pill CTA */}
-            <div className="lg:col-span-6 space-y-6">
+        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 relative z-10 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+            {/* Left Column: Hero Text & Single Primary CTA */}
+            <div className="lg:col-span-6 space-y-7">
               {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-[#00B4D8] animate-pulse" />
                 <span className="text-xs font-bold tracking-wider text-cyan-200 uppercase font-mono">
                   AI-POWERED COMPETENCY INTELLIGENCE
@@ -423,7 +423,7 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {/* Main Headline */}
-              <h1 className="text-white text-4xl sm:text-5xl lg:text-[60px] font-extrabold leading-[1.08] tracking-tight font-['Noto_Sans',sans-serif]">
+              <h1 className="text-white text-4xl sm:text-5xl lg:text-[64px] font-extrabold leading-[1.08] tracking-tight font-['Noto_Sans',sans-serif]">
                 Turn Your Potential{' '}
                 <br className="hidden sm:inline" />
                 Into{' '}
@@ -432,24 +432,24 @@ export const LandingPage: React.FC = () => {
                 </span>
               </h1>
 
-              {/* Supporting Copy */}
-              <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl font-normal">
+              {/* Supporting Copy (Slightly wider, optimal readability) */}
+              <p className="text-base sm:text-lg lg:text-xl text-slate-300 leading-relaxed max-w-xl font-normal">
                 Understand your competencies, identify skill gaps, get personalized learning, and
                 measure real progress — all in one place.
               </p>
 
-              {/* Primary White Pill CTA */}
+              {/* Single Primary CTA */}
               <div className="pt-2 space-y-3">
-                <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-5 flex-wrap">
                   <button
                     onClick={() => navigate('/login')}
-                    className="inline-flex items-center gap-3 bg-white hover:bg-slate-100 text-[#102A43] font-bold text-base px-7 py-3.5 rounded-full transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer"
+                    className="inline-flex items-center gap-3 bg-white hover:bg-slate-100 text-[#102A43] font-bold text-base px-8 py-4 rounded-full transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer"
                   >
                     <span>Get Started</span>
                     <ArrowRight className="w-5 h-5 text-[#102A43]" />
                   </button>
 
-                  <span className="text-xs text-slate-400 font-medium">
+                  <span className="text-sm text-slate-300 font-medium">
                     Free to use • No complicated setup
                   </span>
                 </div>
@@ -461,7 +461,7 @@ export const LandingPage: React.FC = () => {
                   onClick={() => scrollToSection('ecosystem')}
                   className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer"
                 >
-                  <span className="w-6 h-6 rounded-full border border-slate-600 flex items-center justify-center text-xs">
+                  <span className="w-7 h-7 rounded-full border border-slate-600 flex items-center justify-center text-xs">
                     ↓
                   </span>
                   <span>Scroll to explore</span>
@@ -469,45 +469,45 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column: Hero Product Preview Card */}
+            {/* Right Column: Hero Product Preview Card (25–35% Larger) */}
             <div className="lg:col-span-6 flex flex-col items-center lg:items-end relative">
               {/* Background Poster Overlay */}
               <div className="absolute top-2 right-4 text-right opacity-20 pointer-events-none select-none hidden sm:block">
-                <div className="text-3xl font-extrabold tracking-tight text-white leading-tight font-mono">
+                <div className="text-4xl font-extrabold tracking-tight text-white leading-tight font-mono">
                   Skilled<br />Officials<br />Stronger<br />India
                 </div>
               </div>
 
-              {/* White Product UI Card */}
-              <div className="w-full max-w-[460px] bg-white text-[#102A43] border border-slate-200 rounded-2xl p-6 shadow-2xl relative z-10">
+              {/* White Product UI Card (Enlarged to 540px) */}
+              <div className="w-full max-w-[540px] bg-white text-[#102A43] border border-slate-200 rounded-3xl p-7 sm:p-8 shadow-2xl relative z-10 space-y-4">
                 {/* Profile Header */}
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-[#102A43] text-white font-bold text-xs flex items-center justify-center">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#102A43] text-white font-bold text-sm flex items-center justify-center">
                       AK
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[#102A43]">Amit Kumar</div>
-                      <div className="text-[10px] text-slate-500 font-medium">Deputy Director • MoSPI</div>
+                      <div className="text-sm font-bold text-[#102A43]">Amit Kumar</div>
+                      <div className="text-xs text-slate-500 font-medium">Deputy Director • MoSPI</div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-[#102A43] font-mono leading-none">68%</div>
-                    <div className="text-[9px] text-slate-500 font-semibold uppercase">Overall Competency</div>
+                    <div className="text-2xl font-bold text-[#102A43] font-mono leading-none">68%</div>
+                    <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mt-1">Overall Competency</div>
                   </div>
                 </div>
 
                 {/* Radar Chart Title & Legend */}
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between pt-1">
                   <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-slate-800">
                     MY COMPETENCY PROFILE
                   </h2>
-                  <div className="flex items-center gap-3 text-[10px] font-semibold">
-                    <span className="flex items-center gap-1 text-[#2563D9]">
-                      <span className="w-2 h-2 rounded-full bg-[#2563D9]" /> Key Level
+                  <div className="flex items-center gap-3 text-[11px] font-semibold">
+                    <span className="flex items-center gap-1.5 text-[#2563D9]">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#2563D9]" /> Key Level
                     </span>
-                    <span className="flex items-center gap-1 text-[#E8871A]">
-                      <span className="w-2 h-2 rounded-full border border-[#E8871A]" /> Expected Level
+                    <span className="flex items-center gap-1.5 text-[#E8871A]">
+                      <span className="w-2.5 h-2.5 rounded-full border border-[#E8871A]" /> Expected Level
                     </span>
                   </div>
                 </div>
@@ -515,63 +515,63 @@ export const LandingPage: React.FC = () => {
                 {/* SVG Pentagon Radar Chart */}
                 <CompetencyRadarChart />
 
-                {/* Competency Bars Breakdown */}
-                <div className="grid grid-cols-2 gap-2 my-3 pt-2 border-t border-slate-100 text-[11px]">
+                {/* Competency Score Bars Breakdown */}
+                <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 text-xs">
                   <div>
-                    <div className="flex justify-between font-semibold mb-0.5">
+                    <div className="flex justify-between font-semibold mb-1">
                       <span>Statistical Methods</span>
                       <span className="font-mono text-emerald-700 font-bold">82%</span>
                     </div>
-                    <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                       <div className="bg-[#16845B] h-full" style={{ width: '82%' }} />
                     </div>
                   </div>
 
                   <div>
-                    <div className="flex justify-between font-semibold mb-0.5">
+                    <div className="flex justify-between font-semibold mb-1">
                       <span>Python</span>
                       <span className="font-mono text-amber-700 font-bold">42%</span>
                     </div>
-                    <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                       <div className="bg-[#E8871A] h-full" style={{ width: '42%' }} />
                     </div>
                   </div>
 
                   <div>
-                    <div className="flex justify-between font-semibold mb-0.5">
+                    <div className="flex justify-between font-semibold mb-1">
                       <span>Cybersecurity</span>
                       <span className="font-mono text-rose-600 font-bold">32%</span>
                     </div>
-                    <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                       <div className="bg-rose-500 h-full" style={{ width: '32%' }} />
                     </div>
                   </div>
 
                   <div>
-                    <div className="flex justify-between font-semibold mb-0.5">
+                    <div className="flex justify-between font-semibold mb-1">
                       <span>Survey Design</span>
                       <span className="font-mono text-blue-700 font-bold">54%</span>
                     </div>
-                    <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                       <div className="bg-[#2563D9] h-full" style={{ width: '54%' }} />
                     </div>
                   </div>
                 </div>
 
                 {/* Insight Callout Card */}
-                <div className="p-3.5 rounded-xl bg-[#FFF8F0] border border-[#FDBA74] flex items-start justify-between gap-3">
+                <div className="p-4 rounded-2xl bg-[#FFF8F0] border border-[#FDBA74] flex items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-1.5 text-xs font-bold text-[#9A3A0A]">
-                      <Sparkles className="w-3.5 h-3.5 text-[#E8871A]" />
+                      <Sparkles className="w-4 h-4 text-[#E8871A]" />
                       <span>3 Priority Gaps Identified</span>
                     </div>
-                    <p className="text-[11px] text-slate-600 mt-0.5 leading-snug">
+                    <p className="text-xs text-slate-600 mt-1 leading-snug">
                       Your personalized learning path is ready.
                     </p>
                   </div>
                   <button
                     onClick={() => navigate('/demo')}
-                    className="text-xs font-bold text-white bg-[#2563D9] hover:bg-[#1D4ED8] px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex-shrink-0"
+                    className="text-xs font-bold text-white bg-[#2563D9] hover:bg-[#1D4ED8] px-4 py-2 rounded-xl transition-colors cursor-pointer flex-shrink-0"
                   >
                     View Learning Path
                   </button>
@@ -583,63 +583,63 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 02 — SOCIAL PROOF / TRUST STRIP
+          SECTION 02 — SOCIAL PROOF / TRUST STRIP (Minimal & Restrained)
          ============================================================ */}
-      <section id="ecosystem" className="py-14 bg-white border-b border-[#DCE3EA] text-center">
+      <section id="ecosystem" className="py-20 bg-white border-b border-[#DCE3EA] text-center">
         <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
-          <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-[#52657A] mb-8">
-            Built for India’s Government Learning Ecosystem
+          <h2 className="text-xs font-bold font-mono uppercase tracking-widest text-[#52657A] mb-10">
+            BUILT FOR INDIA’S GOVERNMENT LEARNING ECOSYSTEM
           </h2>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
             {/* 01 Competency Framework */}
-            <div className="p-5 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
-              <Compass className="w-6 h-6 text-[#2563D9] mb-2" />
-              <div className="font-bold text-sm text-[#102A43]">Competency Framework</div>
+            <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
+              <Compass className="w-7 h-7 text-[#2563D9] mb-3" />
+              <div className="font-bold text-base text-[#102A43]">Competency Framework</div>
               <p className="text-xs text-[#52657A] mt-1">National Cadre Benchmark</p>
             </div>
 
             {/* 02 iGOT Karmayogi */}
-            <div className="p-5 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
-              <BookOpen className="w-6 h-6 text-[#16845B] mb-2" />
-              <div className="font-bold text-sm text-[#102A43]">iGOT Karmayogi</div>
+            <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
+              <BookOpen className="w-7 h-7 text-[#16845B] mb-3" />
+              <div className="font-bold text-base text-[#102A43]">iGOT Karmayogi</div>
               <p className="text-xs text-[#52657A] mt-1">Integrated Module Sync</p>
             </div>
 
             {/* 03 NSSTA */}
-            <div className="p-5 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
-              <Building2 className="w-6 h-6 text-[#E8871A] mb-2" />
-              <div className="font-bold text-sm text-[#102A43]">NSSTA Academy</div>
+            <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
+              <Building2 className="w-7 h-7 text-[#E8871A] mb-3" />
+              <div className="font-bold text-base text-[#102A43]">NSSTA Academy</div>
               <p className="text-xs text-[#52657A] mt-1">Specialized Methodologies</p>
             </div>
 
             {/* 04 AI-Powered Learning & Assessment */}
-            <div className="p-5 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
-              <Brain className="w-6 h-6 text-[#2563D9] mb-2" />
-              <div className="font-bold text-sm text-[#102A43]">AI Learning & Assessment</div>
+            <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] flex flex-col items-center justify-center">
+              <Brain className="w-7 h-7 text-[#2563D9] mb-3" />
+              <div className="font-bold text-base text-[#102A43]">AI Learning & Assessment</div>
               <p className="text-xs text-[#52657A] mt-1">Adaptive Skill Diagnostics</p>
             </div>
           </div>
 
-          <p className="text-xs text-[#52657A] mt-6 font-medium">
+          <p className="text-sm text-[#52657A] mt-8 font-medium">
             Empowering a more skilled, capable and future-ready government workforce.
           </p>
         </div>
       </section>
 
       {/* ============================================================
-          SECTION 03 — PROBLEM (THE CHALLENGE)
+          SECTION 03 — PROBLEM (Clear Editorial Statements, Not SaaS Cards)
          ============================================================ */}
-      <section className="py-20 lg:py-28 bg-[#F7F9FC]">
+      <section className="py-24 lg:py-36 bg-[#F7F9FC]">
         <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left side: Problem Description & 3 Editorial Cards */}
-            <div className="lg:col-span-6 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center">
+            {/* Left side: Problem Description & 3 Clear Editorial Statements */}
+            <div className="lg:col-span-6 space-y-8">
               <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
                 THE CHALLENGE
               </div>
 
-              <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#102A43] tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight leading-tight">
                 Access to Learning Is Not Enough.
               </h2>
 
@@ -648,71 +648,71 @@ export const LandingPage: React.FC = () => {
                 competencies can be difficult.
               </p>
 
-              {/* 3 Editorial Problem Cards */}
-              <div className="space-y-4 pt-2">
-                <div className="p-5 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-4">
-                  <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
+              {/* 3 Clear Editorial Statements */}
+              <div className="space-y-5 pt-2">
+                <div className="p-6 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-5">
+                  <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
                     01
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#102A43]">Unclear Skill Gaps</h3>
-                    <p className="text-xs sm:text-sm text-[#52657A] mt-1">
-                      Know where development is needed. Officials often complete standard trainings without clarity on which specific competencies their role actually demands.
+                    <h3 className="text-lg font-bold text-[#102A43]">Unclear Skill Gaps</h3>
+                    <p className="text-sm text-[#52657A] mt-1 leading-relaxed">
+                      Officials often complete standard trainings without clarity on which specific competencies their role actually demands.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-4">
-                  <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
+                <div className="p-6 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
                     02
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#102A43]">One-Size-Fits-All Learning</h3>
-                    <p className="text-xs sm:text-sm text-[#52657A] mt-1">
+                    <h3 className="text-lg font-bold text-[#102A43]">One-Size-Fits-All Learning</h3>
+                    <p className="text-sm text-[#52657A] mt-1 leading-relaxed">
                       Different officials can require different learning paths. Generic course assignments waste critical time.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-4">
-                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#2563D9] font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
+                <div className="p-6 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-5">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#2563D9] font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
                     03
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#102A43]">Limited Feedback</h3>
-                    <p className="text-xs sm:text-sm text-[#52657A] mt-1">
-                      Learning completion does not always demonstrate competency or measure operational mastery.
+                    <h3 className="text-lg font-bold text-[#102A43]">Limited Feedback</h3>
+                    <p className="text-sm text-[#52657A] mt-1 leading-relaxed">
+                      Learning completion does not always demonstrate competency or measure real operational mastery.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Right side: Workspace Photo with 3 Floating Question Pills */}
+            {/* Right side: Large Meaningful Workspace Photo with 3 Floating Question Pills */}
             <div className="lg:col-span-6 relative flex justify-center">
-              <div className="relative rounded-3xl overflow-hidden border border-[#DCE3EA] shadow-xl max-w-md w-full">
+              <div className="relative rounded-3xl overflow-hidden border border-[#DCE3EA] shadow-2xl w-full max-w-lg">
                 <img
                   src="/images/challenge_official_workspace.jpg"
                   alt="Government official reviewing documents"
-                  className="w-full h-[420px] object-cover"
+                  className="w-full h-[460px] lg:h-[500px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#102A43]/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#102A43]/75 via-[#102A43]/20 to-transparent" />
 
                 {/* Floating Question Pill 1 */}
-                <div className="absolute top-6 right-4 max-w-xs bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-full shadow-lg border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#2563D9]" />
+                <div className="absolute top-8 right-6 max-w-xs bg-white/95 backdrop-blur-md px-5 py-3 rounded-full shadow-xl border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#2563D9]" />
                   <span>Which course is right for me?</span>
                 </div>
 
                 {/* Floating Question Pill 2 */}
-                <div className="absolute top-28 left-4 max-w-xs bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-full shadow-lg border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#E8871A]" />
+                <div className="absolute top-36 left-6 max-w-xs bg-white/95 backdrop-blur-md px-5 py-3 rounded-full shadow-xl border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#E8871A]" />
                   <span>Am I learning the right skills?</span>
                 </div>
 
                 {/* Floating Question Pill 3 */}
-                <div className="absolute bottom-6 right-4 max-w-xs bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-full shadow-lg border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <div className="absolute bottom-8 right-6 max-w-xs bg-white/95 backdrop-blur-md px-5 py-3 rounded-full shadow-xl border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                   <span>How do I know if I'm improving?</span>
                 </div>
               </div>
@@ -724,14 +724,15 @@ export const LandingPage: React.FC = () => {
       {/* ============================================================
           SECTION 04 — SOLUTION (THE EKALAVYA APPROACH & PIPELINE)
          ============================================================ */}
-      <section className="py-20 lg:py-28 bg-white border-t border-b border-[#DCE3EA]">
+      <section className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
         <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
           <div className="max-w-2xl mx-auto text-center space-y-4 mb-16">
             <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
               THE EKALAVYA APPROACH
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#102A43] tracking-tight">
-              From Competency Gaps to Measurable Growth.
+            <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-extrabold text-[#102A43] tracking-tight leading-tight">
+              From Competency Gaps <br />
+              to Measurable Growth.
             </h2>
             <p className="text-base sm:text-lg text-[#52657A] leading-relaxed">
               Ekalavya brings competency intelligence, personalized learning, adaptive assessment
@@ -739,11 +740,11 @@ export const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Central Product System Pipeline (6 Stages) */}
-          <div className="bg-[#071931] text-white p-8 sm:p-12 rounded-3xl border border-white/15 shadow-2xl relative overflow-hidden">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-8">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#00B4D8]" />
+          {/* Central Product System Pipeline (6 Stages, Readable in <5s) */}
+          <div className="bg-[#071931] text-white p-8 sm:p-12 lg:p-14 rounded-3xl border border-white/15 shadow-2xl relative overflow-hidden">
+            <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-10">
+              <div className="flex items-center gap-2.5">
+                <span className="w-3 h-3 rounded-full bg-[#00B4D8]" />
                 <span className="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">
                   Continuous Competency Intelligence Pipeline
                 </span>
@@ -751,61 +752,61 @@ export const LandingPage: React.FC = () => {
               <span className="text-xs text-slate-400 font-mono">Real-time Telemetry</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-5 relative">
               {/* Step 1 */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-cyan-300 mb-2">01</div>
-                <div className="font-bold text-sm mb-1">ROLE</div>
-                <p className="text-[11px] text-slate-400">Designation & Cadre Framework</p>
+                <div className="font-bold text-base mb-1">ROLE</div>
+                <p className="text-xs text-slate-400">Designation & Cadre Framework</p>
               </div>
 
               {/* Step 2 */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-blue-300 mb-2">02</div>
-                <div className="font-bold text-sm mb-1">COMPETENCY PROFILE</div>
-                <p className="text-[11px] text-slate-400">Baseline Competency Matrix</p>
+                <div className="font-bold text-base mb-1">PROFILE</div>
+                <p className="text-xs text-slate-400">Baseline Competency Matrix</p>
               </div>
 
               {/* Step 3 */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-amber-300 mb-2">03</div>
-                <div className="font-bold text-sm mb-1">AI GAP ANALYSIS</div>
-                <p className="text-[11px] text-slate-400">AI-Ranked Skill Deficits</p>
+                <div className="font-bold text-base mb-1">GAP ANALYSIS</div>
+                <p className="text-xs text-slate-400">AI-Ranked Skill Deficits</p>
               </div>
 
               {/* Step 4 */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-emerald-300 mb-2">04</div>
-                <div className="font-bold text-sm mb-1">PERSONALIZED LEARNING</div>
-                <p className="text-[11px] text-slate-400">Curated iGOT & NSSTA Modules</p>
+                <div className="font-bold text-base mb-1">LEARNING</div>
+                <p className="text-xs text-slate-400">Curated iGOT & NSSTA Modules</p>
               </div>
 
               {/* Step 5 */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-purple-300 mb-2">05</div>
-                <div className="font-bold text-sm mb-1">ADAPTIVE ASSESSMENT</div>
-                <p className="text-[11px] text-slate-400">Live Adaptive Diagnostic</p>
+                <div className="font-bold text-base mb-1">ASSESSMENT</div>
+                <p className="text-xs text-slate-400">Live Adaptive Diagnostic</p>
               </div>
 
               {/* Step 6 */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
                 <div className="text-xs font-mono font-bold text-emerald-400 mb-2">06</div>
-                <div className="font-bold text-sm mb-1">MEASURED IMPROVEMENT</div>
-                <p className="text-[11px] text-slate-400">Demonstrated Score Mastery</p>
+                <div className="font-bold text-base mb-1">GROWTH</div>
+                <p className="text-xs text-slate-400">Demonstrated Score Mastery</p>
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
-              <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-300">
+              <span className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                 <span>Zero guesswork • Every recommendation targets a validated deficit</span>
               </span>
               <button
                 onClick={() => navigate('/demo')}
-                className="text-cyan-300 hover:text-white font-semibold flex items-center gap-1.5 cursor-pointer"
+                className="text-cyan-300 hover:text-white font-semibold flex items-center gap-2 cursor-pointer text-sm"
               >
                 <span>Experience Interactive Pipeline</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -813,157 +814,172 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 05 — FEATURES (6 MAJOR EDITORIAL EXPERIENCES)
+          SECTION 05 — FEATURES (Alternating Premium Editorial Showcases)
          ============================================================ */}
-      <section id="for-officials" className="py-20 lg:py-28 bg-[#F7F9FC]">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 space-y-12">
+      <section id="for-officials" className="py-24 lg:py-36 bg-[#F7F9FC]">
+        <div className="max-w-[1280px] mx-auto px-6 sm:px-10 space-y-16 lg:space-y-24">
           <div className="max-w-2xl">
             <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9] mb-2">
               CORE CAPABILITIES
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#102A43] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
               An Intelligent System Tailored to Public Service.
             </h2>
-            <p className="text-base text-[#52657A] mt-2">
+            <p className="text-base sm:text-lg text-[#52657A] mt-3">
               Designed with precision to solve real workflow bottlenecks for officials and directorates.
             </p>
           </div>
 
-          {/* Feature 01 & 02 Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Feature 01: PERSONALIZED COMPETENCY PROFILE */}
-            <div className="lg:col-span-6 bg-white border border-[#DCE3EA] rounded-2xl p-8 shadow-xs flex flex-col justify-between">
-              <div>
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9] mb-1">
+          {/* ============================================================
+              FEATURE 1: Text Left, Product Visualization Right
+             ============================================================ */}
+          <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-6 space-y-4">
+                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
                   FEATURE 01
                 </div>
-                <h3 className="text-2xl font-bold text-[#102A43] mb-2">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
                   Personalized Competency Profile
                 </h3>
-                <p className="text-sm text-[#52657A] mb-6">
+                <p className="text-base sm:text-lg text-[#52657A] font-medium">
                   See where your competencies stand.
                 </p>
+                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
+                  Every official receives a dynamic competency profile mapped against official MoSPI cadre
+                  standards, revealing clear strengths and focus areas.
+                </p>
+                <div className="pt-2">
+                  <span className="font-semibold text-sm text-[#2563D9]">Live Profile Sync Active →</span>
+                </div>
+              </div>
 
-                {/* Visual: Profile Radar Domain Matrix */}
-                <div className="p-5 rounded-xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-[#102A43]">Statistical & Sampling</span>
+              <div className="lg:col-span-6">
+                <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-bold text-[#102A43]">Statistical & Sampling</span>
                     <span className="font-mono text-emerald-700 font-bold">82% • Advanced</span>
                   </div>
-                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
                     <div className="bg-[#16845B] h-full" style={{ width: '82%' }} />
                   </div>
 
-                  <div className="flex items-center justify-between text-xs pt-1">
-                    <span className="font-semibold text-[#102A43]">Python & Automated ETL</span>
+                  <div className="flex items-center justify-between text-sm pt-2">
+                    <span className="font-bold text-[#102A43]">Python & Automated ETL</span>
                     <span className="font-mono text-amber-700 font-bold">42% • Developing</span>
                   </div>
-                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
                     <div className="bg-[#E8871A] h-full" style={{ width: '42%' }} />
                   </div>
 
-                  <div className="flex items-center justify-between text-xs pt-1">
-                    <span className="font-semibold text-[#102A43]">Cybersecurity Standards</span>
+                  <div className="flex items-center justify-between text-sm pt-2">
+                    <span className="font-bold text-[#102A43]">Cybersecurity Standards</span>
                     <span className="font-mono text-rose-600 font-bold">32% • Critical Deficit</span>
                   </div>
-                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
                     <div className="bg-rose-500 h-full" style={{ width: '32%' }} />
                   </div>
                 </div>
               </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-[#52657A]">
-                <span>Evaluated across 4 institutional domains</span>
-                <span className="font-semibold text-[#2563D9]">Live Profile Sync →</span>
-              </div>
             </div>
+          </div>
 
-            {/* Feature 02: AI SKILL-GAP ANALYSIS */}
-            <div className="lg:col-span-6 bg-white border border-[#DCE3EA] rounded-2xl p-8 shadow-xs flex flex-col justify-between">
-              <div>
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#E8871A] mb-1">
-                  FEATURE 02
-                </div>
-                <h3 className="text-2xl font-bold text-[#102A43] mb-2">AI Skill-Gap Analysis</h3>
-                <p className="text-sm text-[#52657A] mb-6">
-                  Focus development where it matters most.
-                </p>
-
-                {/* Visual: Current 42% vs Target 80% Gap 38% */}
-                <div className="p-5 rounded-xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-4">
+          {/* ============================================================
+              FEATURE 2: Product Visualization Left, Text Right
+             ============================================================ */}
+          <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-6 order-2 lg:order-1">
+                <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-5">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-base text-[#102A43]">Python</span>
-                    <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700">
+                    <span className="font-bold text-lg text-[#102A43]">Python</span>
+                    <span className="font-mono font-bold text-xs px-3 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700">
                       Gap: 38%
                     </span>
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-semibold">
+                    <div className="flex justify-between text-sm font-semibold">
                       <span className="text-[#52657A]">Current: <strong className="text-[#102A43]">42%</strong></span>
                       <span className="text-[#52657A]">Target: <strong className="text-[#16845B]">80%</strong></span>
                     </div>
 
-                    <div className="w-full bg-slate-200 h-3 rounded-full overflow-hidden relative">
+                    <div className="w-full bg-slate-200 h-3.5 rounded-full overflow-hidden relative">
                       <div className="bg-[#E8871A] h-full rounded-full" style={{ width: '42%' }} />
-                      <div className="absolute top-0 bottom-0 left-[80%] w-1 bg-[#16845B] z-10" title="Target Benchmark (80%)" />
+                      <div className="absolute top-0 bottom-0 left-[80%] w-1.5 bg-[#16845B] z-10" title="Target Benchmark (80%)" />
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#52657A] bg-white p-3 rounded-lg border border-[#DCE3EA]">
-                    AI analysis flags Python data processing as a priority bottleneck for upcoming PLFS survey releases.
+                  <p className="text-xs sm:text-sm text-[#52657A] bg-white p-4 rounded-xl border border-[#DCE3EA] leading-relaxed">
+                    AI analysis flags Python data processing as a priority bottleneck for upcoming PLFS survey automated releases.
                   </p>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-[#52657A]">
-                <span>Automated Gemini AI diagnosis</span>
-                <span className="font-semibold text-[#E8871A]">Direct Learning Match →</span>
+              <div className="lg:col-span-6 space-y-4 order-1 lg:order-2">
+                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#E8871A]">
+                  FEATURE 02
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
+                  AI Skill-Gap Analysis
+                </h3>
+                <p className="text-base sm:text-lg text-[#52657A] font-medium">
+                  Focus development where it matters most.
+                </p>
+                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
+                  Ekalavya computes the exact delta between your evaluated proficiency and required cadre benchmarks,
+                  highlighting specific conceptual deficits.
+                </p>
+                <div className="pt-2">
+                  <span className="font-semibold text-sm text-[#E8871A]">Direct Learning Match Active →</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Feature 03: RELEVANT LEARNING RECOMMENDATIONS */}
-          <div className="bg-white border border-[#DCE3EA] rounded-2xl p-8 lg:p-10 shadow-xs">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-5 space-y-4">
+          {/* ============================================================
+              FEATURE 3: Text Left, Product Visualization Right
+             ============================================================ */}
+          <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-6 space-y-4">
                 <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#16845B]">
                   FEATURE 03
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
                   Relevant Learning Recommendations
                 </h3>
-                <p className="text-sm text-[#52657A] leading-relaxed">
+                <p className="text-base sm:text-lg text-[#52657A] font-medium">
                   Spend less time searching and more time learning.
                 </p>
-                <p className="text-xs text-[#52657A] leading-relaxed">
-                  Instead of scrolling through thousands of unrelated courses, Ekalavya extracts
-                  the specific curricula on iGOT Karmayogi and NSSTA that bridge your evaluated deficits.
+                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
+                  Instead of scrolling through thousands of unrelated courses, Ekalavya extracts the specific
+                  curricula on iGOT Karmayogi and NSSTA that bridge your evaluated deficits.
                 </p>
               </div>
 
-              <div className="lg:col-span-7">
-                <div className="p-6 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] shadow-xs space-y-4">
+              <div className="lg:col-span-6">
+                <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-mono font-bold text-xs flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="px-3.5 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-mono font-bold text-xs flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-emerald-600" />
                       <span>94% Competency Match</span>
                     </span>
                     <span className="text-xs font-mono font-semibold text-[#52657A]">iGOT Karmayogi</span>
                   </div>
 
-                  <h4 className="text-lg font-bold text-[#102A43]">
+                  <h4 className="text-xl font-bold text-[#102A43]">
                     Python for Government Data Analysis
                   </h4>
 
-                  <div className="flex flex-wrap gap-2 text-xs font-medium text-[#16845B]">
-                    <span className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200">
+                  <div className="flex flex-wrap gap-2 text-xs font-medium text-[#16845B] pt-2">
+                    <span className="px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200">
                       ✓ Python
                     </span>
-                    <span className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200">
+                    <span className="px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200">
                       ✓ Data Processing
                     </span>
-                    <span className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200">
+                    <span className="px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200">
                       ✓ Statistical Analysis
                     </span>
                   </div>
@@ -972,11 +988,13 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature 04: ADAPTIVE ASSESSMENTS (SIGNATURE CAPABILITY - HIGH VISUAL PROMINENCE) */}
+          {/* ============================================================
+              FEATURE 4: Large Full-Width Adaptive Assessment Showcase
+             ============================================================ */}
           <div className="bg-[#071931] text-white rounded-3xl p-8 sm:p-12 lg:p-16 border border-white/15 shadow-2xl relative overflow-hidden">
-            <div className="max-w-2xl mb-10">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-mono font-bold mb-4">
-                <Zap className="w-3.5 h-3.5" />
+            <div className="max-w-2xl mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-mono font-bold mb-4">
+                <Zap className="w-4 h-4" />
                 <span>FEATURE 04 • SIGNATURE CAPABILITY</span>
               </div>
               <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
@@ -988,83 +1006,83 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Interactive Loop Visual Demonstration */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               {/* Left Column: 4 Diagnostic Steps */}
-              <div className="lg:col-span-5 space-y-3">
+              <div className="lg:col-span-5 space-y-3.5">
                 <div
                   onClick={() => setAdaptiveStep(0)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                     adaptiveStep === 0
                       ? 'bg-white/15 border-cyan-400 text-white shadow-md'
                       : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                   }`}
                 >
                   <div className="text-xs font-mono font-bold text-cyan-300">QUESTION</div>
-                  <div className="font-bold text-sm text-white">Diagnostic Question Served</div>
+                  <div className="font-bold text-base text-white">Diagnostic Question Served</div>
                 </div>
 
                 <div
                   onClick={() => setAdaptiveStep(1)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                     adaptiveStep === 1
                       ? 'bg-white/15 border-rose-400 text-white shadow-md'
                       : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                   }`}
                 >
                   <div className="text-xs font-mono font-bold text-rose-300">WRONG ANSWER</div>
-                  <div className="font-bold text-sm text-white">Engine Diagnoses Concept Error</div>
+                  <div className="font-bold text-base text-white">Engine Diagnoses Concept Error</div>
                 </div>
 
                 <div
                   onClick={() => setAdaptiveStep(2)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                     adaptiveStep === 2
                       ? 'bg-white/15 border-amber-400 text-white shadow-md'
                       : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                   }`}
                 >
                   <div className="text-xs font-mono font-bold text-amber-300">REINFORCE SAME CONCEPT</div>
-                  <div className="font-bold text-sm text-white">Easier Question Served</div>
+                  <div className="font-bold text-base text-white">Easier Question Served</div>
                 </div>
 
                 <div
                   onClick={() => setAdaptiveStep(3)}
-                  className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
                     adaptiveStep === 3
                       ? 'bg-white/15 border-emerald-400 text-white shadow-md'
                       : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                   }`}
                 >
                   <div className="text-xs font-mono font-bold text-emerald-300">CORRECT ANSWER</div>
-                  <div className="font-bold text-sm text-white">Mastery Verified & Score Elevated</div>
+                  <div className="font-bold text-base text-white">Mastery Verified & Score Elevated</div>
                 </div>
               </div>
 
               {/* Right Column: Simulated Quiz Diagnostic Panel */}
-              <div className="lg:col-span-7 bg-[#0F2238] border border-white/20 rounded-2xl p-6 sm:p-8 shadow-2xl">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4 text-xs font-mono">
+              <div className="lg:col-span-7 bg-[#0F2238] border border-white/20 rounded-2xl p-7 sm:p-9 shadow-2xl">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-5 text-xs font-mono">
                   <span className="text-slate-400">SESSION: DIA-9021</span>
                   <span className="text-cyan-300 font-bold">ADAPTIVE MODE</span>
                 </div>
 
-                <h4 className="text-base font-semibold text-white mb-4 leading-snug">
+                <h4 className="text-lg font-semibold text-white mb-5 leading-snug">
                   In stratified sampling for the Periodic Labour Force Survey (PLFS), why are weights calibrated against Census projections?
                 </h4>
 
-                <div className="space-y-2 text-xs">
-                  <div className="p-3 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-200 flex items-center justify-between">
+                <div className="space-y-3 text-sm">
+                  <div className="p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-200 flex items-center justify-between">
                     <span>A) To correct frame under-coverage and ensure demographic consistency</span>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 ml-2" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 ml-2" />
                   </div>
-                  <div className="p-3 rounded-lg border border-white/10 bg-white/5 text-slate-400 flex items-center justify-between">
+                  <div className="p-4 rounded-xl border border-white/10 bg-white/5 text-slate-400 flex items-center justify-between">
                     <span>B) To artificially deflate variance estimates</span>
-                    <span className="text-slate-600 font-mono">Option B</span>
+                    <span className="text-slate-600 font-mono text-xs">Option B</span>
                   </div>
                 </div>
 
-                <div className="mt-5 p-4 rounded-xl bg-gradient-to-r from-blue-900/60 to-cyan-900/40 border border-cyan-500/30 text-xs">
-                  <div className="font-bold text-cyan-300 flex items-center gap-1.5 mb-1">
-                    <Sparkles className="w-3.5 h-3.5" />
+                <div className="mt-6 p-5 rounded-2xl bg-gradient-to-r from-blue-900/60 to-cyan-900/40 border border-cyan-500/30 text-xs sm:text-sm">
+                  <div className="font-bold text-cyan-300 flex items-center gap-2 mb-1">
+                    <Sparkles className="w-4 h-4" />
                     <span>Engine Action: Concept Mastered (+16 pts)</span>
                   </div>
                   <p className="text-slate-300 leading-relaxed">
@@ -1075,39 +1093,31 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Feature 05 & 06 Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Feature 05: MEASURE YOUR PROGRESS */}
-            <div className="lg:col-span-6 bg-white border border-[#DCE3EA] rounded-2xl p-8 shadow-xs flex flex-col justify-between">
-              <div>
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#16845B] mb-1">
-                  FEATURE 05
-                </div>
-                <h3 className="text-2xl font-bold text-[#102A43] mb-2">Measure Your Progress</h3>
-                <p className="text-sm text-[#52657A] mb-6">
-                  See demonstrated learning reflected in your competency profile.
-                </p>
-
-                {/* Visual: Cybersecurity Before 32%, After 48%, +16 points */}
-                <div className="p-5 rounded-xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-4">
-                  <div className="flex items-center justify-between font-bold text-base text-[#102A43]">
+          {/* ============================================================
+              FEATURE 5: Product Visualization Left, Text Right
+             ============================================================ */}
+          <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-6 order-2 lg:order-1">
+                <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-5">
+                  <div className="flex items-center justify-between font-bold text-lg text-[#102A43]">
                     <span>Cybersecurity</span>
-                    <span className="font-mono text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-full">
+                    <span className="font-mono text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-1.5 rounded-full">
                       +16 points
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="bg-white p-4 rounded-xl border border-slate-200">
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200">
                       <div className="text-xs text-[#52657A] font-mono font-semibold">BEFORE</div>
                       <div className="text-3xl font-bold text-[#102A43] font-mono mt-1">32%</div>
-                      <span className="text-[11px] text-slate-500">Initial Diagnostic</span>
+                      <span className="text-xs text-slate-500">Initial Diagnostic</span>
                     </div>
 
-                    <div className="bg-white p-4 rounded-xl border border-emerald-300 bg-emerald-50/50">
+                    <div className="bg-white p-5 rounded-2xl border border-emerald-300 bg-emerald-50/50">
                       <div className="text-xs text-emerald-700 font-mono font-bold">AFTER</div>
                       <div className="text-3xl font-bold text-emerald-700 font-mono mt-1">48%</div>
-                      <span className="text-[11px] text-emerald-800 font-semibold">
+                      <span className="text-xs text-emerald-800 font-semibold">
                         Post-Assessment
                       </span>
                     </div>
@@ -1115,49 +1125,70 @@ export const LandingPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-100 text-xs text-[#52657A]">
-                Demonstrated learning reflected in your official record
+              <div className="lg:col-span-6 space-y-4 order-1 lg:order-2">
+                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#16845B]">
+                  FEATURE 05
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
+                  Measure Your Progress
+                </h3>
+                <p className="text-base sm:text-lg text-[#52657A] font-medium">
+                  See demonstrated learning reflected in your competency profile.
+                </p>
+                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
+                  Competency records update strictly through demonstrated diagnostic achievements,
+                  offering verifiable telemetry to both officers and cadres.
+                </p>
               </div>
             </div>
+          </div>
 
-            {/* Feature 06: WORKFORCE INTELLIGENCE */}
-            <div
-              id="for-organizations"
-              className="lg:col-span-6 bg-white border border-[#DCE3EA] rounded-2xl p-8 shadow-xs flex flex-col justify-between"
-            >
-              <div>
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9] mb-1">
+          {/* ============================================================
+              FEATURE 6: Text Left, Organization Intelligence Right
+             ============================================================ */}
+          <div
+            id="for-organizations"
+            className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-6 space-y-4">
+                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
                   FEATURE 06
                 </div>
-                <h3 className="text-2xl font-bold text-[#102A43] mb-2">Workforce Intelligence</h3>
-                <p className="text-sm text-[#52657A] mb-6">
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
+                  Workforce Intelligence
+                </h3>
+                <p className="text-base sm:text-lg text-[#52657A] font-medium">
                   Help organizations understand capability gaps at scale.
                 </p>
+                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
+                  Cadre administrators gain aggregate department-level heatmaps, enabling evidence-based
+                  training investments and targeted capacity interventions.
+                </p>
+                <div className="pt-2">
+                  <span className="font-semibold text-sm text-[#2563D9]">Admin Analytics Console Active →</span>
+                </div>
+              </div>
 
-                {/* Visual: Heatmap */}
-                <div className="p-4 rounded-xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-2.5 text-xs">
+              <div className="lg:col-span-6">
+                <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-3.5 text-sm">
                   <div className="flex items-center justify-between font-semibold text-[#102A43]">
                     <span>Survey Design & Research (SDRD)</span>
                     <span className="text-emerald-700 font-mono font-bold">84% Ready</span>
                   </div>
-                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-1">
+                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-2 border-t border-slate-200">
                     <span>National Accounts Division (NAD)</span>
                     <span className="text-blue-700 font-mono font-bold">78% Ready</span>
                   </div>
-                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-1">
+                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-2 border-t border-slate-200">
                     <span>Field Operations Division (FOD)</span>
                     <span className="text-amber-700 font-mono font-bold">62% Ready</span>
                   </div>
-                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-1">
+                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-2 border-t border-slate-200">
                     <span>Data Informatics & Innovation (DIID)</span>
                     <span className="text-rose-600 font-mono font-bold">54% Ready</span>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-[#52657A]">
-                <span>Cadre-wide deficit visibility</span>
-                <span className="font-semibold text-[#2563D9]">Admin Analytics Console →</span>
               </div>
             </div>
           </div>
@@ -1165,68 +1196,76 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 06 — HOW IT WORKS
+          SECTION 06 — HOW IT WORKS (Generous 4-Step Journey)
          ============================================================ */}
-      <section id="how-it-works" className="py-20 lg:py-28 bg-white border-t border-b border-[#DCE3EA]">
+      <section id="how-it-works" className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
         <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
-          <div className="max-w-2xl mx-auto text-center space-y-4 mb-16">
+          <div className="max-w-2xl mx-auto text-center space-y-4 mb-20">
             <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
               HOW IT WORKS
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#102A43] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
               Four Steps. One Clear Learning Journey.
             </h2>
           </div>
 
           {/* 4 Steps Horizontal Flow */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-7">
             {/* Step 1 */}
-            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-2xl p-6 relative">
-              <div className="w-10 h-10 rounded-full bg-[#102A43] text-white font-mono font-bold text-sm flex items-center justify-center mb-4">
-                01
+            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-[#102A43] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
+                  01
+                </div>
+                <h3 className="font-bold text-lg text-[#102A43] mb-2">CREATE YOUR PROFILE</h3>
+                <p className="text-sm text-[#52657A] leading-relaxed">
+                  Enter your designation, division, and past statistical or administrative service records.
+                </p>
               </div>
-              <h3 className="font-bold text-base text-[#102A43] mb-1">CREATE YOUR PROFILE</h3>
-              <p className="text-xs text-[#52657A] leading-relaxed">
-                Enter your designation, division, and past statistical or administrative service records.
-              </p>
             </div>
 
             {/* Step 2 */}
-            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-2xl p-6 relative">
-              <div className="w-10 h-10 rounded-full bg-[#2563D9] text-white font-mono font-bold text-sm flex items-center justify-center mb-4">
-                02
+            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-[#2563D9] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
+                  02
+                </div>
+                <h3 className="font-bold text-lg text-[#102A43] mb-2">IDENTIFY YOUR GAPS</h3>
+                <p className="text-sm text-[#52657A] leading-relaxed">
+                  AI evaluates your current skills against target benchmarks and reveals prioritized deficits.
+                </p>
               </div>
-              <h3 className="font-bold text-base text-[#102A43] mb-1">IDENTIFY YOUR GAPS</h3>
-              <p className="text-xs text-[#52657A] leading-relaxed">
-                AI evaluates your current skills against target benchmarks and reveals prioritized deficits.
-              </p>
             </div>
 
             {/* Step 3 */}
-            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-2xl p-6 relative">
-              <div className="w-10 h-10 rounded-full bg-[#16845B] text-white font-mono font-bold text-sm flex items-center justify-center mb-4">
-                03
+            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-[#16845B] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
+                  03
+                </div>
+                <h3 className="font-bold text-lg text-[#102A43] mb-2">LEARN & ASSESS</h3>
+                <p className="text-sm text-[#52657A] leading-relaxed">
+                  Engage directly in curated iGOT/NSSTA courses and take real-time adaptive quiz diagnostics.
+                </p>
               </div>
-              <h3 className="font-bold text-base text-[#102A43] mb-1">LEARN & ASSESS</h3>
-              <p className="text-xs text-[#52657A] leading-relaxed">
-                Engage directly in curated iGOT/NSSTA courses and take real-time adaptive quiz diagnostics.
-              </p>
             </div>
 
             {/* Step 4 */}
-            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-2xl p-6 relative">
-              <div className="w-10 h-10 rounded-full bg-[#E8871A] text-white font-mono font-bold text-sm flex items-center justify-center mb-4">
-                04
+            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-[#E8871A] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
+                  04
+                </div>
+                <h3 className="font-bold text-lg text-[#102A43] mb-2">TRACK YOUR GROWTH</h3>
+                <p className="text-sm text-[#52657A] leading-relaxed">
+                  Watch verified milestones reflect automatically on your official competency record.
+                </p>
               </div>
-              <h3 className="font-bold text-base text-[#102A43] mb-1">TRACK YOUR GROWTH</h3>
-              <p className="text-xs text-[#52657A] leading-relaxed">
-                Watch verified milestones reflect automatically on your official competency record.
-              </p>
             </div>
           </div>
 
-          {/* Prompt Sub-reassurance Text */}
-          <div className="mt-12 text-center text-xs font-semibold text-[#52657A]">
+          {/* Sub-reassurance Text */}
+          <div className="mt-14 text-center text-sm font-semibold text-[#52657A]">
             No complicated setup. No course hunting. No one-size-fits-all assessment.
           </div>
         </div>
@@ -1235,94 +1274,94 @@ export const LandingPage: React.FC = () => {
       {/* ============================================================
           SECTION 07 — OUTCOMES (WORKFORCE NEEDS)
          ============================================================ */}
-      <section className="py-20 lg:py-28 bg-[#F7F9FC]">
+      <section className="py-24 lg:py-36 bg-[#F7F9FC]">
         <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
-          <div className="max-w-2xl mx-auto text-center space-y-4 mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#102A43] tracking-tight">
+          <div className="max-w-2xl mx-auto text-center space-y-4 mb-20">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
               Designed Around Real Workforce Needs.
             </h2>
-            <p className="text-base text-[#52657A]">
+            <p className="text-base sm:text-lg text-[#52657A]">
               Tailored value architectures for individual officers, cadre leadership, and training academies.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Column 1: Government Officials */}
-            <div className="bg-white border border-[#DCE3EA] rounded-2xl p-8 shadow-xs">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#2563D9] flex items-center justify-center mb-6">
-                <Users className="w-6 h-6" />
+            <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#2563D9] flex items-center justify-center mb-7">
+                <Users className="w-7 h-7" />
               </div>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#2563D9] mb-1">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#2563D9] mb-1.5">
                 GOVERNMENT OFFICIALS
               </h3>
-              <h4 className="text-xl font-bold text-[#102A43] mb-3">
+              <h4 className="text-2xl font-bold text-[#102A43] mb-4">
                 Know what to learn next.
               </h4>
-              <ul className="space-y-2.5 text-xs text-[#52657A] leading-relaxed">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+              <ul className="space-y-3 text-sm text-[#52657A] leading-relaxed">
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Eliminates ambiguity on role competency requirements.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Direct links to official iGOT and NSSTA training modules.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Constructive, non-punitive adaptive diagnostic tests.</span>
                 </li>
               </ul>
             </div>
 
             {/* Column 2: Organizations */}
-            <div className="bg-white border border-[#DCE3EA] rounded-2xl p-8 shadow-xs">
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#16845B] flex items-center justify-center mb-6">
-                <Building2 className="w-6 h-6" />
+            <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16845B] flex items-center justify-center mb-7">
+                <Building2 className="w-7 h-7" />
               </div>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#16845B] mb-1">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#16845B] mb-1.5">
                 ORGANIZATIONS
               </h3>
-              <h4 className="text-xl font-bold text-[#102A43] mb-3">
+              <h4 className="text-2xl font-bold text-[#102A43] mb-4">
                 Understand where capability gaps exist.
               </h4>
-              <ul className="space-y-2.5 text-xs text-[#52657A] leading-relaxed">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+              <ul className="space-y-3 text-sm text-[#52657A] leading-relaxed">
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Division-level competency heatmaps and deficits.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Data-driven workforce succession and capacity planning.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Evidence-based budget and training resource allocations.</span>
                 </li>
               </ul>
             </div>
 
             {/* Column 3: Training Teams */}
-            <div className="bg-white border border-[#DCE3EA] rounded-2xl p-8 shadow-xs">
-              <div className="w-12 h-12 rounded-xl bg-amber-50 text-[#E8871A] flex items-center justify-center mb-6">
-                <Award className="w-6 h-6" />
+            <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
+              <div className="w-14 h-14 rounded-2xl bg-amber-50 text-[#E8871A] flex items-center justify-center mb-7">
+                <Award className="w-7 h-7" />
               </div>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#E8871A] mb-1">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#E8871A] mb-1.5">
                 TRAINING TEAMS
               </h3>
-              <h4 className="text-xl font-bold text-[#102A43] mb-3">
+              <h4 className="text-2xl font-bold text-[#102A43] mb-4">
                 Build more targeted learning experiences.
               </h4>
-              <ul className="space-y-2.5 text-xs text-[#52657A] leading-relaxed">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+              <ul className="space-y-3 text-sm text-[#52657A] leading-relaxed">
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Identifies exact topics where cadres struggle during diagnostics.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Pre/post score delta telemetry validates course impact.</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <span>Instant document-to-quiz generation from official PDF manuals.</span>
                 </li>
               </ul>
@@ -1332,18 +1371,18 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 08 — FAQ (ACCESSIBLE ACCORDION WITH ALL 10 QUESTIONS)
+          SECTION 08 — FAQ (ACCESSIBLE ACCORDION WITH GENEROUS ROW HEIGHT)
          ============================================================ */}
-      <section id="faq" className="py-20 lg:py-28 bg-white border-t border-b border-[#DCE3EA]">
-        <div className="max-w-[960px] mx-auto px-6 sm:px-10">
-          <div className="text-center space-y-3 mb-12">
+      <section id="faq" className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
+        <div className="max-w-[1000px] mx-auto px-6 sm:px-10">
+          <div className="text-center space-y-4 mb-16">
             <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
               FREQUENTLY ASKED QUESTIONS
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#102A43] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
               Answers to Common Questions.
             </h2>
-            <p className="text-sm text-[#52657A]">
+            <p className="text-base text-[#52657A]">
               Everything you need to know about the Ekalavya platform and mission.
             </p>
           </div>
@@ -1352,12 +1391,12 @@ export const LandingPage: React.FC = () => {
             {faqItems.map((item, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
-                <div key={idx} className="py-4">
+                <div key={idx} className="py-5 sm:py-6">
                   <button
                     onClick={() => toggleFaq(idx)}
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${idx}`}
-                    className="w-full flex items-center justify-between text-left py-2 font-semibold text-base text-[#102A43] hover:text-[#2563D9] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#2563D9] focus:ring-offset-2 rounded-lg px-2"
+                    className="w-full flex items-center justify-between text-left py-2 font-bold text-base sm:text-lg text-[#102A43] hover:text-[#2563D9] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#2563D9] focus:ring-offset-2 rounded-lg px-2"
                   >
                     <span>{item.q}</span>
                     <span className="ml-4 flex-shrink-0 text-[#52657A]">
@@ -1367,7 +1406,7 @@ export const LandingPage: React.FC = () => {
                   {isOpen && (
                     <div
                       id={`faq-answer-${idx}`}
-                      className="pt-2 pb-3 px-2 text-sm text-[#52657A] leading-relaxed animate-fadeIn"
+                      className="pt-3 pb-2 px-2 text-sm sm:text-base text-[#52657A] leading-relaxed animate-fadeIn"
                     >
                       {item.a}
                     </div>
@@ -1380,10 +1419,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 09 — FINAL CTA (MOUNTAIN BACKGROUND WITH GRAPHIC)
+          SECTION 09 — FINAL CTA (MOUNTAIN BACKGROUND WITH MORE WHITESPACE)
          ============================================================ */}
       <section
-        className="relative py-24 lg:py-32 bg-[#071931] text-white overflow-hidden"
+        className="relative py-28 lg:py-36 bg-[#071931] text-white overflow-hidden"
         style={{
           backgroundImage: `linear-gradient(to right, rgba(7, 25, 49, 0.94) 40%, rgba(16, 42, 67, 0.85) 100%), url('/images/cta_mountain_landscape.jpg')`,
           backgroundSize: 'cover',
@@ -1393,27 +1432,27 @@ export const LandingPage: React.FC = () => {
         <div className="max-w-[1280px] mx-auto px-6 sm:px-10 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Side Text & Primary CTA */}
-            <div className="lg:col-span-8 space-y-6">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight font-['Noto_Sans',sans-serif] leading-tight">
+            <div className="lg:col-span-8 space-y-7">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-['Noto_Sans',sans-serif] leading-tight">
                 Ready to Build Your Skills <br />
                 for a Greater Tomorrow?
               </h2>
 
-              <p className="text-base sm:text-lg text-slate-300 font-normal max-w-xl">
+              <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-normal max-w-xl">
                 Start your learning journey with Ekalavya today.
               </p>
 
-              <div className="pt-2 space-y-3">
-                <div className="flex items-center gap-4 flex-wrap">
+              <div className="pt-3 space-y-3">
+                <div className="flex items-center gap-5 flex-wrap">
                   <button
                     onClick={() => navigate('/login')}
-                    className="inline-flex items-center gap-3 bg-[#2563D9] hover:bg-[#1D4ED8] text-white font-semibold text-base px-8 py-3.5 rounded-full transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer"
+                    className="inline-flex items-center gap-3 bg-[#2563D9] hover:bg-[#1D4ED8] text-white font-semibold text-base px-9 py-4 rounded-full transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer"
                   >
                     <span>Get Started</span>
                     <ArrowRight className="w-5 h-5" />
                   </button>
 
-                  <span className="text-xs text-slate-400 font-medium">
+                  <span className="text-sm text-slate-300 font-medium">
                     Free to use • No complicated setup
                   </span>
                 </div>
@@ -1421,12 +1460,12 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Right Side Stacked Typography Graphic */}
-            <div className="lg:col-span-4 flex flex-col justify-center items-start lg:items-end border-l lg:border-l-0 border-white/10 pl-6 lg:pl-0">
-              <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-300 leading-tight space-y-1 font-mono">
+            <div className="lg:col-span-4 flex flex-col justify-center items-start lg:items-end border-l lg:border-l-0 border-white/10 pl-8 lg:pl-0">
+              <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-300 leading-tight space-y-1.5 font-mono">
                 <div className="text-white">Learn</div>
                 <div className="text-blue-400">Grow</div>
                 <div className="text-emerald-400">Serve</div>
-                <div className="text-amber-400 text-lg font-bold">A Stronger India</div>
+                <div className="text-amber-400 text-xl font-bold">A Stronger India</div>
               </div>
             </div>
           </div>
@@ -1434,26 +1473,26 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 10 — FOOTER (DEEP NAVY)
+          SECTION 10 — FOOTER (DEEP NAVY, SPACIOUS COLUMNS)
          ============================================================ */}
-      <footer className="bg-[#071931] text-slate-400 text-xs border-t border-white/10 pt-16 pb-12">
+      <footer className="bg-[#071931] text-slate-400 text-xs sm:text-sm border-t border-white/10 pt-20 pb-14">
         <div className="max-w-[1280px] mx-auto px-6 sm:px-10">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 mb-16">
             {/* Left Brand info */}
-            <div className="md:col-span-4 space-y-4">
+            <div className="md:col-span-4 space-y-5">
               <EkalavyaLogo variant="dark" size="md" />
-              <p className="text-slate-400 text-xs leading-relaxed max-w-sm mt-3">
+              <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm mt-3">
                 An AI-powered competency intelligence and personalized learning platform designed to
                 empower India’s public service cadre with measurable, continuous skill growth.
               </p>
             </div>
 
             {/* Platform Links */}
-            <div className="md:col-span-3 space-y-3">
+            <div className="md:col-span-3 space-y-4">
               <div className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200">
                 PLATFORM
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5 text-xs sm:text-sm">
                 <li>
                   <button
                     onClick={() => scrollToSection('how-it-works')}
@@ -1482,11 +1521,11 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Support Links */}
-            <div className="md:col-span-3 space-y-3">
+            <div className="md:col-span-3 space-y-4">
               <div className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200">
                 SUPPORT
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5 text-xs sm:text-sm">
                 <li>
                   <button
                     onClick={() => scrollToSection('faq')}
@@ -1517,11 +1556,11 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Legal Links */}
-            <div className="md:col-span-2 space-y-3">
+            <div className="md:col-span-2 space-y-4">
               <div className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200">
                 LEGAL
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5 text-xs sm:text-sm">
                 <li>
                   <span className="hover:text-white cursor-pointer">Privacy</span>
                 </li>
@@ -1535,7 +1574,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-slate-500 gap-4">
+          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-slate-500 gap-4 text-xs">
             <div>© Ekalavya. All rights reserved.</div>
             <div>Ministry of Statistics and Programme Implementation (MoSPI)</div>
           </div>
