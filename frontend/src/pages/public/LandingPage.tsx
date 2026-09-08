@@ -313,6 +313,12 @@ export const LandingPage: React.FC = () => {
               How it works
             </button>
             <button
+              onClick={() => scrollToSection('faq')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              FAQ
+            </button>
+            <button
               onClick={() => scrollToSection('for-officials')}
               className="hover:text-white transition-colors cursor-pointer"
             >
@@ -323,12 +329,6 @@ export const LandingPage: React.FC = () => {
               className="hover:text-white transition-colors cursor-pointer"
             >
               For Organizations
-            </button>
-            <button
-              onClick={() => scrollToSection('faq')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              FAQ
             </button>
           </nav>
 
@@ -367,6 +367,12 @@ export const LandingPage: React.FC = () => {
               How it works
             </button>
             <button
+              onClick={() => scrollToSection('faq')}
+              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
+            >
+              FAQ
+            </button>
+            <button
               onClick={() => scrollToSection('for-officials')}
               className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
             >
@@ -377,12 +383,6 @@ export const LandingPage: React.FC = () => {
               className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
             >
               For Organizations
-            </button>
-            <button
-              onClick={() => scrollToSection('faq')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
-            >
-              FAQ
             </button>
             <div className="pt-3 border-t border-white/10">
               <button
