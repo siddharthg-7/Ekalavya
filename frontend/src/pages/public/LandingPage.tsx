@@ -19,21 +19,51 @@ import {
 } from 'lucide-react';
 
 /* =====================================================================
-   HERO RADAR CHART (5 Axes matching exact specification)
+   HERO KEYFRAME ANIMATIONS (inline style block)
+   Respects prefers-reduced-motion.
+   ===================================================================== */
+const heroAnimStyles = `
+  @keyframes ekHeroFadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes ekProductSlideUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes ekTrustFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ek-hero-content, .ek-hero-product, .ek-hero-trust { animation: none !important; opacity: 1 !important; }
+  }
+  .ek-hero-content {
+    animation: ekHeroFadeUp 0.72s cubic-bezier(0.22,1,0.36,1) 0.15s both;
+  }
+  .ek-hero-product {
+    animation: ekProductSlideUp 0.82s cubic-bezier(0.22,1,0.36,1) 0.38s both;
+  }
+  .ek-hero-trust {
+    animation: ekTrustFadeIn 0.6s ease 0.7s both;
+  }
+  .ek-scroll-pulse {
+    animation: ekTrustFadeIn 1.8s ease-in-out 1.2s infinite alternate;
+  }
+`;
+
+/* =====================================================================
+   RADAR CHART — 5 Axes matching exact specification
+   Statistical Methods / Data Analysis / Digital Skills /
+   Communication / Domain Knowledge
    ===================================================================== */
 const HeroProductRadarChart: React.FC = () => {
-  const cx = 130;
-  const cy = 115;
-  const r = 68;
+  const cx = 110;
+  const cy = 100;
+  const r  = 62;
 
+  // Angles starting from top (-90°) going clockwise every 72°
   const angles = [-90, -18, 54, 126, 198];
-  const labels = [
-    { text: 'Statistical Methods', x: cx, y: cy - r - 10, anchor: 'middle' },
-    { text: 'Data Analysis', x: cx + r + 14, y: cy - 4, anchor: 'start' },
-    { text: 'Digital Skills', x: cx + r * Math.cos((54 * Math.PI) / 180) + 12, y: cy + r * Math.sin((54 * Math.PI) / 180) + 10, anchor: 'start' },
-    { text: 'Communication', x: cx + r * Math.cos((126 * Math.PI) / 180) - 12, y: cy + r * Math.sin((126 * Math.PI) / 180) + 10, anchor: 'end' },
-    { text: 'Domain Knowledge', x: cx - r - 14, y: cy - 4, anchor: 'end' }
-  ];
 
   const getPoint = (angleDeg: number, valRatio: number) => {
     const rad = (angleDeg * Math.PI) / 180;
@@ -44,64 +74,81 @@ const HeroProductRadarChart: React.FC = () => {
   };
 
   const levels = [0.25, 0.5, 0.75, 1.0];
-  const yourLevelValues = [0.85, 0.70, 0.48, 0.65, 0.78];
-  const yourPoints = angles.map((a, i) => getPoint(a, yourLevelValues[i])).map(p => `${p.x},${p.y}`).join(' ');
+  const yourLevelValues   = [0.82, 0.68, 0.50, 0.62, 0.76];
+  const expectedValues    = [0.92, 0.88, 0.84, 0.80, 0.88];
 
-  const expectedValues = [0.90, 0.88, 0.82, 0.80, 0.85];
+  const yourPoints     = angles.map((a, i) => getPoint(a, yourLevelValues[i])).map(p => `${p.x},${p.y}`).join(' ');
   const expectedPoints = angles.map((a, i) => getPoint(a, expectedValues[i])).map(p => `${p.x},${p.y}`).join(' ');
 
+  // Label positions — nudged per axis for readability in small space
+  const labelData = [
+    { text: 'Statistical', line2: 'Methods',   ...getPoint(-90,  1.28), anchor: 'middle' as const },
+    { text: 'Data',        line2: 'Analysis',  ...getPoint(-18,  1.28), anchor: 'start'  as const },
+    { text: 'Digital',     line2: 'Skills',    ...getPoint( 54,  1.26), anchor: 'start'  as const },
+    { text: 'Communication', line2: '',        ...getPoint(126,  1.26), anchor: 'end'    as const },
+    { text: 'Domain',     line2: 'Knowledge',  ...getPoint(198,  1.28), anchor: 'end'    as const },
+  ];
+
   return (
-    <svg viewBox="0 0 260 220" className="w-full max-w-[240px] h-auto overflow-visible select-none">
+    <svg viewBox="0 0 220 210" className="w-full h-auto overflow-visible select-none">
+      {/* Grid rings */}
       {levels.map((lvl, idx) => {
         const pts = angles.map(a => getPoint(a, lvl)).map(p => `${p.x},${p.y}`).join(' ');
         return (
           <polygon
             key={idx}
             points={pts}
-            fill={idx === levels.length - 1 ? '#F8FAFC' : 'none'}
-            stroke="#E2E8F0"
-            strokeWidth="1"
+            fill={idx === levels.length - 1 ? '#F0F4F8' : 'none'}
+            stroke="#D1D9E0"
+            strokeWidth="0.8"
             strokeDasharray={idx < levels.length - 1 ? '2 2' : 'none'}
           />
         );
       })}
 
+      {/* Axis spokes */}
       {angles.map((a, idx) => {
         const p = getPoint(a, 1.0);
-        return <line key={idx} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#CBD5E1" strokeWidth="1" />;
+        return <line key={idx} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#C5CDD6" strokeWidth="0.8" />;
       })}
 
-      {/* Expected Level (Light Blue / Dashed) */}
+      {/* Expected Level polygon — dashed light blue */}
       <polygon
         points={expectedPoints}
-        fill="rgba(56, 189, 248, 0.08)"
+        fill="rgba(147, 197, 253, 0.10)"
         stroke="#93C5FD"
-        strokeWidth="1.5"
-        strokeDasharray="3 3"
+        strokeWidth="1.4"
+        strokeDasharray="3 2"
       />
 
-      {/* Your Level (Solid Blue Filled) */}
+      {/* Your Level polygon — solid blue fill */}
       <polygon
         points={yourPoints}
-        fill="rgba(37, 99, 215, 0.22)"
+        fill="rgba(37, 99, 215, 0.18)"
         stroke="#2563D9"
-        strokeWidth="2.2"
+        strokeWidth="2"
       />
 
+      {/* Data point dots */}
       {angles.map((a, idx) => {
         const p = getPoint(a, yourLevelValues[idx]);
-        return <circle key={idx} cx={p.x} cy={p.y} r="3.5" fill="#2563D9" stroke="#FFFFFF" strokeWidth="1.5" />;
+        return <circle key={idx} cx={p.x} cy={p.y} r="3" fill="#2563D9" stroke="#FFFFFF" strokeWidth="1.5" />;
       })}
 
-      {labels.map((lbl, idx) => (
+      {/* Axis labels — two-line where needed */}
+      {labelData.map((lbl, idx) => (
         <text
           key={idx}
           x={lbl.x}
           y={lbl.y}
-          textAnchor={lbl.anchor as any}
-          className="text-[9px] font-semibold fill-slate-700 font-sans"
+          textAnchor={lbl.anchor}
+          fontSize="8"
+          fontWeight="600"
+          fill="#374151"
+          fontFamily="'Noto Sans', sans-serif"
         >
-          {lbl.text}
+          <tspan x={lbl.x} dy="0">{lbl.text}</tspan>
+          {lbl.line2 && <tspan x={lbl.x} dy="9">{lbl.line2}</tspan>}
         </text>
       ))}
     </svg>
@@ -116,11 +163,10 @@ export const LandingPage: React.FC = () => {
   const [language, setLanguage] = useState<'EN' | 'HI'>('EN');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Interactive Adaptive Assessment Demo Step (used in Feature 4 section)
+  const [adaptiveStep, setAdaptiveStep] = useState<number>(0);
   // FAQ accordion tracker
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-
-  // Interactive Adaptive Assessment Demo Step
-  const [adaptiveStep, setAdaptiveStep] = useState<number>(0);
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -152,7 +198,7 @@ export const LandingPage: React.FC = () => {
     },
     {
       q: 'How does Ekalavya identify competency gaps?',
-      a: 'Ekalavya compares an official’s evaluated proficiency across statistical, technical, digital governance, and behavioural domains against target proficiency benchmarks mandated for their designation in the National Competency Framework.'
+      a: 'Ekalavya compares an official\u2019s evaluated proficiency across statistical, technical, digital governance, and behavioural domains against target proficiency benchmarks mandated for their designation in the National Competency Framework.'
     },
     {
       q: 'Is Ekalavya free to use?',
@@ -193,8 +239,11 @@ export const LandingPage: React.FC = () => {
       id="main-content"
       className="min-h-screen bg-[#F7F9FC] text-[#102A43] font-['Noto_Sans',sans-serif] selection:bg-[#2563D9] selection:text-white"
     >
+      {/* Inject hero animation keyframes */}
+      <style>{heroAnimStyles}</style>
+
       {/* ============================================================
-          ACCESSIBILITY SKIP LINK & TOP UTILITY BAR
+          ACCESSIBILITY SKIP LINK
          ============================================================ */}
       <a
         href="#hero-section"
@@ -203,14 +252,17 @@ export const LandingPage: React.FC = () => {
         Skip to main content
       </a>
 
+      {/* ============================================================
+          TOP UTILITY BAR (gov branding + font size + language)
+         ============================================================ */}
       <div className="bg-[#071931] border-b border-white/10 text-slate-300 text-xs py-2 px-6 sm:px-10">
         <div className="max-w-[1240px] mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-medium tracking-wide">
               {language === 'EN'
-                ? 'Government of India • Ministry of Statistics & Programme Implementation'
-                : 'भारत सरकार • सांख्यिकी और कार्यक्रम कार्यान्वयन मंत्रालय'}
+                ? 'Government of India \u2022 Ministry of Statistics & Programme Implementation'
+                : '\u092D\u093E\u0930\u0924 \u0938\u0930\u0915\u093E\u0930 \u2022 \u0938\u093E\u0902\u0916\u094D\u092F\u093F\u0915\u0940 \u0914\u0930 \u0915\u093E\u0930\u094D\u092F\u0915\u094D\u0930\u092E \u0915\u093E\u0930\u094D\u092F\u093E\u0928\u094D\u0935\u092F\u0928 \u092E\u0902\u0924\u094D\u0930\u093E\u0932\u092F'}
             </span>
           </div>
 
@@ -218,39 +270,18 @@ export const LandingPage: React.FC = () => {
             {/* Font Size Controls */}
             <div className="flex items-center gap-1.5" aria-label="Text Size Controls">
               <span className="text-slate-400 text-[11px] mr-1">Text:</span>
-              <button
-                onClick={() => handleFontSizeChange('normal')}
-                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
-                  fontSize === 'normal'
-                    ? 'bg-[#2563D9] text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-                title="Default Font Size"
-              >
-                A-
-              </button>
-              <button
-                onClick={() => handleFontSizeChange('large')}
-                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
-                  fontSize === 'large'
-                    ? 'bg-[#2563D9] text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-                title="Large Font Size"
-              >
-                A
-              </button>
-              <button
-                onClick={() => handleFontSizeChange('larger')}
-                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
-                  fontSize === 'larger'
-                    ? 'bg-[#2563D9] text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-                title="Extra Large Font Size"
-              >
-                A+
-              </button>
+              {(['normal', 'large', 'larger'] as const).map((s, i) => (
+                <button
+                  key={s}
+                  onClick={() => handleFontSizeChange(s)}
+                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
+                    fontSize === s ? 'bg-[#2563D9] text-white' : 'text-slate-400 hover:text-white'
+                  }`}
+                  title={s === 'normal' ? 'Default Font Size' : s === 'large' ? 'Large Font Size' : 'Extra Large Font Size'}
+                >
+                  {['A-', 'A', 'A+'][i]}
+                </button>
+              ))}
             </div>
 
             {/* Language Switcher */}
@@ -260,7 +291,7 @@ export const LandingPage: React.FC = () => {
                 className="hover:text-white flex items-center gap-1.5 font-semibold text-xs transition-colors"
                 title="Toggle Language"
               >
-                <span>{language === 'EN' ? 'English (EN)' : 'हिंदी (HI)'}</span>
+                <span>{language === 'EN' ? 'English (EN)' : '\u0939\u093F\u0902\u0926\u0940 (HI)'}</span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -269,308 +300,520 @@ export const LandingPage: React.FC = () => {
       </div>
 
       {/* ============================================================
-          NAVIGATION HEADER (top 24px, 1240px max width)
-         ============================================================ */}
-      <header className="sticky top-0 z-40 bg-[#071931]/95 backdrop-blur-md border-b border-white/10 transition-all duration-200">
-        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 py-5 flex items-center justify-between">
-          {/* Left: Ekalavya Logo (150-165px wide) */}
-          <Link to="/" className="no-underline flex items-center">
-            <EkalavyaLogo variant="dark" size="md" />
-          </Link>
-
-          {/* Center: Desktop Navigation Links (28-34px spacing, 14-15px font) */}
-          <nav className="hidden md:flex items-center gap-8 text-[15px] font-medium text-slate-200">
-            <button
-              onClick={() => scrollToSection('how-it-works')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              How it works
-            </button>
-            <button
-              onClick={() => scrollToSection('faq')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              FAQ
-            </button>
-            <button
-              onClick={() => scrollToSection('for-officials')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              For Officials
-            </button>
-            <button
-              onClick={() => scrollToSection('for-organizations')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              For Organizations
-            </button>
-          </nav>
-
-          {/* Right Action: Language + Get Started Button (~116x48px, 24px radius) */}
-          <div className="hidden md:flex items-center gap-5">
-            <span className="text-xs text-slate-300 font-semibold flex items-center gap-1 cursor-pointer hover:text-white">
-              EN <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-            </span>
-
-            <button
-              onClick={() => navigate('/login')}
-              className="bg-white hover:bg-slate-100 text-[#102A43] font-bold text-sm h-12 min-w-[116px] px-5 rounded-[24px] transition-all duration-150 shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>Get Started</span>
-              <ArrowRight className="w-4 h-4 text-[#102A43]" />
-            </button>
-          </div>
-
-          {/* Mobile Hamburger Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-white p-2 rounded-lg hover:bg-white/10"
-            aria-label="Toggle Navigation Menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-[#071931] border-b border-white/10 px-6 py-5 space-y-4">
-            <button
-              onClick={() => scrollToSection('how-it-works')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
-            >
-              How it works
-            </button>
-            <button
-              onClick={() => scrollToSection('faq')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
-            >
-              FAQ
-            </button>
-            <button
-              onClick={() => scrollToSection('for-officials')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
-            >
-              For Officials
-            </button>
-            <button
-              onClick={() => scrollToSection('for-organizations')}
-              className="block w-full text-left text-slate-200 hover:text-white py-2 text-base font-medium"
-            >
-              For Organizations
-            </button>
-            <div className="pt-3 border-t border-white/10">
-              <button
-                onClick={() => navigate('/login')}
-                className="w-full bg-white text-[#102A43] py-3.5 rounded-full font-bold text-center flex items-center justify-center gap-2 text-base"
-              >
-                <span>Get Started</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-      </header>
-
-      {/* ============================================================
-          SECTION 01 — HERO (Exact UI Design Specs)
+          HERO SECTION — ~820px tall, full-width, photo background.
+          Navbar sits at top of hero (transparent, NOT sticky dark bar).
          ============================================================ */}
       <section
         id="hero-section"
-        className="relative overflow-hidden bg-[#071931] text-white min-h-screen flex flex-col pt-14 pb-[160px] lg:pt-20"
+        className="relative overflow-hidden bg-[#071931] text-white"
+        style={{ minHeight: '820px' }}
       >
+        {/* ── Background photograph ── */}
         <div
-          className="absolute inset-0 z-0 opacity-80 bg-cover bg-right lg:bg-center"
-          style={{ backgroundImage: `url('/images/hero_official_desk.jpg')` }}
+          aria-hidden="true"
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: "url('/images/hero_official_desk.jpg')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071931] via-[#071931]/90 to-[#071931]/40 z-0" />
 
-        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 relative z-10 w-full flex-1 flex flex-col justify-center">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center py-8">
-            {/* Left Column: Hero Text (Max-w ~620px, 64-68px headline) */}
-            <div className="lg:col-span-6 space-y-6 max-w-[620px]">
-              {/* Eyebrow (36-40px height, blue dot, dark translucent) */}
-              <div className="inline-flex items-center gap-2.5 h-9 px-4 rounded-full bg-white/10 border border-white/15 backdrop-blur-md">
-                <span className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
-                <span className="text-xs font-bold tracking-wider text-cyan-200 uppercase font-mono">
-                  AI-POWERED COMPETENCY INTELLIGENCE
+        {/* ── Gradient overlay: left stays dark for text, right retains warmth ── */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-0"
+          style={{
+            background:
+              'linear-gradient(to right, rgba(7,25,49,0.97) 0%, rgba(7,25,49,0.88) 38%, rgba(7,25,49,0.60) 60%, rgba(7,25,49,0.20) 100%)',
+          }}
+        />
+
+        {/* ── Subtle bottom-to-top gradient for trust bar readability ── */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 z-0 h-40"
+          style={{ background: 'linear-gradient(to top, rgba(7,25,49,0.85) 0%, transparent 100%)' }}
+        />
+
+        {/* ================================================================
+            NAVBAR (transparent, sits inside the hero section)
+           ================================================================ */}
+        <header className="relative z-30 w-full">
+          <div className="max-w-[1240px] mx-auto px-6 sm:px-8 flex items-center justify-between" style={{ paddingTop: '26px', paddingBottom: '26px' }}>
+
+            {/* Left: Logo */}
+            <Link to="/" className="no-underline flex items-center flex-shrink-0" aria-label="Ekalavya Home">
+              <EkalavyaLogo variant="dark" size="md" />
+            </Link>
+
+            {/* Center: Desktop nav links */}
+            <nav className="hidden md:flex items-center" style={{ gap: '32px' }} aria-label="Main navigation">
+              {[
+                { label: 'How it works', id: 'how-it-works' },
+                { label: 'FAQ',          id: 'faq' },
+                { label: 'For Officials', id: 'for-officials' },
+                { label: 'For Organizations', id: 'for-organizations' },
+              ].map(link => (
+                <button
+                  key={link.id}
+                  onClick={() => scrollToSection(link.id)}
+                  className="text-slate-200 hover:text-white transition-colors duration-150 cursor-pointer whitespace-nowrap bg-transparent border-0 p-0"
+                  style={{ fontSize: '14.5px', fontWeight: 500, letterSpacing: '0.01em' }}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </nav>
+
+            {/* Right: EN + Get Started */}
+            <div className="hidden md:flex items-center gap-4">
+              <button
+                className="text-slate-300 hover:text-white flex items-center gap-1 font-semibold bg-transparent border-0 cursor-pointer"
+                style={{ fontSize: '13px' }}
+                aria-label="Select language"
+              >
+                EN <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              </button>
+
+              <button
+                onClick={() => navigate('/login')}
+                className="bg-white hover:bg-slate-50 text-[#102A43] font-bold cursor-pointer flex items-center gap-1.5 transition-all duration-150 shadow-md hover:shadow-lg"
+                style={{ fontSize: '14px', height: '48px', minWidth: '116px', padding: '0 20px', borderRadius: '24px', border: 'none' }}
+                aria-label="Get Started with Ekalavya"
+              >
+                Get Started <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+              aria-label="Toggle Navigation Menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
+          {/* Mobile drawer */}
+          {mobileMenuOpen && (
+            <div className="md:hidden bg-[#071931]/98 backdrop-blur-md border-b border-white/10 px-6 py-5 space-y-1">
+              {[
+                { label: 'How it works', id: 'how-it-works' },
+                { label: 'FAQ',          id: 'faq' },
+                { label: 'For Officials', id: 'for-officials' },
+                { label: 'For Organizations', id: 'for-organizations' },
+              ].map(link => (
+                <button
+                  key={link.id}
+                  onClick={() => scrollToSection(link.id)}
+                  className="block w-full text-left text-slate-200 hover:text-white py-2.5 text-base font-medium border-0 bg-transparent cursor-pointer"
+                >
+                  {link.label}
+                </button>
+              ))}
+              <div className="pt-4 border-t border-white/10">
+                <button
+                  onClick={() => navigate('/login')}
+                  className="w-full bg-white text-[#102A43] py-3.5 rounded-[24px] font-bold flex items-center justify-center gap-2 text-base border-0 cursor-pointer"
+                >
+                  Get Started <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </header>
+
+        {/* ================================================================
+            HERO MAIN CONTENT AREA
+            Left: text content. Right: product preview.
+            Content starts ~110px below navbar.
+           ================================================================ */}
+        <div className="relative z-10 max-w-[1240px] mx-auto px-6 sm:px-8 w-full" style={{ paddingTop: '100px', paddingBottom: '170px' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-center">
+
+            {/* ──────────────────────────────────────────────────────
+                LEFT COLUMN — Hero text content
+                Starts at ~7% from left edge of page (handled by
+                max-w container + px-6 sm:px-8 padding).
+               ────────────────────────────────────────────────────── */}
+            <div className="ek-hero-content max-w-[620px]">
+
+              {/* Eyebrow pill: 36–40px height */}
+              <div
+                className="inline-flex items-center gap-2 rounded-full border border-white/15 backdrop-blur-sm"
+                style={{
+                  height: '38px',
+                  paddingLeft: '14px',
+                  paddingRight: '14px',
+                  background: 'rgba(255,255,255,0.08)',
+                  marginBottom: '24px',
+                }}
+              >
+                <span
+                  className="rounded-full bg-[#38BDF8]"
+                  style={{ width: '7px', height: '7px', flexShrink: 0 }}
+                />
+                <span
+                  className="font-mono font-bold uppercase tracking-widest text-cyan-200"
+                  style={{ fontSize: '11px', letterSpacing: '0.08em' }}
+                >
+                  AI-Powered Competency Intelligence
                 </span>
               </div>
 
-              {/* Main Headline (64-68px, 700/750 weight, ~1.02 line height, clean light blue gradient #8CCBFF -> #4FA4F5) */}
-              <h1 className="text-white text-5xl sm:text-6xl lg:text-[66px] font-extrabold leading-[1.02] tracking-tight font-['Noto_Sans',sans-serif]">
-                Turn Your Potential{' '}
-                <br className="hidden sm:inline" />
+              {/* Main headline: 64–68px, weight 750, tight leading */}
+              <h1
+                className="text-white font-extrabold"
+                style={{
+                  fontSize: 'clamp(46px, 5.2vw, 68px)',
+                  fontWeight: 750,
+                  lineHeight: 1.01,
+                  letterSpacing: '-0.025em',
+                  marginBottom: '22px',
+                  maxWidth: '600px',
+                }}
+              >
+                Turn Your Potential
+                <br />
                 Into{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8CCBFF] to-[#4FA4F5]">
+                <span
+                  style={{
+                    background: 'linear-gradient(90deg, #8CCBFF 0%, #4FA4F5 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
                   Greater Impact.
                 </span>
               </h1>
 
-              {/* Description (Max-w ~570px, 17-18px font, 1.5 line height, 85% white) */}
-              <p className="text-[17.5px] text-white/85 leading-relaxed max-w-[570px] font-normal">
-                Understand your competencies, identify skill gaps, get personalized learning, and
-                measure real progress — all in one place.
+              {/* Supporting copy: 17–18px, 1.5 leading, 82% white */}
+              <p
+                className="font-normal"
+                style={{
+                  fontSize: '17.5px',
+                  lineHeight: 1.55,
+                  color: 'rgba(255,255,255,0.82)',
+                  maxWidth: '540px',
+                  marginBottom: '32px',
+                }}
+              >
+                Understand your competencies, identify skill gaps, get
+                personalized learning, and measure real progress — all
+                in one place.
               </p>
 
-              {/* Get Started Button (54-58px height, ~165px width, white bg, navy text, pill radius, Arrow) */}
-              <div className="pt-2 space-y-3">
-                <div className="flex items-center gap-5 flex-wrap">
-                  <button
-                    onClick={() => navigate('/login')}
-                    className="inline-flex items-center justify-center gap-3 bg-white hover:bg-slate-100 text-[#102A43] font-bold text-base h-14 min-w-[165px] px-7 rounded-full transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer"
-                  >
-                    <span>Get Started</span>
-                    <ArrowRight className="w-5 h-5 text-[#102A43]" />
-                  </button>
-
-                  <span className="text-sm text-slate-300 font-medium">
-                    Free to use • No complicated setup
-                  </span>
-                </div>
-              </div>
-
-              {/* Scroll Indicator (Bottom-left, subtle, no bouncing animation) */}
-              <div className="pt-4 flex items-center gap-2.5 text-xs text-slate-400 font-medium">
+              {/* Primary CTA: white pill, 54–58px height */}
+              <div style={{ marginBottom: '14px' }}>
                 <button
-                  onClick={() => scrollToSection('problem-section')}
-                  className="flex items-center gap-2.5 hover:text-white transition-colors cursor-pointer"
+                  onClick={() => navigate('/login')}
+                  className="inline-flex items-center justify-center gap-2.5 bg-white hover:bg-slate-50 text-[#102A43] font-bold cursor-pointer transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
+                  style={{
+                    fontSize: '15.5px',
+                    height: '56px',
+                    minWidth: '170px',
+                    paddingLeft: '28px',
+                    paddingRight: '28px',
+                    borderRadius: '100px',
+                    border: 'none',
+                  }}
+                  aria-label="Get Started with Ekalavya — free, no setup required"
                 >
-                  <span className="w-7 h-7 rounded-full border border-slate-600 flex items-center justify-center text-xs">
-                    ↓
-                  </span>
-                  <span>Scroll to explore</span>
+                  Get Started
+                  <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
+
+              {/* Commitment reducer: 13px, slate-300 */}
+              <p
+                className="font-medium text-slate-300"
+                style={{ fontSize: '13px', marginBottom: '28px' }}
+              >
+                Free to use &nbsp;•&nbsp; No complicated setup
+              </p>
+
+              {/* Scroll indicator — bottom-left, subtle fade pulse */}
+              <button
+                onClick={() => scrollToSection('problem-section')}
+                className="ek-scroll-pulse flex items-center gap-2.5 text-slate-400 hover:text-white transition-colors cursor-pointer bg-transparent border-0 p-0"
+                style={{ fontSize: '12px', fontWeight: 500 }}
+                aria-label="Scroll to explore"
+              >
+                <span
+                  className="flex items-center justify-center rounded-full border border-slate-600"
+                  style={{ width: '28px', height: '28px', fontSize: '13px', flexShrink: 0 }}
+                >
+                  ↓
+                </span>
+                Scroll to explore
+              </button>
             </div>
 
-            {/* Right Column: Realistic Laptop Frame + Flat Ekalavya Screen */}
-            <div className="lg:col-span-6 flex flex-col items-center lg:items-end relative">
-              {/* Realistic Laptop Device Frame */}
-              <div className="w-full max-w-[530px] bg-[#1E293B] rounded-[20px] p-2.5 shadow-2xl border border-slate-700/60 relative">
-                {/* Camera dot */}
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-500 mx-auto mb-1.5" />
+            {/* ──────────────────────────────────────────────────────
+                RIGHT COLUMN — Ekalavya product preview
+                Laptop frame with flat dashboard screen.
+               ────────────────────────────────────────────────────── */}
+            <div className="ek-hero-product flex justify-center lg:justify-end">
 
-                {/* Flat Ekalavya Dashboard Screen */}
-                <div className="bg-white rounded-xl overflow-hidden shadow-inner border border-slate-200">
-                  {/* Screen Header */}
-                  <div className="bg-[#F8FAFC] border-b border-slate-200 px-4 py-2 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <img src="/images/ekalavya_logo.png" alt="Ekalavya" className="w-4 h-4 object-contain" />
-                      <span className="font-bold text-xs text-[#102A43]">Ekalavya</span>
+              {/* Laptop outer chassis */}
+              <div
+                className="relative w-full shadow-2xl"
+                style={{
+                  maxWidth: '520px',
+                  background: 'linear-gradient(160deg, #2A3A4E 0%, #1A2535 100%)',
+                  borderRadius: '18px',
+                  padding: '10px 10px 6px 10px',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  boxShadow: '0 32px 72px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06)',
+                }}
+              >
+                {/* Camera notch */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '6px' }}>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3A4A5E' }} />
+                </div>
+
+                {/* ── Dashboard screen ── */}
+                <div
+                  className="overflow-hidden"
+                  style={{
+                    background: '#FFFFFF',
+                    borderRadius: '10px',
+                    border: '1px solid #E2E8F0',
+                    minHeight: '290px',
+                  }}
+                >
+                  {/* Screen top bar / browser chrome */}
+                  <div
+                    style={{
+                      background: '#F8FAFC',
+                      borderBottom: '1px solid #E2E8F0',
+                      padding: '7px 12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    {/* App title */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                      <img
+                        src="/images/ekalavya_logo.png"
+                        alt=""
+                        aria-hidden="true"
+                        style={{ width: '16px', height: '16px', objectFit: 'contain' }}
+                      />
+                      <span style={{ fontSize: '11px', fontWeight: 700, color: '#102A43', letterSpacing: '-0.01em' }}>
+                        Ekalavya
+                      </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-medium">
-                      <div className="w-4 h-4 rounded-full bg-slate-300 text-[9px] font-bold text-[#102A43] flex items-center justify-center">
+                    {/* Welcome text */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: '#52657A', fontWeight: 500 }}>
+                      <div
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '50%',
+                          background: '#CBD5E1',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '7.5px',
+                          fontWeight: 700,
+                          color: '#102A43',
+                        }}
+                      >
                         AK
                       </div>
-                      <span>Welcome, <strong className="text-[#102A43]">Arjun Kumar</strong></span>
-                      <ChevronDown className="w-3 h-3 text-slate-400" />
+                      <span>Welcome, <strong style={{ color: '#102A43' }}>Arjun Kumar</strong></span>
                     </div>
                   </div>
 
-                  {/* Screen Body */}
-                  <div className="grid grid-cols-12 min-h-[240px]">
-                    {/* Compact Sidebar */}
-                    <div className="col-span-3 bg-[#F8FAFC] border-r border-slate-200 p-2 space-y-1 text-[10px] font-medium text-slate-600">
-                      <div className="px-2 py-1.5 rounded-lg bg-[#2563D9] text-white font-semibold flex items-center gap-1">
-                        <span>📊</span> Dashboard
-                      </div>
-                      <div className="px-2 py-1.5 rounded-lg hover:bg-slate-200/60 flex items-center gap-1">
-                        <span>👤</span> My Profile
-                      </div>
-                      <div className="px-2 py-1.5 rounded-lg hover:bg-slate-200/60 flex items-center gap-1">
-                        <span>🎯</span> Learning Path
-                      </div>
-                      <div className="px-2 py-1.5 rounded-lg hover:bg-slate-200/60 flex items-center gap-1">
-                        <span>📝</span> Assessments
-                      </div>
-                      <div className="px-2 py-1.5 rounded-lg hover:bg-slate-200/60 flex items-center gap-1">
-                        <span>📈</span> Progress
-                      </div>
+                  {/* Screen body: sidebar + main */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '76px 1fr', minHeight: '255px' }}>
+
+                    {/* Sidebar */}
+                    <div
+                      style={{
+                        background: '#F8FAFC',
+                        borderRight: '1px solid #E2E8F0',
+                        padding: '10px 6px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '2px',
+                      }}
+                    >
+                      {[
+                        { icon: '📊', label: 'Dashboard', active: true },
+                        { icon: '👤', label: 'My Profile', active: false },
+                        { icon: '🎯', label: 'Learning', active: false },
+                        { icon: '📝', label: 'Assess.', active: false },
+                        { icon: '📈', label: 'Progress', active: false },
+                      ].map(item => (
+                        <div
+                          key={item.label}
+                          style={{
+                            padding: '5px 7px',
+                            borderRadius: '7px',
+                            background: item.active ? '#2563D9' : 'transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            fontSize: '9px',
+                            fontWeight: item.active ? 600 : 500,
+                            color: item.active ? '#FFFFFF' : '#64748B',
+                            cursor: 'default',
+                          }}
+                        >
+                          <span style={{ fontSize: '11px' }}>{item.icon}</span>
+                          {item.label}
+                        </div>
+                      ))}
                     </div>
 
-                    {/* Main Dashboard Area */}
-                    <div className="col-span-9 p-3 space-y-2 bg-white">
-                      {/* Title & Legend */}
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-[11px] font-bold text-[#102A43]">My Competency Profile</h4>
-                        <div className="flex items-center gap-2 text-[9px] font-semibold">
-                          <span className="flex items-center gap-1 text-[#2563D9]">
-                            <span className="w-2 h-2 rounded-full bg-[#2563D9]" /> Your Level
+                    {/* Main dashboard area */}
+                    <div style={{ padding: '10px 12px', background: '#FFFFFF' }}>
+
+                      {/* Section heading + legend */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <span style={{ fontSize: '10.5px', fontWeight: 700, color: '#102A43' }}>
+                          My Competency Profile
+                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '8.5px', fontWeight: 600, color: '#2563D9' }}>
+                            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#2563D9', display: 'inline-block' }} />
+                            Your Level
                           </span>
-                          <span className="flex items-center gap-1 text-[#93C5FD]">
-                            <span className="w-2 h-2 rounded-full bg-[#93C5FD]" /> Expected Level
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '8.5px', fontWeight: 600, color: '#93C5FD' }}>
+                            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#93C5FD', display: 'inline-block' }} />
+                            Expected Level
                           </span>
                         </div>
                       </div>
 
-                      {/* Radar Chart + Insight Card Layout */}
-                      <div className="grid grid-cols-12 gap-2 items-center">
-                        <div className="col-span-7 flex justify-center">
-                          <HeroProductRadarChart />
-                        </div>
+                      {/* Radar + insight card */}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 130px', gap: '10px', alignItems: 'center' }}>
+                        <HeroProductRadarChart />
 
-                        <div className="col-span-5 space-y-2">
-                          <div className="p-2.5 rounded-xl bg-[#FFF8F0] border border-[#FDBA74] space-y-1">
-                            <div className="text-[10.5px] font-bold text-[#9A3A0A] flex items-center gap-1">
-                              <span>🎯</span> 3 Priority Gaps Identified
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                          {/* Priority gaps card */}
+                          <div
+                            style={{
+                              padding: '9px 10px',
+                              borderRadius: '10px',
+                              background: '#FFF8F0',
+                              border: '1px solid #FDBA74',
+                            }}
+                          >
+                            <div style={{ fontSize: '9.5px', fontWeight: 700, color: '#9A3A0A', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
+                              🎯 3 Priority Gaps Identified
                             </div>
-                            <p className="text-[9.5px] text-slate-600 leading-tight">
+                            <p style={{ fontSize: '8.5px', color: '#64748B', lineHeight: 1.4, margin: 0 }}>
                               Get a personalized learning path to bridge the gaps.
                             </p>
                           </div>
 
-                          <div className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-[9.5px] text-slate-500">
-                            <div className="font-semibold text-slate-700">Next Diagnostic:</div>
-                            <div>Technical Methods (Adaptive)</div>
-                          </div>
+                          {/* Mini skill bars */}
+                          {[
+                            { label: 'Statistical Methods', pct: 82, gap: true },
+                            { label: 'Data Analysis',       pct: 68, gap: true },
+                            { label: 'Digital Skills',      pct: 50, gap: true },
+                          ].map(skill => (
+                            <div key={skill.label}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px', fontWeight: 600, color: '#374151', marginBottom: '2px' }}>
+                                <span>{skill.label}</span>
+                                <span style={{ color: skill.gap ? '#E8871A' : '#16845B' }}>{skill.pct}%</span>
+                              </div>
+                              <div style={{ height: '4px', borderRadius: '2px', background: '#E2E8F0', overflow: 'hidden' }}>
+                                <div
+                                  style={{
+                                    height: '100%',
+                                    width: `${skill.pct}%`,
+                                    borderRadius: '2px',
+                                    background: skill.gap ? '#2563D9' : '#16845B',
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Laptop Base Lip */}
-                <div className="w-20 h-1 bg-slate-600 rounded-full mx-auto mt-2" />
+                {/* Laptop base/hinge lip */}
+                <div style={{ height: '8px', background: 'linear-gradient(to bottom, #1A2535, #141D2B)', borderRadius: '0 0 18px 18px', marginTop: '5px' }} />
               </div>
             </div>
           </div>
         </div>
 
-        {/* ============================================================
-            HERO BOTTOM TRUST BAR — Absolutely positioned at bottom: 40px
-            Spec: ~1200px × 110px, translucent dark panel, 4 columns with
-            vertical dividers. Position: bottom 35–45px inside hero.
-           ============================================================ */}
-        <div className="absolute bottom-[40px] left-0 right-0 z-10 px-6 sm:px-8">
-          <div className="max-w-[1200px] mx-auto bg-[#071931]/90 backdrop-blur-md border border-white/[0.12] rounded-2xl shadow-2xl" style={{height: '110px'}}>
-            <div className="h-full grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/[0.10]">
-              {/* Column 1 */}
-              <div className="flex flex-col justify-center px-7 py-4 space-y-1">
-                <div className="font-bold text-[13px] text-white tracking-tight">Competency Framework</div>
-                <p className="text-[11.5px] text-slate-400 leading-snug">Role-based skill intelligence</p>
-              </div>
-
-              {/* Column 2 */}
-              <div className="flex flex-col justify-center px-7 py-4 space-y-1">
-                <div className="font-bold text-[13px] text-white tracking-tight">iGOT Karmayogi</div>
-                <p className="text-[11.5px] text-slate-400 leading-snug">Curated learning ecosystem</p>
-              </div>
-
-              {/* Column 3 */}
-              <div className="flex flex-col justify-center px-7 py-4 space-y-1">
-                <div className="font-bold text-[13px] text-white tracking-tight">NSSTA</div>
-                <p className="text-[11.5px] text-slate-400 leading-snug">Domain-relevant resources</p>
-              </div>
-
-              {/* Column 4 */}
-              <div className="flex flex-col justify-center px-7 py-4 space-y-1">
-                <div className="font-bold text-[13px] text-white tracking-tight">AI-Powered Assessments</div>
-                <p className="text-[11.5px] text-slate-400 leading-snug">Adaptive & personalized</p>
-              </div>
+        {/* ================================================================
+            TRUST BAR — Absolutely positioned at bottom: 40px
+            ~1200px wide, exactly 110px tall, 4 columns with dividers.
+           ================================================================ */}
+        <div
+          className="ek-hero-trust absolute left-0 right-0 z-20 px-6 sm:px-8"
+          style={{ bottom: '40px' }}
+        >
+          <div
+            className="max-w-[1200px] mx-auto backdrop-blur-md"
+            style={{
+              height: '110px',
+              background: 'rgba(7,25,49,0.88)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: '16px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                height: '100%',
+              }}
+            >
+              {[
+                { title: 'Competency Framework', sub: 'Role-based skill intelligence' },
+                { title: 'iGOT Karmayogi',       sub: 'Curated learning ecosystem' },
+                { title: 'NSSTA',                 sub: 'Domain-relevant resources' },
+                { title: 'AI-Powered Assessments', sub: 'Adaptive & personalized' },
+              ].map((col, idx) => (
+                <div
+                  key={col.title}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    padding: '0 28px',
+                    borderLeft: idx > 0 ? '1px solid rgba(255,255,255,0.10)' : 'none',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: '#FFFFFF',
+                      letterSpacing: '-0.01em',
+                      marginBottom: '5px',
+                    }}
+                  >
+                    {col.title}
+                  </div>
+                  <div style={{ fontSize: '11.5px', color: '#94A3B8', lineHeight: 1.35 }}>
+                    {col.sub}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
+
 
       {/* ============================================================
           SECTION 02 — PROBLEM (Clear Editorial Statements)
