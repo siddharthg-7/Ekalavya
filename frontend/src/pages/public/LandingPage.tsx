@@ -1,906 +1,307 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { EkalavyaLogo } from '../../components/EkalavyaLogo';
+import TiltedCard from '../../components/TiltedCard';
+import { PipelineReactFlow } from '../../components/PipelineReactFlow';
+
 import {
   ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Building2,
+  CaretDown,
+  CaretUp,
+  Buildings,
   Users,
-  CheckCircle2,
-  Sparkles,
-  Zap,
-  Award,
-  Menu,
+  CheckCircle,
+  Briefcase,
+  UserCheck,
+  Target,
+  BookOpen,
+  ClipboardText,
+  TrendUp,
+  Bank,
+  ShieldCheck,
+  List,
   X
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
-/* =====================================================================
-   HERO KEYFRAME ANIMATIONS (inline style block)
-   Respects prefers-reduced-motion.
-   ===================================================================== */
 const heroAnimStyles = `
-  @keyframes ekHeroFadeUp {
-    from { opacity: 0; transform: translateY(22px); }
+  @keyframes ekFadeUp {
+    from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  @keyframes ekProductSlideUp {
-    from { opacity: 0; transform: translateY(32px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes ekTrustFadeIn {
+  @keyframes ekFadeIn {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .ek-hero-content, .ek-hero-product, .ek-hero-trust { animation: none !important; opacity: 1 !important; }
+    .ek-fade-up,.ek-fade-up-2,.ek-fade-up-3,.ek-fade-in { animation: none !important; opacity: 1 !important; }
   }
-  .ek-hero-content {
-    animation: ekHeroFadeUp 0.72s cubic-bezier(0.22,1,0.36,1) 0.15s both;
+  .ek-fade-up   { animation: ekFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.10s both; }
+  .ek-fade-up-2 { animation: ekFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.22s both; }
+  .ek-fade-up-3 { animation: ekFadeUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.34s both; }
+  .ek-fade-in   { animation: ekFadeIn 0.6s ease 0.55s both; }
+  .ek-nav-btn { background:transparent; border:0; padding:0; cursor:pointer; font-family:inherit; }
+  .ek-nav-btn:hover { color:#fff !important; }
+  .ek-cta-nav:hover  { background:#f1f5f9 !important; }
+  .ek-cta-main:hover { background:#f1f5f9 !important; transform:translateY(-1px); box-shadow:0 20px 48px rgba(0,0,0,0.5) !important; }
+  .ek-scroll-btn:hover .ek-scroll-circle { border-color:rgba(255,255,255,0.6) !important; }
+  .ek-hero-header-inner { padding:22px 92px !important; }
+  .ek-feature-wrap { position:absolute; left:94px; width:min(1266px,calc(100% - 188px)); bottom:30px; z-index:20; }
+  .ek-feature-panel { background:rgba(24,29,42,.78); border:1px solid rgba(255,255,255,.12); border-radius:18px; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 12px 38px rgba(0,0,0,.25); overflow:hidden; }
+  .ek-feature-grid { display:grid; grid-template-columns:repeat(4,1fr); height:127px; }
+  .ek-feature-item { display:flex; align-items:center; gap:16px; padding:0 28px; }
+  .ek-feature-item + .ek-feature-item { border-left:1px solid rgba(255,255,255,.12); }
+  .ek-feature-tagline { padding-top:36px; text-align:center; font-size:11px; font-weight:600; letter-spacing:.20em; text-transform:uppercase; color:#5EAFFF; }
+  .ek-gov-mark { position:absolute; right:68px; bottom:17px; z-index:5; display:flex; align-items:flex-end; gap:13px; opacity:.31; pointer-events:none; }
+  .ek-loading-screen { position:fixed; inset:0; z-index:9999; display:grid; place-items:center; background:#070b12; transition:opacity .45s ease; }
+  .ek-loading-screen video { width:100%; height:100%; object-fit:cover; }
+  .ek-hero-logo { transform:scale(1.18); transform-origin:left center; }
+  @keyframes ekButtonSpin { to { transform:rotate(1turn); } }
+  @keyframes ekCardReveal { from { opacity:.45; transform:translateY(56px) scale(.985); } to { opacity:1; transform:translateY(0) scale(1); } }
+  .ek-shimmer-button { position:relative; display:inline-flex; overflow:hidden; align-items:center; justify-content:center; padding:1px; border:0; border-radius:999px; cursor:pointer; background:transparent; transition:transform .3s ease, box-shadow .3s ease; font-family:inherit; }
+  .ek-shimmer-button:hover { transform:translateY(-2px); box-shadow:0 0 25px rgba(255,255,255,.1); }
+  .ek-shimmer-button::before { content:''; position:absolute; inset:-100%; background:conic-gradient(from 90deg at 50% 50%, transparent 0%, transparent 75%, #fff 100%); opacity:0; transition:opacity .3s ease; animation:ekButtonSpin 3s linear infinite; }
+  .ek-shimmer-button:hover::before { opacity:1; }
+  .ek-shimmer-button::after { content:''; position:absolute; inset:0; border-radius:999px; background:#18181b; transition:opacity .3s ease; }
+  .ek-shimmer-button:hover::after { opacity:0; }
+  .ek-shimmer-button__content { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:10px; width:100%; height:100%; border-radius:999px; padding:14px 25px; background:#18181b; color:#a1a1aa; box-shadow:inset 0 1px 0 rgba(255,255,255,.1); transition:color .3s ease, background .3s ease; font-size:16px; font-weight:600; line-height:24px; }
+  .ek-shimmer-button:hover .ek-shimmer-button__content { color:#fff; background:#18181b; }
+  .ek-shimmer-button--compact .ek-shimmer-button__content { min-width:155px; padding:12px 23px; font-size:15px; }
+  .ek-shimmer-button svg { transition:transform .3s ease; }
+  .ek-shimmer-button:hover svg { transform:translateX(2px); }
+  @media (min-width: 1024px) {
+    .ek-story-card { position:sticky; top:96px; box-shadow:0 22px 55px rgba(15,42,67,.11); }
   }
-  .ek-hero-product {
-    animation: ekProductSlideUp 0.82s cubic-bezier(0.22,1,0.36,1) 0.38s both;
+  @supports (animation-timeline: view()) {
+    .ek-story-card { animation:ekCardReveal linear both; animation-timeline:view(); animation-range:entry 8% cover 38%; }
   }
-  .ek-hero-trust {
-    animation: ekTrustFadeIn 0.6s ease 0.7s both;
-  }
-  .ek-scroll-pulse {
-    animation: ekTrustFadeIn 1.8s ease-in-out 1.2s infinite alternate;
+  @media (max-width: 767px) {
+    .ek-hero-header-inner { padding:20px 28px !important; }
+    .ek-feature-wrap { position:relative; left:auto; width:auto; bottom:auto; margin:24px 24px 0; }
+    .ek-feature-grid { grid-template-columns:repeat(2,1fr); height:auto; }
+    .ek-feature-item { min-height:92px; padding:14px; gap:10px; }
+    .ek-feature-item:nth-child(3) { border-left:0; border-top:1px solid rgba(255,255,255,.12); }
+    .ek-feature-item:nth-child(4) { border-top:1px solid rgba(255,255,255,.12); }
+    .ek-feature-item > div:last-child > div:first-child { font-size:12px !important; }
+    .ek-feature-item > div:last-child > div:last-child { font-size:11px !important; }
+    .ek-feature-tagline { padding:15px 8px 0; font-size:9px; line-height:1.5; }
+    .ek-gov-mark { display:none; }
+    .ek-shimmer-button { width:100%; }
   }
 `;
 
-/* =====================================================================
-   RADAR CHART — 5 Axes matching exact specification
-   Statistical Methods / Data Analysis / Digital Skills /
-   Communication / Domain Knowledge
-   ===================================================================== */
-const HeroProductRadarChart: React.FC = () => {
-  const cx = 110;
-  const cy = 100;
-  const r  = 62;
-
-  // Angles starting from top (-90°) going clockwise every 72°
-  const angles = [-90, -18, 54, 126, 198];
-
-  const getPoint = (angleDeg: number, valRatio: number) => {
-    const rad = (angleDeg * Math.PI) / 180;
-    return {
-      x: cx + r * valRatio * Math.cos(rad),
-      y: cy + r * valRatio * Math.sin(rad)
-    };
-  };
-
-  const levels = [0.25, 0.5, 0.75, 1.0];
-  const yourLevelValues   = [0.82, 0.68, 0.50, 0.62, 0.76];
-  const expectedValues    = [0.92, 0.88, 0.84, 0.80, 0.88];
-
-  const yourPoints     = angles.map((a, i) => getPoint(a, yourLevelValues[i])).map(p => `${p.x},${p.y}`).join(' ');
-  const expectedPoints = angles.map((a, i) => getPoint(a, expectedValues[i])).map(p => `${p.x},${p.y}`).join(' ');
-
-  // Label positions — nudged per axis for readability in small space
-  const labelData = [
-    { text: 'Statistical', line2: 'Methods',   ...getPoint(-90,  1.28), anchor: 'middle' as const },
-    { text: 'Data',        line2: 'Analysis',  ...getPoint(-18,  1.28), anchor: 'start'  as const },
-    { text: 'Digital',     line2: 'Skills',    ...getPoint( 54,  1.26), anchor: 'start'  as const },
-    { text: 'Communication', line2: '',        ...getPoint(126,  1.26), anchor: 'end'    as const },
-    { text: 'Domain',     line2: 'Knowledge',  ...getPoint(198,  1.28), anchor: 'end'    as const },
-  ];
-
-  return (
-    <svg viewBox="0 0 220 210" className="w-full h-auto overflow-visible select-none">
-      {/* Grid rings */}
-      {levels.map((lvl, idx) => {
-        const pts = angles.map(a => getPoint(a, lvl)).map(p => `${p.x},${p.y}`).join(' ');
-        return (
-          <polygon
-            key={idx}
-            points={pts}
-            fill={idx === levels.length - 1 ? '#F0F4F8' : 'none'}
-            stroke="#D1D9E0"
-            strokeWidth="0.8"
-            strokeDasharray={idx < levels.length - 1 ? '2 2' : 'none'}
-          />
-        );
-      })}
-
-      {/* Axis spokes */}
-      {angles.map((a, idx) => {
-        const p = getPoint(a, 1.0);
-        return <line key={idx} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#C5CDD6" strokeWidth="0.8" />;
-      })}
-
-      {/* Expected Level polygon — dashed light blue */}
-      <polygon
-        points={expectedPoints}
-        fill="rgba(147, 197, 253, 0.10)"
-        stroke="#93C5FD"
-        strokeWidth="1.4"
-        strokeDasharray="3 2"
-      />
-
-      {/* Your Level polygon — solid blue fill */}
-      <polygon
-        points={yourPoints}
-        fill="rgba(37, 99, 215, 0.18)"
-        stroke="#2563D9"
-        strokeWidth="2"
-      />
-
-      {/* Data point dots */}
-      {angles.map((a, idx) => {
-        const p = getPoint(a, yourLevelValues[idx]);
-        return <circle key={idx} cx={p.x} cy={p.y} r="3" fill="#2563D9" stroke="#FFFFFF" strokeWidth="1.5" />;
-      })}
-
-      {/* Axis labels — two-line where needed */}
-      {labelData.map((lbl, idx) => (
-        <text
-          key={idx}
-          x={lbl.x}
-          y={lbl.y}
-          textAnchor={lbl.anchor}
-          fontSize="8"
-          fontWeight="600"
-          fill="#374151"
-          fontFamily="'Noto Sans', sans-serif"
-        >
-          <tspan x={lbl.x} dy="0">{lbl.text}</tspan>
-          {lbl.line2 && <tspan x={lbl.x} dy="9">{lbl.line2}</tspan>}
-        </text>
-      ))}
-    </svg>
-  );
-};
+const ShimmerButton: React.FC<{
+  children: React.ReactNode;
+  onClick: () => void;
+  ariaLabel?: string;
+  compact?: boolean;
+}> = ({ children, onClick, ariaLabel, compact = false }) => (
+  <button type="button" onClick={onClick} aria-label={ariaLabel} className={`ek-shimmer-button${compact ? ' ek-shimmer-button--compact' : ''}`}>
+    <span className="ek-shimmer-button__content">{children}</span>
+  </button>
+);
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-
-  // Accessibility state
-  const [fontSize, setFontSize] = useState<'normal' | 'large' | 'larger'>('normal');
-  const [language, setLanguage] = useState<'EN' | 'HI'>('EN');
+  const [isLoading, setIsLoading]           = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [adaptiveStep, setAdaptiveStep]     = useState<number>(0);
+  const [openFaqIndex, setOpenFaqIndex]     = useState<number|null>(0);
 
-  // Interactive Adaptive Assessment Demo Step (used in Feature 4 section)
-  const [adaptiveStep, setAdaptiveStep] = useState<number>(0);
-  // FAQ accordion tracker
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-
-  const toggleFaq = (index: number) => {
-    setOpenFaqIndex(openFaqIndex === index ? null : index);
-  };
-
-  const handleFontSizeChange = (size: 'normal' | 'large' | 'larger') => {
-    setFontSize(size);
-    if (size === 'normal') {
-      document.documentElement.style.fontSize = '16px';
-    } else if (size === 'large') {
-      document.documentElement.style.fontSize = '17.5px';
-    } else {
-      document.documentElement.style.fontSize = '19px';
-    }
-  };
+  const toggleFaq = (i: number) => setOpenFaqIndex(openFaqIndex === i ? null : i);
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const faqItems = [
-    {
-      q: 'What is Ekalavya?',
-      a: 'Ekalavya is an AI-powered competency intelligence and personalized learning platform engineered for government officials. It benchmarks individual capabilities against institutional role requirements, discovers targeted learning modules from iGOT Karmayogi & NSSTA, and administers adaptive diagnostics to measure real skill growth.'
-    },
-    {
-      q: 'How does Ekalavya identify competency gaps?',
-      a: 'Ekalavya compares an official\u2019s evaluated proficiency across statistical, technical, digital governance, and behavioural domains against target proficiency benchmarks mandated for their designation in the National Competency Framework.'
-    },
-    {
-      q: 'Is Ekalavya free to use?',
-      a: 'Yes. Ekalavya is a public-service capacity intelligence initiative designed for all central, state, and departmental statistical and administrative officials with zero licensing fees or subscription barriers.'
-    },
-    {
-      q: 'How are learning recommendations generated?',
-      a: 'Our semantic AI matching engine scans official curricula catalogues across iGOT Karmayogi and NSSTA to map verified modules directly to specific competency deficits.'
-    },
-    {
-      q: 'Are the assessments adaptive?',
-      a: 'Yes. Unlike static multiple-choice tests, questions dynamically respond to your answers. Correct answers elevate difficulty while incorrect answers pause escalation to provide remedial concept reinforcement.'
-    },
-    {
-      q: 'What happens when I answer incorrectly?',
-      a: 'The engine pauses difficulty escalation, highlights the exact conceptual principle that was misunderstood, and serves a targeted remedial question on that concept to build foundational confidence.'
-    },
-    {
-      q: 'Is Ekalavya a replacement for iGOT?',
-      a: 'No. Ekalavya works synergistically with iGOT Karmayogi and NSSTA. Ekalavya serves as the intelligent diagnostic layer, guiding officials directly to the precise modules on iGOT that solve their unique skill gaps.'
-    },
-    {
-      q: 'Can organizations use Ekalavya?',
-      a: 'Yes. Cadre administrators, division heads, and training directors receive anonymized workforce intelligence heatmaps, aggregate competency deficit alerts, and curriculum effectiveness analytics across entire directorates.'
-    },
-    {
-      q: 'How is my competency profile updated?',
-      a: 'Competency profile scores update automatically when an official completes verified adaptive assessments or course milestone diagnostics. The AI engine recalculates proficiency delta and updates the official record.'
-    },
-    {
-      q: 'Is Ekalavya connected to live government systems?',
-      a: 'Ekalavya operates in sandbox compatibility with Mission Karmayogi and MoSPI cadre frameworks. The demo mode allows instant exploration without requiring confidential production credentials.'
-    }
+    { q: 'What is Ekalavya?', a: 'Ekalavya is an AI-powered competency intelligence and personalized learning platform engineered for government officials. It benchmarks individual capabilities against institutional role requirements, discovers targeted learning modules from iGOT Karmayogi & NSSTA, and administers adaptive diagnostics to measure real skill growth.' },
+    { q: 'How does Ekalavya identify competency gaps?', a: 'Ekalavya compares an official\u2019s evaluated proficiency across statistical, technical, digital governance, and behavioural domains against target proficiency benchmarks mandated for their designation in the National Competency Framework.' },
+    { q: 'Is Ekalavya free to use?', a: 'Yes. Ekalavya is a public-service capacity intelligence initiative designed for all central, state, and departmental statistical and administrative officials with zero licensing fees or subscription barriers.' },
+    { q: 'How are learning recommendations generated?', a: 'Our semantic AI matching engine scans official curricula catalogues across iGOT Karmayogi and NSSTA to map verified modules directly to specific competency deficits.' },
+    { q: 'Are the assessments adaptive?', a: 'Yes. Unlike static multiple-choice tests, questions dynamically respond to your answers. Correct answers elevate difficulty while incorrect answers pause escalation to provide remedial concept reinforcement.' },
+    { q: 'What happens when I answer incorrectly?', a: 'The engine pauses difficulty escalation, highlights the exact conceptual principle that was misunderstood, and serves a targeted remedial question on that concept to build foundational confidence.' },
+    { q: 'Is Ekalavya a replacement for iGOT?', a: 'No. Ekalavya works synergistically with iGOT Karmayogi and NSSTA. Ekalavya serves as the intelligent diagnostic layer, guiding officials directly to the precise modules on iGOT that solve their unique skill gaps.' },
+    { q: 'Can organizations use Ekalavya?', a: 'Yes. Cadre administrators, division heads, and training directors receive anonymized workforce intelligence heatmaps, aggregate competency deficit alerts, and curriculum effectiveness analytics across entire directorates.' },
+    { q: 'How is my competency profile updated?', a: 'Competency profile scores update automatically when an official completes verified adaptive assessments or course milestone diagnostics. The AI engine recalculates proficiency delta and updates the official record.' },
+    { q: 'Is Ekalavya connected to live government systems?', a: 'Ekalavya operates in sandbox compatibility with Mission Karmayogi and MoSPI cadre frameworks. The demo mode allows instant exploration without requiring confidential production credentials.' },
   ];
 
   return (
-    <div
-      id="main-content"
-      className="min-h-screen bg-[#F7F9FC] text-[#102A43] font-['Noto_Sans',sans-serif] selection:bg-[#2563D9] selection:text-white"
-    >
-      {/* Inject hero animation keyframes */}
+    <div id="main-content" className="min-h-screen bg-[#F7F9FC] text-[#102A43]" style={{ fontFamily: "'Inter','Noto Sans',sans-serif" }}>
       <style>{heroAnimStyles}</style>
-
-      {/* ============================================================
-          ACCESSIBILITY SKIP LINK
-         ============================================================ */}
-      <a
-        href="#hero-section"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 z-50 bg-[#102A43] text-white px-4 py-2 rounded-md shadow-lg text-sm font-semibold"
-      >
-        Skip to main content
-      </a>
-
-      {/* ============================================================
-          TOP UTILITY BAR (gov branding + font size + language)
-         ============================================================ */}
-      <div className="bg-[#071931] border-b border-white/10 text-slate-300 text-xs py-2 px-6 sm:px-10">
-        <div className="max-w-[1240px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-medium tracking-wide">
-              {language === 'EN'
-                ? 'Government of India \u2022 Ministry of Statistics & Programme Implementation'
-                : '\u092D\u093E\u0930\u0924 \u0938\u0930\u0915\u093E\u0930 \u2022 \u0938\u093E\u0902\u0916\u094D\u092F\u093F\u0915\u0940 \u0914\u0930 \u0915\u093E\u0930\u094D\u092F\u0915\u094D\u0930\u092E \u0915\u093E\u0930\u094D\u092F\u093E\u0928\u094D\u0935\u092F\u0928 \u092E\u0902\u0924\u094D\u0930\u093E\u0932\u092F'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-5">
-            {/* Font Size Controls */}
-            <div className="flex items-center gap-1.5" aria-label="Text Size Controls">
-              <span className="text-slate-400 text-[11px] mr-1">Text:</span>
-              {(['normal', 'large', 'larger'] as const).map((s, i) => (
-                <button
-                  key={s}
-                  onClick={() => handleFontSizeChange(s)}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
-                    fontSize === s ? 'bg-[#2563D9] text-white' : 'text-slate-400 hover:text-white'
-                  }`}
-                  title={s === 'normal' ? 'Default Font Size' : s === 'large' ? 'Large Font Size' : 'Extra Large Font Size'}
-                >
-                  {['A-', 'A', 'A+'][i]}
-                </button>
-              ))}
-            </div>
-
-            {/* Language Switcher */}
-            <div className="flex items-center border-l border-white/15 pl-4">
-              <button
-                onClick={() => setLanguage(language === 'EN' ? 'HI' : 'EN')}
-                className="hover:text-white flex items-center gap-1.5 font-semibold text-xs transition-colors"
-                title="Toggle Language"
-              >
-                <span>{language === 'EN' ? 'English (EN)' : '\u0939\u093F\u0902\u0926\u0940 (HI)'}</span>
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
+      {isLoading && (
+        <div className="ek-loading-screen" aria-label="Loading Ekalavya">
+          <video src="/sih-loading.mp4" autoPlay muted playsInline preload="auto" onEnded={() => setIsLoading(false)} onError={() => setIsLoading(false)} />
         </div>
-      </div>
+      )}
+      <a href="#hero-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 z-[100] bg-[#102A43] text-white px-4 py-2 rounded-md shadow-lg text-sm font-semibold">Skip to main content</a>
 
-      {/* ============================================================
-          HERO SECTION — ~820px tall, full-width, photo background.
-          Navbar sits at top of hero (transparent, NOT sticky dark bar).
-         ============================================================ */}
-      <section
-        id="hero-section"
-        className="relative overflow-hidden bg-[#071931] text-white"
-        style={{ minHeight: '820px' }}
-      >
-        {/* ── Background photograph ── */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: "url('/images/hero_official_desk.jpg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
+      {/* ═══════════════════════════════════════════════════════
+          HERO — 100vh, cinematic photo, left text content
+         ═══════════════════════════════════════════════════════ */}
+      <section id="hero-section" className="relative overflow-hidden text-white" style={{ minHeight: '100vh', background: '#080B12' }}>
 
-        {/* ── Gradient overlay: left stays dark for text, right retains warmth ── */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 z-0"
-          style={{
-            background:
-              'linear-gradient(to right, rgba(7,25,49,0.97) 0%, rgba(7,25,49,0.88) 38%, rgba(7,25,49,0.60) 60%, rgba(7,25,49,0.20) 100%)',
-          }}
-        />
+        {/* BG photo */}
+        <div aria-hidden="true" style={{ position:'absolute', inset:0, zIndex:0, backgroundImage:"url('/images/hero_official_desk.jpg')", backgroundSize:'cover', backgroundPosition:'center center', backgroundRepeat:'no-repeat' }} />
+        {/* Layer 1 — overall dark */}
+        <div aria-hidden="true" style={{ position:'absolute', inset:0, zIndex:1, background:'rgba(6,9,18,0.42)' }} />
+        {/* Layer 2 — left-to-right gradient */}
+        <div aria-hidden="true" style={{ position:'absolute', inset:0, zIndex:2, background:'linear-gradient(to right,rgba(8,11,18,0.97) 0%,rgba(8,11,18,0.93) 26%,rgba(8,11,18,0.76) 42%,rgba(8,11,18,0.36) 60%,rgba(8,11,18,0.06) 80%,rgba(8,11,18,0.00) 100%)' }} />
+        {/* Layer 3 — top vignette */}
+        <div aria-hidden="true" style={{ position:'absolute', top:0, left:0, right:0, height:'130px', zIndex:3, background:'linear-gradient(to bottom,rgba(8,11,18,0.68) 0%,transparent 100%)' }} />
+        {/* Layer 4 — bottom vignette */}
+        <div aria-hidden="true" style={{ position:'absolute', bottom:0, left:0, right:0, height:'270px', zIndex:3, background:'linear-gradient(to top,rgba(8,11,18,0.97) 0%,rgba(8,11,18,0.75) 38%,transparent 100%)' }} />
+        {/* Layer 5 — warm center glow */}
+        <div aria-hidden="true" style={{ position:'absolute', zIndex:2, top:'25%', left:'32%', width:'42%', height:'55%', background:'radial-gradient(ellipse,rgba(175,95,25,0.07) 0%,transparent 70%)' }} />
+        {/* Layer 6 — right blue tint */}
+        <div aria-hidden="true" style={{ position:'absolute', zIndex:2, top:0, right:0, bottom:0, width:'48%', background:'linear-gradient(to left,rgba(12,36,86,0.20) 0%,transparent 100%)' }} />
 
-        {/* ── Subtle bottom-to-top gradient for trust bar readability ── */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 z-0 h-40"
-          style={{ background: 'linear-gradient(to top, rgba(7,25,49,0.85) 0%, transparent 100%)' }}
-        />
 
-        {/* ================================================================
-            NAVBAR (transparent, sits inside the hero section)
-           ================================================================ */}
-        <header className="relative z-30 w-full">
-          <div className="max-w-[1240px] mx-auto px-6 sm:px-8 flex items-center justify-between" style={{ paddingTop: '26px', paddingBottom: '26px' }}>
+        {/* ── NAVBAR ─────────────────────────────────────────────────── */}
+        <header style={{ position:'relative', zIndex:30, width:'100%' }}>
+          <div className="ek-hero-header-inner" style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
 
-            {/* Left: Logo */}
-            <Link to="/" className="no-underline flex items-center flex-shrink-0" aria-label="Ekalavya Home">
-              <EkalavyaLogo variant="dark" size="md" />
+            <Link to="/" aria-label="Ekalavya Home" style={{ textDecoration:'none', flexShrink:0 }}>
+              <EkalavyaLogo variant="dark" size="lg" className="ek-hero-logo" />
             </Link>
 
-            {/* Center: Desktop nav links */}
-            <nav className="hidden md:flex items-center" style={{ gap: '32px' }} aria-label="Main navigation">
+            <nav className="hidden md:flex items-center" style={{ gap:'42px' }} aria-label="Main navigation">
               {[
-                { label: 'How it works', id: 'how-it-works' },
-                { label: 'FAQ',          id: 'faq' },
-                { label: 'For Officials', id: 'for-officials' },
-                { label: 'For Organizations', id: 'for-organizations' },
+                { label:'How it works',      id:'how-it-works' },
+                { label:'FAQ',               id:'faq' },
+                { label:'For Officials',     id:'for-officials' },
+                { label:'For Organizations', id:'for-organizations' },
               ].map(link => (
-                <button
-                  key={link.id}
-                  onClick={() => scrollToSection(link.id)}
-                  className="text-slate-200 hover:text-white transition-colors duration-150 cursor-pointer whitespace-nowrap bg-transparent border-0 p-0"
-                  style={{ fontSize: '14.5px', fontWeight: 500, letterSpacing: '0.01em' }}
-                >
+                <button key={link.id} onClick={() => scrollToSection(link.id)}
+                  className="ek-nav-btn whitespace-nowrap transition-colors duration-150"
+                  style={{ fontSize:'15.5px', fontWeight:500, color:'rgba(255,255,255,0.88)', letterSpacing:'0.005em' }}>
                   {link.label}
                 </button>
               ))}
             </nav>
 
-            {/* Right: EN + Get Started */}
-            <div className="hidden md:flex items-center gap-4">
-              <button
-                className="text-slate-300 hover:text-white flex items-center gap-1 font-semibold bg-transparent border-0 cursor-pointer"
-                style={{ fontSize: '13px' }}
-                aria-label="Select language"
-              >
-                EN <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            <div className="hidden md:flex items-center" style={{ gap:'18px' }}>
+              <button className="ek-nav-btn flex items-center gap-1.5 transition-colors duration-150"
+                style={{ fontSize:'15px', fontWeight:500, color:'rgba(255,255,255,0.88)' }} aria-label="Select language">
+                EN <CaretDown style={{ width:'14px', height:'14px', color:'rgba(255,255,255,0.55)' }} />
               </button>
-
-              <button
-                onClick={() => navigate('/login')}
-                className="bg-white hover:bg-slate-50 text-[#102A43] font-bold cursor-pointer flex items-center gap-1.5 transition-all duration-150 shadow-md hover:shadow-lg"
-                style={{ fontSize: '14px', height: '48px', minWidth: '116px', padding: '0 20px', borderRadius: '24px', border: 'none' }}
-                aria-label="Get Started with Ekalavya"
-              >
-                Get Started <ArrowRight className="w-4 h-4" />
-              </button>
+              <ShimmerButton onClick={() => navigate('/login')} compact>Get Started</ShimmerButton>
             </div>
 
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label="Toggle Navigation Menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-white p-2 rounded-lg"
+              style={{ background:'transparent', border:'none', cursor:'pointer' }} aria-label="Toggle Navigation">
+              {mobileMenuOpen ? <X style={{ width:24, height:24 }} /> : <List style={{ width:24, height:24 }} />}
             </button>
           </div>
 
-          {/* Mobile drawer */}
           {mobileMenuOpen && (
-            <div className="md:hidden bg-[#071931]/98 backdrop-blur-md border-b border-white/10 px-6 py-5 space-y-1">
-              {[
-                { label: 'How it works', id: 'how-it-works' },
-                { label: 'FAQ',          id: 'faq' },
-                { label: 'For Officials', id: 'for-officials' },
-                { label: 'For Organizations', id: 'for-organizations' },
-              ].map(link => (
-                <button
-                  key={link.id}
-                  onClick={() => scrollToSection(link.id)}
-                  className="block w-full text-left text-slate-200 hover:text-white py-2.5 text-base font-medium border-0 bg-transparent cursor-pointer"
-                >
-                  {link.label}
-                </button>
+            <div style={{ background:'rgba(8,11,18,0.97)', backdropFilter:'blur(16px)', borderBottom:'1px solid rgba(255,255,255,0.1)', padding:'16px 32px 24px' }}>
+              {[{label:'How it works',id:'how-it-works'},{label:'FAQ',id:'faq'},{label:'For Officials',id:'for-officials'},{label:'For Organizations',id:'for-organizations'}].map(link => (
+                <button key={link.id} onClick={() => scrollToSection(link.id)} style={{ display:'block', width:'100%', textAlign:'left', padding:'12px 0', color:'#fff', fontSize:'16px', fontWeight:500, background:'transparent', border:'none', cursor:'pointer', fontFamily:'inherit' }}>{link.label}</button>
               ))}
-              <div className="pt-4 border-t border-white/10">
-                <button
-                  onClick={() => navigate('/login')}
-                  className="w-full bg-white text-[#102A43] py-3.5 rounded-[24px] font-bold flex items-center justify-center gap-2 text-base border-0 cursor-pointer"
-                >
-                  Get Started <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+              <div style={{ marginTop:'12px', width:'100%' }}><ShimmerButton onClick={() => navigate('/login')}>Get Started</ShimmerButton></div>
             </div>
           )}
         </header>
 
-        {/* ================================================================
-            HERO MAIN CONTENT AREA
-            Left: text content. Right: product preview.
-            Content starts ~110px below navbar.
-           ================================================================ */}
-        <div className="relative z-10 max-w-[1240px] mx-auto px-6 sm:px-8 w-full" style={{ paddingTop: '100px', paddingBottom: '170px' }}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16 items-center">
+        {/* ── HERO CONTENT ───────────────────────────────────────────── */}
+        <div id="hero-content" style={{ position:'relative', zIndex:10, padding:'0 106px' }}>
+          <div style={{ maxWidth:'700px', paddingTop:'66px', paddingBottom:'210px' }}>
 
-            {/* ──────────────────────────────────────────────────────
-                LEFT COLUMN — Hero text content
-                Starts at ~7% from left edge of page (handled by
-                max-w container + px-6 sm:px-8 padding).
-               ────────────────────────────────────────────────────── */}
-            <div className="ek-hero-content max-w-[620px]">
+            
 
-              {/* Eyebrow pill: 36–40px height */}
-              <div
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 backdrop-blur-sm"
-                style={{
-                  height: '38px',
-                  paddingLeft: '14px',
-                  paddingRight: '14px',
-                  background: 'rgba(255,255,255,0.08)',
-                  marginBottom: '24px',
-                }}
-              >
-                <span
-                  className="rounded-full bg-[#38BDF8]"
-                  style={{ width: '7px', height: '7px', flexShrink: 0 }}
-                />
-                <span
-                  className="font-mono font-bold uppercase tracking-widest text-cyan-200"
-                  style={{ fontSize: '11px', letterSpacing: '0.08em' }}
-                >
-                  AI-Powered Competency Intelligence
-                </span>
-              </div>
+            {/* Headline */}
+            <h1 className="ek-fade-up-2" style={{ fontSize:'clamp(52px,5.5vw,72px)', fontWeight:800, lineHeight:1.01, letterSpacing:'-0.03em', color:'#FFFFFF', marginBottom:'24px', maxWidth:'680px' }}>
+              Turn Your Potential<br />
+              Into{' '}
+              <span style={{ background:'linear-gradient(90deg,#8ACBFF 0%,#5EAFFF 45%,#3187F7 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+                Greater Impact.
+              </span>
+            </h1>
 
-              {/* Main headline: 64–68px, weight 750, tight leading */}
-              <h1
-                className="text-white font-extrabold"
-                style={{
-                  fontSize: 'clamp(46px, 5.2vw, 68px)',
-                  fontWeight: 750,
-                  lineHeight: 1.01,
-                  letterSpacing: '-0.025em',
-                  marginBottom: '22px',
-                  maxWidth: '600px',
-                }}
-              >
-                Turn Your Potential
-                <br />
-                Into{' '}
-                <span
-                  style={{
-                    background: 'linear-gradient(90deg, #8CCBFF 0%, #4FA4F5 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                  }}
-                >
-                  Greater Impact.
-                </span>
-              </h1>
+            {/* Description */}
+            <p className="ek-fade-up-3" style={{ fontSize:'19px', fontWeight:400, lineHeight:1.56, color:'rgba(255,255,255,0.78)', maxWidth:'590px', marginBottom:'36px', letterSpacing:'-0.005em' }}>
+              Understand your competencies, identify skill gaps,<br />
+              get personalized learning, and measure real progress —<br />
+              all in one place.
+            </p>
 
-              {/* Supporting copy: 17–18px, 1.5 leading, 82% white */}
-              <p
-                className="font-normal"
-                style={{
-                  fontSize: '17.5px',
-                  lineHeight: 1.55,
-                  color: 'rgba(255,255,255,0.82)',
-                  maxWidth: '540px',
-                  marginBottom: '32px',
-                }}
-              >
-                Understand your competencies, identify skill gaps, get
-                personalized learning, and measure real progress — all
-                in one place.
-              </p>
-
-              {/* Primary CTA: white pill, 54–58px height */}
-              <div style={{ marginBottom: '14px' }}>
-                <button
-                  onClick={() => navigate('/login')}
-                  className="inline-flex items-center justify-center gap-2.5 bg-white hover:bg-slate-50 text-[#102A43] font-bold cursor-pointer transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
-                  style={{
-                    fontSize: '15.5px',
-                    height: '56px',
-                    minWidth: '170px',
-                    paddingLeft: '28px',
-                    paddingRight: '28px',
-                    borderRadius: '100px',
-                    border: 'none',
-                  }}
-                  aria-label="Get Started with Ekalavya — free, no setup required"
-                >
-                  Get Started
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Commitment reducer: 13px, slate-300 */}
-              <p
-                className="font-medium text-slate-300"
-                style={{ fontSize: '13px', marginBottom: '28px' }}
-              >
+            {/* CTA row */}
+            <div className="ek-fade-in" style={{ display:'flex', alignItems:'center', gap:'28px', marginBottom:'40px' }}>
+              <ShimmerButton onClick={() => navigate('/login')} ariaLabel="Get Started with Ekalavya">
+                Get Started
+                <ArrowRight style={{ width:'20px', height:'20px' }} />
+              </ShimmerButton>
+              <span style={{ fontSize:'14px', fontWeight:500, color:'rgba(255,255,255,0.56)', whiteSpace:'nowrap' }}>
                 Free to use &nbsp;•&nbsp; No complicated setup
-              </p>
-
-              {/* Scroll indicator — bottom-left, subtle fade pulse */}
-              <button
-                onClick={() => scrollToSection('problem-section')}
-                className="ek-scroll-pulse flex items-center gap-2.5 text-slate-400 hover:text-white transition-colors cursor-pointer bg-transparent border-0 p-0"
-                style={{ fontSize: '12px', fontWeight: 500 }}
-                aria-label="Scroll to explore"
-              >
-                <span
-                  className="flex items-center justify-center rounded-full border border-slate-600"
-                  style={{ width: '28px', height: '28px', fontSize: '13px', flexShrink: 0 }}
-                >
-                  ↓
-                </span>
-                Scroll to explore
-              </button>
+              </span>
             </div>
 
-            {/* ──────────────────────────────────────────────────────
-                RIGHT COLUMN — Ekalavya product preview
-                Laptop frame with flat dashboard screen.
-               ────────────────────────────────────────────────────── */}
-            <div className="ek-hero-product flex justify-center lg:justify-end">
+            {/* Scroll indicator */}
+            <button onClick={() => scrollToSection('problem-section')}
+              className="ek-scroll-btn"
+              style={{ background:'transparent', border:'none', padding:0, cursor:'pointer', display:'flex', alignItems:'center', gap:'12px', fontFamily:'inherit', transition:'all 0.2s' }}
+              aria-label="Scroll to explore">
+              <span className="ek-scroll-circle" style={{ width:'40px', height:'40px', borderRadius:'50%', border:'1px solid rgba(255,255,255,0.30)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, transition:'border-color 0.2s' }}>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 2v10M3 8l4 4 4-4" stroke="rgba(255,255,255,0.68)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span style={{ fontSize:'14px', fontWeight:500, color:'rgba(255,255,255,0.52)', letterSpacing:'0.01em' }}>Scroll to explore</span>
+            </button>
 
-              {/* Laptop outer chassis */}
-              <div
-                className="relative w-full shadow-2xl"
-                style={{
-                  maxWidth: '520px',
-                  background: 'linear-gradient(160deg, #2A3A4E 0%, #1A2535 100%)',
-                  borderRadius: '18px',
-                  padding: '10px 10px 6px 10px',
-                  border: '1px solid rgba(255,255,255,0.10)',
-                  boxShadow: '0 32px 72px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06)',
-                }}
-              >
-                {/* Camera notch */}
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '6px' }}>
-                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3A4A5E' }} />
-                </div>
-
-                {/* ── Dashboard screen ── */}
-                <div
-                  className="overflow-hidden"
-                  style={{
-                    background: '#FFFFFF',
-                    borderRadius: '10px',
-                    border: '1px solid #E2E8F0',
-                    minHeight: '290px',
-                  }}
-                >
-                  {/* Screen top bar / browser chrome */}
-                  <div
-                    style={{
-                      background: '#F8FAFC',
-                      borderBottom: '1px solid #E2E8F0',
-                      padding: '7px 12px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    {/* App title */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                      <img
-                        src="/images/ekalavya_logo.png"
-                        alt=""
-                        aria-hidden="true"
-                        style={{ width: '16px', height: '16px', objectFit: 'contain' }}
-                      />
-                      <span style={{ fontSize: '11px', fontWeight: 700, color: '#102A43', letterSpacing: '-0.01em' }}>
-                        Ekalavya
-                      </span>
-                    </div>
-                    {/* Welcome text */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: '#52657A', fontWeight: 500 }}>
-                      <div
-                        style={{
-                          width: '18px',
-                          height: '18px',
-                          borderRadius: '50%',
-                          background: '#CBD5E1',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '7.5px',
-                          fontWeight: 700,
-                          color: '#102A43',
-                        }}
-                      >
-                        AK
-                      </div>
-                      <span>Welcome, <strong style={{ color: '#102A43' }}>Arjun Kumar</strong></span>
-                    </div>
-                  </div>
-
-                  {/* Screen body: sidebar + main */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '76px 1fr', minHeight: '255px' }}>
-
-                    {/* Sidebar */}
-                    <div
-                      style={{
-                        background: '#F8FAFC',
-                        borderRight: '1px solid #E2E8F0',
-                        padding: '10px 6px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '2px',
-                      }}
-                    >
-                      {[
-                        { icon: '📊', label: 'Dashboard', active: true },
-                        { icon: '👤', label: 'My Profile', active: false },
-                        { icon: '🎯', label: 'Learning', active: false },
-                        { icon: '📝', label: 'Assess.', active: false },
-                        { icon: '📈', label: 'Progress', active: false },
-                      ].map(item => (
-                        <div
-                          key={item.label}
-                          style={{
-                            padding: '5px 7px',
-                            borderRadius: '7px',
-                            background: item.active ? '#2563D9' : 'transparent',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                            fontSize: '9px',
-                            fontWeight: item.active ? 600 : 500,
-                            color: item.active ? '#FFFFFF' : '#64748B',
-                            cursor: 'default',
-                          }}
-                        >
-                          <span style={{ fontSize: '11px' }}>{item.icon}</span>
-                          {item.label}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Main dashboard area */}
-                    <div style={{ padding: '10px 12px', background: '#FFFFFF' }}>
-
-                      {/* Section heading + legend */}
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <span style={{ fontSize: '10.5px', fontWeight: 700, color: '#102A43' }}>
-                          My Competency Profile
-                        </span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '8.5px', fontWeight: 600, color: '#2563D9' }}>
-                            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#2563D9', display: 'inline-block' }} />
-                            Your Level
-                          </span>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '8.5px', fontWeight: 600, color: '#93C5FD' }}>
-                            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#93C5FD', display: 'inline-block' }} />
-                            Expected Level
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Radar + insight card */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 130px', gap: '10px', alignItems: 'center' }}>
-                        <HeroProductRadarChart />
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                          {/* Priority gaps card */}
-                          <div
-                            style={{
-                              padding: '9px 10px',
-                              borderRadius: '10px',
-                              background: '#FFF8F0',
-                              border: '1px solid #FDBA74',
-                            }}
-                          >
-                            <div style={{ fontSize: '9.5px', fontWeight: 700, color: '#9A3A0A', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                              🎯 3 Priority Gaps Identified
-                            </div>
-                            <p style={{ fontSize: '8.5px', color: '#64748B', lineHeight: 1.4, margin: 0 }}>
-                              Get a personalized learning path to bridge the gaps.
-                            </p>
-                          </div>
-
-                          {/* Mini skill bars */}
-                          {[
-                            { label: 'Statistical Methods', pct: 82, gap: true },
-                            { label: 'Data Analysis',       pct: 68, gap: true },
-                            { label: 'Digital Skills',      pct: 50, gap: true },
-                          ].map(skill => (
-                            <div key={skill.label}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7.5px', fontWeight: 600, color: '#374151', marginBottom: '2px' }}>
-                                <span>{skill.label}</span>
-                                <span style={{ color: skill.gap ? '#E8871A' : '#16845B' }}>{skill.pct}%</span>
-                              </div>
-                              <div style={{ height: '4px', borderRadius: '2px', background: '#E2E8F0', overflow: 'hidden' }}>
-                                <div
-                                  style={{
-                                    height: '100%',
-                                    width: `${skill.pct}%`,
-                                    borderRadius: '2px',
-                                    background: skill.gap ? '#2563D9' : '#16845B',
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Laptop base/hinge lip */}
-                <div style={{ height: '8px', background: 'linear-gradient(to bottom, #1A2535, #141D2B)', borderRadius: '0 0 18px 18px', marginTop: '5px' }} />
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* ================================================================
-            TRUST BAR — Absolutely positioned at bottom: 40px
-            ~1200px wide, exactly 110px tall, 4 columns with dividers.
-           ================================================================ */}
-        <div
-          className="ek-hero-trust absolute left-0 right-0 z-20 px-6 sm:px-8"
-          style={{ bottom: '40px' }}
-        >
-          <div
-            className="max-w-[1200px] mx-auto backdrop-blur-md overflow-hidden"
-            style={{
-              background: 'rgba(10,22,40,0.92)',
-              border: '1px solid rgba(255,255,255,0.10)',
-              borderRadius: '16px',
-              boxShadow: '0 8px 40px rgba(0,0,0,0.45)',
-            }}
-          >
-            {/* Main 5-column row */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr 1fr 160px',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
-              }}
-            >
+
+        {/* ── FEATURE PANEL ──────────────────────────────────────────── */}
+        <div className="ek-feature-wrap">
+          <div className="ek-feature-panel">
+            <div className="ek-feature-grid">
               {[
-                {
-                  title: 'Competency Framework',
-                  sub: 'Role-based skill intelligence',
-                  icon: (
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                      <rect x="3" y="4" width="22" height="17" rx="2" stroke="#2563D9" strokeWidth="1.6"/>
-                      <path d="M8 9h12M8 13h8" stroke="#2563D9" strokeWidth="1.6" strokeLinecap="round"/>
-                      <path d="M10 21l4 3 4-3" stroke="#2563D9" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ),
-                },
-                {
-                  title: 'iGOT Karmayogi',
-                  sub: 'Curated learning ecosystem',
-                  icon: (
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                      <path d="M5 7.5C5 7.5 9 6 14 6s9 1.5 9 1.5V22s-4-1-9-1-9 1-9 1V7.5Z" stroke="#16845B" strokeWidth="1.6"/>
-                      <path d="M14 6v16" stroke="#16845B" strokeWidth="1.4" strokeDasharray="2 1.5"/>
-                    </svg>
-                  ),
-                },
-                {
-                  title: 'NSSTA',
-                  sub: 'Domain-relevant resources',
-                  icon: (
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                      <rect x="5" y="17" width="4" height="7" rx="1" fill="#2563D9" opacity=".7"/>
-                      <rect x="12" y="11" width="4" height="13" rx="1" fill="#2563D9" opacity=".85"/>
-                      <rect x="19" y="5"  width="4" height="19" rx="1" fill="#2563D9"/>
-                    </svg>
-                  ),
-                },
-                {
-                  title: 'AI-Powered Assessments',
-                  sub: 'Adaptive & personalized',
-                  icon: (
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                      <path d="M14 4l8 4v7c0 4.4-3.4 8.5-8 9.5-4.6-1-8-5.1-8-9.5V8l8-4Z" stroke="#16845B" strokeWidth="1.6" strokeLinejoin="round"/>
-                      <path d="M10 14l3 3 5-5" stroke="#16845B" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ),
-                },
-              ].map((col, idx) => (
-                <div
-                  key={col.title}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '14px',
-                    padding: '18px 22px',
-                    borderLeft: idx > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none',
-                  }}
-                >
-                  <div style={{ flexShrink: 0 }}>{col.icon}</div>
+                { title:'Competency Framework', sub:'Role-based skill intelligence',
+                  icon: <Briefcase className="w-5 h-5 text-[#5EAFFF]" /> },
+                { title:'iGOT Karmayogi', sub:'Curated learning ecosystem',
+                  icon: <BookOpen className="w-5 h-5 text-[#20C98A]" /> },
+                { title:'NSSTA', sub:'Domain-relevant resources',
+                  icon: <Bank className="w-5 h-5 text-[#5EAFFF]" /> },
+                { title:'AI-Powered Assessments', sub:'Adaptive & personalized',
+                  icon: <ClipboardText className="w-5 h-5 text-[#20C98A]" /> },
+              ].map(col => (
+                <div key={col.title} className="ek-feature-item">
+                  <div style={{ flexShrink:0 }}>{col.icon}</div>
                   <div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.01em', marginBottom: '3px' }}>
-                      {col.title}
-                    </div>
-                    <div style={{ fontSize: '11px', color: '#94A3B8', lineHeight: 1.3 }}>
-                      {col.sub}
-                    </div>
+                    <div style={{ fontSize:'15px', fontWeight:700, color:'#FFFFFF', letterSpacing:'-0.015em', marginBottom:'4px' }}>{col.title}</div>
+                    <div style={{ fontSize:'13px', fontWeight:400, color:'#9AA3B2', lineHeight:1.35 }}>{col.sub}</div>
                   </div>
                 </div>
               ))}
-
-              {/* Right branding column — "LEARN GROW SERVE A STRONGER INDIA" */}
-              <div
-                style={{
-                  borderLeft: '1px solid rgba(255,255,255,0.08)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '12px 16px',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  background: 'rgba(255,255,255,0.03)',
-                }}
-              >
-                {/* Government building silhouette */}
-                <svg width="64" height="42" viewBox="0 0 64 42" fill="none" style={{ opacity: 0.18, position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)' }}>
-                  <rect x="28" y="4" width="8" height="38" fill="white"/>
-                  <rect x="20" y="12" width="24" height="30" fill="white"/>
-                  <rect x="12" y="18" width="40" height="24" fill="white"/>
-                  <rect x="4" y="24" width="56" height="18" fill="white"/>
-                  <rect x="30" y="1" width="4" height="6" rx="2" fill="white"/>
-                </svg>
-                <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-                  {['LEARN', 'GROW', 'SERVE'].map(word => (
-                    <div key={word} style={{ fontSize: '9px', fontWeight: 800, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.14em', lineHeight: 1.6 }}>
-                      {word}
-                    </div>
-                  ))}
-                  <div style={{ fontSize: '7.5px', color: 'rgba(255,255,255,0.50)', letterSpacing: '0.06em', marginTop: '3px', lineHeight: 1.4 }}>
-                    A STRONGER<br/>INDIA
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Full-width bottom tagline */}
-            <div
-              style={{
-                padding: '9px 24px',
-                textAlign: 'center',
-                fontSize: '10.5px',
-                fontWeight: 600,
-                color: '#4FA4F5',
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Empowering a more skilled, capable and future-ready government workforce.
             </div>
           </div>
+          <div className="ek-feature-tagline">
+            Empowering a more skilled, capable and future-ready government workforce.
+          </div>
         </div>
-      </section>
 
+      </section>
 
       {/* ============================================================
           SECTION 02 — PROBLEM (Clear Editorial Statements)
          ============================================================ */}
-      <section id="problem-section" className="py-24 lg:py-36 bg-[#F7F9FC]">
+      <section id="problem-section" className="py-14 lg:py-20 bg-[#F7F9FC]">
         <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center">
             {/* Left side: Problem Description & 3 Clear Editorial Statements */}
-            <div className="lg:col-span-6 space-y-8">
+            <motion.div
+              className="lg:col-span-6 space-y-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6 }}
+            >
               <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
                 THE CHALLENGE
               </div>
@@ -914,228 +315,170 @@ export const LandingPage: React.FC = () => {
                 competencies can be difficult.
               </p>
 
-              {/* 3 Clear Editorial Statements */}
+              {/* 3 Clear Editorial Statements with Motion hover & entrance */}
               <div className="space-y-5 pt-2">
-                <div className="p-6 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-5">
-                  <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
-                    01
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-[#102A43]">Unclear Skill Gaps</h3>
-                    <p className="text-sm text-[#52657A] mt-1 leading-relaxed">
-                      Officials often complete standard trainings without clarity on which specific competencies their role actually demands.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-5">
-                  <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
-                    02
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-[#102A43]">One-Size-Fits-All Learning</h3>
-                    <p className="text-sm text-[#52657A] mt-1 leading-relaxed">
-                      Different officials can require different learning paths. Generic course assignments waste critical time.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-5">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#2563D9] font-mono font-bold text-sm flex items-center justify-center flex-shrink-0">
-                    03
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-[#102A43]">Limited Feedback</h3>
-                    <p className="text-sm text-[#52657A] mt-1 leading-relaxed">
-                      Learning completion does not always demonstrate competency or measure real operational mastery.
-                    </p>
-                  </div>
-                </div>
+                {[
+                  {
+                    num: '01',
+                    numBg: 'bg-rose-50 text-rose-600',
+                    title: 'Unclear Skill Gaps',
+                    desc: 'Officials often complete standard trainings without clarity on which specific competencies their role actually demands.'
+                  },
+                  {
+                    num: '02',
+                    numBg: 'bg-amber-50 text-amber-600',
+                    title: 'One-Size-Fits-All Learning',
+                    desc: 'Different officials can require different learning paths. Generic course assignments waste critical time.'
+                  },
+                  {
+                    num: '03',
+                    numBg: 'bg-blue-50 text-[#2563D9]',
+                    title: 'Limited Feedback',
+                    desc: 'Learning completion does not always demonstrate competency or measure real operational mastery.'
+                  }
+                ].map((item, idx) => (
+                  <motion.div
+                    key={item.num}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    whileHover={{ y: -3, borderColor: '#B0C4DE' }}
+                    className="p-6 rounded-2xl bg-white border border-[#DCE3EA] shadow-xs flex items-start gap-5 cursor-pointer transition-colors"
+                  >
+                    <div className={`w-10 h-10 rounded-xl ${item.numBg} font-mono font-bold text-sm flex items-center justify-center flex-shrink-0`}>
+                      {item.num}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-[#102A43]">{item.title}</h3>
+                      <p className="text-sm text-[#52657A] mt-1 leading-relaxed">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right side: Large Meaningful Workspace Photo with 3 Floating Question Pills */}
-            <div className="lg:col-span-6 relative flex justify-center">
-              <div className="relative rounded-3xl overflow-hidden border border-[#DCE3EA] shadow-2xl w-full max-w-lg">
-                <img
-                  src="/images/challenge_official_workspace.jpg"
-                  alt="Government official reviewing documents"
-                  className="w-full h-[460px] lg:h-[500px] object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#102A43]/75 via-[#102A43]/20 to-transparent" />
-
-                {/* Floating Question Pill 1 */}
-                <div className="absolute top-8 right-6 max-w-xs bg-white/95 backdrop-blur-md px-5 py-3 rounded-full shadow-xl border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#2563D9]" />
-                  <span>Which course is right for me?</span>
-                </div>
-
-                {/* Floating Question Pill 2 */}
-                <div className="absolute top-36 left-6 max-w-xs bg-white/95 backdrop-blur-md px-5 py-3 rounded-full shadow-xl border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#E8871A]" />
-                  <span>Am I learning the right skills?</span>
-                </div>
-
-                {/* Floating Question Pill 3 */}
-                <div className="absolute bottom-8 right-6 max-w-xs bg-white/95 backdrop-blur-md px-5 py-3 rounded-full shadow-xl border border-[#DCE3EA] text-xs font-semibold text-[#102A43] flex items-center gap-2.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                  <span>How do I know if I'm improving?</span>
-                </div>
-              </div>
-            </div>
+            {/* Right side: TiltedCard Component from React Bits with sleek clean overlay */}
+            <motion.div
+              className="lg:col-span-6 relative flex justify-center"
+              initial={{ opacity: 0, scale: 0.96 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7 }}
+            >
+              <TiltedCard
+                imageSrc="/images/challenge_official_workspace.jpg"
+                altText="Government official reviewing documents"
+                captionText="Workspace Intelligence — Ekalavya Platform"
+                containerHeight="500px"
+                containerWidth="100%"
+                imageHeight="500px"
+                imageWidth="100%"
+                rotateAmplitude={10}
+                scaleOnHover={1.03}
+                showMobileWarning={false}
+                showTooltip={true}
+                displayOverlayContent={true}
+                overlayContent={
+                  <div className="w-full h-full relative pointer-events-none rounded-[15px] overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#102A43]/80 via-[#102A43]/15 to-transparent" />
+                    <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                      <div className="text-xs font-mono font-semibold tracking-wider text-cyan-300 uppercase">Institutional Competency System</div>
+                      <div className="text-sm font-semibold text-slate-200">Public Administration & Statistical Cadre Analytics</div>
+                    </div>
+                  </div>
+                }
+              />
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* ============================================================
-          SECTION 03 — SOLUTION (THE EKALAVYA APPROACH & PIPELINE)
+          SECTION 03 — HOW IT WORKS (REACT FLOW INTERACTIVE PIPELINE)
          ============================================================ */}
-      <section className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
-        <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
-          <div className="max-w-2xl mx-auto text-center space-y-4 mb-16">
-            <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
-              THE EKALAVYA APPROACH
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-extrabold text-[#102A43] tracking-tight leading-tight">
-              From Competency Gaps <br />
-              to Measurable Growth.
-            </h2>
-            <p className="text-base sm:text-lg text-[#52657A] leading-relaxed">
-              Ekalavya brings competency intelligence, personalized learning, adaptive assessment
-              and progress measurement into one continuous learning experience.
-            </p>
-          </div>
+      <section id="how-it-works" className="relative py-14 lg:py-20 bg-[#040D1A] border-t border-b border-white/10 overflow-hidden">
 
-          {/* Central Product System Pipeline */}
-          <div className="bg-[#071931] text-white p-8 sm:p-12 lg:p-14 rounded-3xl border border-white/15 shadow-2xl relative overflow-hidden">
-            <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-10">
-              <div className="flex items-center gap-2.5">
-                <span className="w-3 h-3 rounded-full bg-[#00B4D8]" />
-                <span className="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">
-                  Continuous Competency Intelligence Pipeline
-                </span>
-              </div>
-              <span className="text-xs text-slate-400 font-mono">Real-time Telemetry</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-5 relative">
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
-                <div className="text-xs font-mono font-bold text-cyan-300 mb-2">01</div>
-                <div className="font-bold text-base mb-1">ROLE</div>
-                <p className="text-xs text-slate-400">Designation & Cadre Framework</p>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
-                <div className="text-xs font-mono font-bold text-blue-300 mb-2">02</div>
-                <div className="font-bold text-base mb-1">PROFILE</div>
-                <p className="text-xs text-slate-400">Baseline Competency Matrix</p>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
-                <div className="text-xs font-mono font-bold text-amber-300 mb-2">03</div>
-                <div className="font-bold text-base mb-1">GAP ANALYSIS</div>
-                <p className="text-xs text-slate-400">AI-Ranked Skill Deficits</p>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
-                <div className="text-xs font-mono font-bold text-emerald-300 mb-2">04</div>
-                <div className="font-bold text-base mb-1">LEARNING</div>
-                <p className="text-xs text-slate-400">Curated iGOT & NSSTA Modules</p>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
-                <div className="text-xs font-mono font-bold text-purple-300 mb-2">05</div>
-                <div className="font-bold text-base mb-1">ASSESSMENT</div>
-                <p className="text-xs text-slate-400">Live Adaptive Diagnostic</p>
-              </div>
-
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center hover:bg-white/10 transition-colors">
-                <div className="text-xs font-mono font-bold text-emerald-400 mb-2">06</div>
-                <div className="font-bold text-base mb-1">GROWTH</div>
-                <p className="text-xs text-slate-400">Demonstrated Score Mastery</p>
-              </div>
-            </div>
-
-            <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-300">
-              <span className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                <span>Zero guesswork • Every recommendation targets a validated deficit</span>
-              </span>
-              <button
-                onClick={() => navigate('/demo')}
-                className="text-cyan-300 hover:text-white font-semibold flex items-center gap-2 cursor-pointer text-sm"
-              >
-                <span>Experience Interactive Pipeline</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+        <div className="max-w-[1320px] mx-auto px-6 sm:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.985 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.75, ease: 'easeOut' }}
+          >
+            <PipelineReactFlow />
+          </motion.div>
         </div>
       </section>
 
       {/* ============================================================
           SECTION 04 — FEATURES (Alternating Editorial Showcases)
          ============================================================ */}
-      <section id="for-officials" className="py-24 lg:py-36 bg-[#F7F9FC]">
-        <div className="max-w-[1240px] mx-auto px-6 sm:px-8 space-y-16 lg:space-y-24">
-          <div className="max-w-2xl">
-            <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9] mb-2">
-              CORE CAPABILITIES
+      <section id="for-officials" className="py-14 lg:py-20 bg-[#F8FAFC]">
+        <div className="max-w-[1280px] mx-auto px-6 sm:px-8 lg:grid lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-14 xl:gap-16">
+          <div className="max-w-2xl lg:sticky lg:top-24 lg:self-start lg:pb-12 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#2563EB] text-xs font-mono font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-4 h-4" />
+              <span>CORE CAPABILITIES</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0F172A] tracking-tight leading-[1.15]">
               An Intelligent System Tailored to Public Service.
             </h2>
-            <p className="text-base sm:text-lg text-[#52657A] mt-3">
-              Designed with precision to solve real workflow bottlenecks for officials and directorates.
+            <p className="text-base sm:text-lg text-[#475569] leading-relaxed">
+              Designed with institutional precision to eliminate capability bottlenecks across MoSPI cadres, directorates, and field operations.
             </p>
           </div>
 
+          <div className="mt-8 space-y-8 lg:mt-0 lg:space-y-10">
           {/* FEATURE 1: Text Left, Product Visualization Right */}
-          <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="ek-story-card bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-12 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-6 space-y-4">
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
-                  FEATURE 01
+                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#2563EB]">
+                  <UserCheck className="w-4 h-4" />
+                  <span>FEATURE 01</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
                   Personalized Competency Profile
                 </h3>
-                <p className="text-base sm:text-lg text-[#52657A] font-medium">
-                  See where your competencies stand.
+                <p className="text-base text-[#334155] font-semibold">
+                  Comprehensive visibility into officer capability baselines.
                 </p>
-                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
-                  Every official receives a dynamic competency profile mapped against official MoSPI cadre
-                  standards, revealing clear strengths and focus areas.
+                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed">
+                  Every official receives a dynamic competency matrix continuously mapped against MoSPI cadre standards, highlighting specialized domain strengths and critical focus areas.
                 </p>
-                <div className="pt-2">
-                  <span className="font-semibold text-sm text-[#2563D9]">Live Profile Sync Active →</span>
+                <div className="pt-2 flex items-center gap-2 text-sm font-bold text-[#2563EB]">
+                  <span>Live Profile Telemetry Active</span>
+                  <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
 
               <div className="lg:col-span-6">
-                <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-bold text-[#102A43]">Statistical & Sampling</span>
-                    <span className="font-mono text-emerald-700 font-bold">82% • Advanced</span>
+                <div className="p-6 sm:p-8 rounded-2xl bg-[#F8FAFC] border border-slate-200 space-y-4 shadow-inner">
+                  <div className="flex items-center justify-between text-xs sm:text-sm font-semibold">
+                    <span className="font-bold text-[#0F172A]">Statistical & Sampling Theory</span>
+                    <span className="font-mono text-emerald-700 font-bold px-2.5 py-0.5 rounded-md bg-emerald-50 border border-emerald-200">82% • Advanced</span>
                   </div>
                   <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-[#16845B] h-full" style={{ width: '82%' }} />
+                    <div className="bg-emerald-600 h-full rounded-full" style={{ width: '82%' }} />
                   </div>
 
-                  <div className="flex items-center justify-between text-sm pt-2">
-                    <span className="font-bold text-[#102A43]">Python & Automated ETL</span>
-                    <span className="font-mono text-amber-700 font-bold">42% • Developing</span>
+                  <div className="flex items-center justify-between text-xs sm:text-sm font-semibold pt-2">
+                    <span className="font-bold text-[#0F172A]">Python & Automated Survey ETL</span>
+                    <span className="font-mono text-amber-700 font-bold px-2.5 py-0.5 rounded-md bg-amber-50 border border-amber-200">42% • Developing</span>
                   </div>
                   <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-[#E8871A] h-full" style={{ width: '42%' }} />
+                    <div className="bg-amber-500 h-full rounded-full" style={{ width: '42%' }} />
                   </div>
 
-                  <div className="flex items-center justify-between text-sm pt-2">
-                    <span className="font-bold text-[#102A43]">Cybersecurity Standards</span>
-                    <span className="font-mono text-rose-600 font-bold">32% • Critical Deficit</span>
+                  <div className="flex items-center justify-between text-xs sm:text-sm font-semibold pt-2">
+                    <span className="font-bold text-[#0F172A]">National Data Security Standards</span>
+                    <span className="font-mono text-rose-700 font-bold px-2.5 py-0.5 rounded-md bg-rose-50 border border-rose-200">32% • Focus Deficit</span>
                   </div>
                   <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-rose-500 h-full" style={{ width: '32%' }} />
+                    <div className="bg-rose-500 h-full rounded-full" style={{ width: '32%' }} />
                   </div>
                 </div>
               </div>
@@ -1143,98 +486,99 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* FEATURE 2: Product Visualization Left, Text Right */}
-          <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="ek-story-card bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-12 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-6 order-2 lg:order-1">
-                <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-5">
+                <div className="p-6 sm:p-8 rounded-2xl bg-[#F8FAFC] border border-slate-200 space-y-5">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-lg text-[#102A43]">Python</span>
-                    <span className="font-mono font-bold text-xs px-3 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700">
-                      Gap: 38%
+                    <span className="font-bold text-lg text-[#0F172A]">Python Automated Survey Data</span>
+                    <span className="font-mono font-bold text-xs px-3 py-1 rounded-full bg-rose-100 border border-rose-300 text-rose-800">
+                      Evaluated Deficit: 38%
                     </span>
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex justify-between text-sm font-semibold">
-                      <span className="text-[#52657A]">Current: <strong className="text-[#102A43]">42%</strong></span>
-                      <span className="text-[#52657A]">Target: <strong className="text-[#16845B]">80%</strong></span>
+                    <div className="flex justify-between text-xs sm:text-sm font-semibold">
+                      <span className="text-[#64748B]">Evaluated Level: <strong className="text-[#0F172A]">42%</strong></span>
+                      <span className="text-[#64748B]">Cadre Benchmark: <strong className="text-emerald-700">80%</strong></span>
                     </div>
 
                     <div className="w-full bg-slate-200 h-3.5 rounded-full overflow-hidden relative">
-                      <div className="bg-[#E8871A] h-full rounded-full" style={{ width: '42%' }} />
-                      <div className="absolute top-0 bottom-0 left-[80%] w-1.5 bg-[#16845B] z-10" title="Target Benchmark (80%)" />
+                      <div className="bg-amber-500 h-full rounded-full" style={{ width: '42%' }} />
+                      <div className="absolute top-0 bottom-0 left-[80%] w-1.5 bg-emerald-600 z-10" title="Target Benchmark (80%)" />
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-[#52657A] bg-white p-4 rounded-xl border border-[#DCE3EA] leading-relaxed">
-                    AI analysis flags Python data processing as a priority bottleneck for upcoming PLFS survey automated releases.
-                  </p>
+                  <div className="text-xs sm:text-sm text-[#475569] bg-white p-4 rounded-xl border border-slate-200 leading-relaxed font-medium">
+                    <span className="font-bold text-[#0F172A]">AI Rationale:</span> Automated Python ETL is required for upcoming PLFS survey release deadlines.
+                  </div>
                 </div>
               </div>
 
               <div className="lg:col-span-6 space-y-4 order-1 lg:order-2">
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#E8871A]">
-                  FEATURE 02
+                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#D97706]">
+                  <Target className="w-4 h-4" />
+                  <span>FEATURE 02</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
                   AI Skill-Gap Analysis
                 </h3>
-                <p className="text-base sm:text-lg text-[#52657A] font-medium">
-                  Focus development where it matters most.
+                <p className="text-base text-[#334155] font-semibold">
+                  Pinpoint capability gaps with surgical accuracy.
                 </p>
-                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
-                  Ekalavya computes the exact delta between your evaluated proficiency and required cadre benchmarks,
-                  highlighting specific conceptual deficits.
+                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed">
+                  Ekalavya calculates the exact delta between an official's evaluated score and cadre benchmark requirements, eliminating subjective evaluations in favor of data-backed insights.
                 </p>
-                <div className="pt-2">
-                  <span className="font-semibold text-sm text-[#E8871A]">Direct Learning Match Active →</span>
+                <div className="pt-2 flex items-center gap-2 text-sm font-bold text-[#D97706]">
+                  <span>Curriculum Mapping Active</span>
+                  <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* FEATURE 3: Text Left, Product Visualization Right */}
-          <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="ek-story-card bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-12 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-6 space-y-4">
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#16845B]">
-                  FEATURE 03
+                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-600">
+                  <BookOpen className="w-4 h-4" />
+                  <span>FEATURE 03</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
                   Relevant Learning Recommendations
                 </h3>
-                <p className="text-base sm:text-lg text-[#52657A] font-medium">
-                  Spend less time searching and more time learning.
+                <p className="text-base text-[#334155] font-semibold">
+                  Targeted courses from official national repositories.
                 </p>
-                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
-                  Instead of scrolling through thousands of unrelated courses, Ekalavya extracts the specific
-                  curricula on iGOT Karmayogi and NSSTA that bridge your evaluated deficits.
+                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed">
+                  Instead of browsing uncurated catalogues, officers receive precise course matches from iGOT Karmayogi and NSSTA directly aligned with their identified skill gaps.
                 </p>
               </div>
 
               <div className="lg:col-span-6">
-                <div className="p-6 sm:p-8 rounded-2xl border border-[#DCE3EA] bg-[#F7F9FC] shadow-xs space-y-4">
+                <div className="p-6 sm:p-8 rounded-2xl border border-slate-200 bg-[#F8FAFC] shadow-inner space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="px-3.5 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-mono font-bold text-xs flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-emerald-600" />
+                    <span className="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-mono font-bold text-xs flex items-center gap-1.5">
+                      <BookOpen className="w-4 h-4 text-emerald-600" />
                       <span>94% Competency Match</span>
                     </span>
-                    <span className="text-xs font-mono font-semibold text-[#52657A]">iGOT Karmayogi</span>
+                    <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">iGOT Karmayogi</span>
                   </div>
 
-                  <h4 className="text-xl font-bold text-[#102A43]">
-                    Python for Government Data Analysis
+                  <h4 className="text-lg sm:text-xl font-bold text-[#0F172A]">
+                    Python for Government Data Processing & ETL
                   </h4>
 
-                  <div className="flex flex-wrap gap-2 text-xs font-medium text-[#16845B] pt-2">
-                    <span className="px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200">
+                  <div className="flex flex-wrap gap-2 text-xs font-semibold text-emerald-800 pt-2">
+                    <span className="px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200">
                       ✓ Python
                     </span>
-                    <span className="px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200">
+                    <span className="px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200">
                       ✓ Data Processing
                     </span>
-                    <span className="px-3 py-1 rounded-md bg-emerald-50 border border-emerald-200">
-                      ✓ Statistical Analysis
+                    <span className="px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200">
+                      ✓ Survey Analytics
                     </span>
                   </div>
                 </div>
@@ -1243,97 +587,97 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* FEATURE 4: Large Full-Width Adaptive Assessment Showcase */}
-          <div className="bg-[#071931] text-white rounded-3xl p-8 sm:p-12 lg:p-16 border border-white/15 shadow-2xl relative overflow-hidden">
-            <div className="max-w-2xl mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-mono font-bold mb-4">
-                <Zap className="w-4 h-4" />
+          <div className="ek-story-card bg-[#071931] text-white rounded-[32px] p-8 sm:p-12 lg:p-14 border border-slate-700/60 shadow-2xl relative overflow-hidden">
+            <div className="max-w-2xl mb-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+                <Target className="w-4 h-4" />
                 <span>FEATURE 04 • SIGNATURE CAPABILITY</span>
               </div>
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-                Adaptive Assessments
+              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+                Adaptive Assessment Engine
               </h3>
-              <p className="text-base sm:text-lg text-slate-300 mt-3 font-normal">
-                Assessments respond to what you know.
+              <p className="text-base sm:text-lg text-slate-300 mt-3 font-normal leading-relaxed">
+                Dynamic evaluation that adjusts difficulty based on officer responses in real time.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               {/* Left Column: 4 Diagnostic Steps */}
-              <div className="lg:col-span-5 space-y-3.5">
+              <div className="lg:col-span-5 space-y-3">
                 <div
                   onClick={() => setAdaptiveStep(0)}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+                  className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all ${
                     adaptiveStep === 0
-                      ? 'bg-white/15 border-cyan-400 text-white shadow-md'
+                      ? 'bg-white/15 border-cyan-400 text-white shadow-lg'
                       : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                   }`}
                 >
-                  <div className="text-xs font-mono font-bold text-cyan-300">QUESTION</div>
-                  <div className="font-bold text-base text-white">Diagnostic Question Served</div>
+                  <div className="text-xs font-mono font-bold text-cyan-300">STEP 01 • INITIAL SERVED</div>
+                  <div className="font-bold text-sm sm:text-base text-white mt-1">Diagnostic Question Served</div>
                 </div>
 
                 <div
                   onClick={() => setAdaptiveStep(1)}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+                  className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all ${
                     adaptiveStep === 1
-                      ? 'bg-white/15 border-rose-400 text-white shadow-md'
+                      ? 'bg-white/15 border-rose-400 text-white shadow-lg'
                       : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                   }`}
                 >
-                  <div className="text-xs font-mono font-bold text-rose-300">WRONG ANSWER</div>
-                  <div className="font-bold text-base text-white">Engine Diagnoses Concept Error</div>
+                  <div className="text-xs font-mono font-bold text-rose-300">STEP 02 • INCORRECT OPTION</div>
+                  <div className="font-bold text-sm sm:text-base text-white mt-1">Engine Diagnoses Specific Deficit</div>
                 </div>
 
                 <div
                   onClick={() => setAdaptiveStep(2)}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+                  className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all ${
                     adaptiveStep === 2
-                      ? 'bg-white/15 border-amber-400 text-white shadow-md'
+                      ? 'bg-white/15 border-amber-400 text-white shadow-lg'
                       : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                   }`}
                 >
-                  <div className="text-xs font-mono font-bold text-amber-300">REINFORCE SAME CONCEPT</div>
-                  <div className="font-bold text-base text-white">Easier Question Served</div>
+                  <div className="text-xs font-mono font-bold text-amber-300">STEP 03 • CONCEPT REINFORCEMENT</div>
+                  <div className="font-bold text-sm sm:text-base text-white mt-1">Targeted Scaffolding Question</div>
                 </div>
 
                 <div
                   onClick={() => setAdaptiveStep(3)}
-                  className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+                  className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all ${
                     adaptiveStep === 3
-                      ? 'bg-white/15 border-emerald-400 text-white shadow-md'
+                      ? 'bg-white/15 border-emerald-400 text-white shadow-lg'
                       : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
                   }`}
                 >
-                  <div className="text-xs font-mono font-bold text-emerald-300">CORRECT ANSWER</div>
-                  <div className="font-bold text-base text-white">Mastery Verified & Score Elevated</div>
+                  <div className="text-xs font-mono font-bold text-emerald-300">STEP 04 • MASTERY VERIFIED</div>
+                  <div className="font-bold text-sm sm:text-base text-white mt-1">Score Elevated & Profile Updated</div>
                 </div>
               </div>
 
               {/* Right Column: Simulated Quiz Diagnostic Panel */}
-              <div className="lg:col-span-7 bg-[#0F2238] border border-white/20 rounded-2xl p-7 sm:p-9 shadow-2xl">
+              <div className="lg:col-span-7 bg-[#0B1D33] border border-white/20 rounded-2xl p-6 sm:p-8 shadow-2xl">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-5 text-xs font-mono">
                   <span className="text-slate-400">SESSION: DIA-9021</span>
-                  <span className="text-cyan-300 font-bold">ADAPTIVE MODE</span>
+                  <span className="text-cyan-300 font-bold px-2.5 py-1 rounded bg-cyan-500/10 border border-cyan-500/30">ADAPTIVE MODE</span>
                 </div>
 
-                <h4 className="text-lg font-semibold text-white mb-5 leading-snug">
+                <h4 className="text-base sm:text-lg font-semibold text-white mb-5 leading-snug">
                   In stratified sampling for the Periodic Labour Force Survey (PLFS), why are weights calibrated against Census projections?
                 </h4>
 
-                <div className="space-y-3 text-sm">
-                  <div className="p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-200 flex items-center justify-between">
+                <div className="space-y-3 text-xs sm:text-sm">
+                  <div className="p-3.5 sm:p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-200 flex items-center justify-between">
                     <span>A) To correct frame under-coverage and ensure demographic consistency</span>
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 ml-2" />
+                    <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 ml-2" />
                   </div>
-                  <div className="p-4 rounded-xl border border-white/10 bg-white/5 text-slate-400 flex items-center justify-between">
+                  <div className="p-3.5 sm:p-4 rounded-xl border border-white/10 bg-white/5 text-slate-400 flex items-center justify-between">
                     <span>B) To artificially deflate variance estimates</span>
-                    <span className="text-slate-600 font-mono text-xs">Option B</span>
+                    <span className="text-slate-500 font-mono text-xs">Option B</span>
                   </div>
                 </div>
 
-                <div className="mt-6 p-5 rounded-2xl bg-gradient-to-r from-blue-900/60 to-cyan-900/40 border border-cyan-500/30 text-xs sm:text-sm">
+                <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-950/80 to-cyan-950/60 border border-cyan-500/30 text-xs sm:text-sm">
                   <div className="font-bold text-cyan-300 flex items-center gap-2 mb-1">
-                    <Sparkles className="w-4 h-4" />
+                    <CheckCircle className="w-4 h-4" />
                     <span>Engine Action: Concept Mastered (+16 pts)</span>
                   </div>
                   <p className="text-slate-300 leading-relaxed">
@@ -1345,29 +689,29 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* FEATURE 5: Product Visualization Left, Text Right */}
-          <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="ek-story-card bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-12 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-6 order-2 lg:order-1">
-                <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-5">
-                  <div className="flex items-center justify-between font-bold text-lg text-[#102A43]">
-                    <span>Cybersecurity</span>
-                    <span className="font-mono text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-1.5 rounded-full">
-                      +16 points
+                <div className="p-6 sm:p-8 rounded-2xl bg-[#F8FAFC] border border-slate-200 space-y-5">
+                  <div className="flex items-center justify-between font-bold text-base sm:text-lg text-[#0F172A]">
+                    <span>National Data Security</span>
+                    <span className="font-mono text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full">
+                      +16 points gained
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="bg-white p-5 rounded-2xl border border-slate-200">
-                      <div className="text-xs text-[#52657A] font-mono font-semibold">BEFORE</div>
-                      <div className="text-3xl font-bold text-[#102A43] font-mono mt-1">32%</div>
-                      <span className="text-xs text-slate-500">Initial Diagnostic</span>
+                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200">
+                      <div className="text-xs text-[#64748B] font-mono font-semibold">INITIAL DIAGNOSTIC</div>
+                      <div className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] font-mono mt-1">32%</div>
+                      <span className="text-xs text-slate-500 font-medium">Baseline Score</span>
                     </div>
 
-                    <div className="bg-white p-5 rounded-2xl border border-emerald-300 bg-emerald-50/50">
-                      <div className="text-xs text-emerald-700 font-mono font-bold">AFTER</div>
-                      <div className="text-3xl font-bold text-emerald-700 font-mono mt-1">48%</div>
+                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-300 bg-emerald-50/50">
+                      <div className="text-xs text-emerald-800 font-mono font-bold">POST-ASSESSMENT</div>
+                      <div className="text-2xl sm:text-3xl font-extrabold text-emerald-700 font-mono mt-1">48%</div>
                       <span className="text-xs text-emerald-800 font-semibold">
-                        Post-Assessment
+                        Demonstrated Growth
                       </span>
                     </div>
                   </div>
@@ -1375,18 +719,18 @@ export const LandingPage: React.FC = () => {
               </div>
 
               <div className="lg:col-span-6 space-y-4 order-1 lg:order-2">
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#16845B]">
-                  FEATURE 05
+                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-600">
+                  <TrendUp className="w-4 h-4" />
+                  <span>FEATURE 05</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
                   Measure Your Progress
                 </h3>
-                <p className="text-base sm:text-lg text-[#52657A] font-medium">
-                  See demonstrated learning reflected in your competency profile.
+                <p className="text-base text-[#334155] font-semibold">
+                  Verifiable competency growth over time.
                 </p>
-                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
-                  Competency records update strictly through demonstrated diagnostic achievements,
-                  offering verifiable telemetry to both officers and cadres.
+                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed">
+                  Competency profiles update strictly through verified assessment performance, creating transparent telemetry for officers and training authorities.
                 </p>
               </div>
             </div>
@@ -1395,7 +739,7 @@ export const LandingPage: React.FC = () => {
           {/* FEATURE 6: Text Left, Organization Intelligence Right */}
           <div
             id="for-organizations"
-            className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs"
+            className="ek-story-card bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs"
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-6 space-y-4">
@@ -1413,7 +757,7 @@ export const LandingPage: React.FC = () => {
                   training investments and targeted capacity interventions.
                 </p>
                 <div className="pt-2">
-                  <span className="font-semibold text-sm text-[#2563D9]">Admin Analytics Console Active →</span>
+                  <span className="font-semibold text-sm text-[#2563D9]">Admin Analytics Console Active ΓåÆ</span>
                 </div>
               </div>
 
@@ -1439,170 +783,112 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ============================================================
-          SECTION 05 — HOW IT WORKS
-         ============================================================ */}
-      <section id="how-it-works" className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
-        <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
-          <div className="max-w-2xl mx-auto text-center space-y-4 mb-20">
-            <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
-              HOW IT WORKS
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
-              Four Steps. One Clear Learning Journey.
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-7">
-            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-[#102A43] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
-                  01
-                </div>
-                <h3 className="font-bold text-lg text-[#102A43] mb-2">CREATE YOUR PROFILE</h3>
-                <p className="text-sm text-[#52657A] leading-relaxed">
-                  Enter your designation, division, and past statistical or administrative service records.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-[#2563D9] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
-                  02
-                </div>
-                <h3 className="font-bold text-lg text-[#102A43] mb-2">IDENTIFY YOUR GAPS</h3>
-                <p className="text-sm text-[#52657A] leading-relaxed">
-                  AI evaluates your current skills against target benchmarks and reveals prioritized deficits.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-[#16845B] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
-                  03
-                </div>
-                <h3 className="font-bold text-lg text-[#102A43] mb-2">LEARN & ASSESS</h3>
-                <p className="text-sm text-[#52657A] leading-relaxed">
-                  Engage directly in curated iGOT/NSSTA courses and take real-time adaptive quiz diagnostics.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#F7F9FC] border border-[#DCE3EA] rounded-3xl p-8 relative flex flex-col justify-between space-y-6">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-[#E8871A] text-white font-mono font-bold text-base flex items-center justify-center mb-6">
-                  04
-                </div>
-                <h3 className="font-bold text-lg text-[#102A43] mb-2">TRACK YOUR GROWTH</h3>
-                <p className="text-sm text-[#52657A] leading-relaxed">
-                  Watch verified milestones reflect automatically on your official competency record.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-14 text-center text-sm font-semibold text-[#52657A]">
-            No complicated setup. No course hunting. No one-size-fits-all assessment.
           </div>
         </div>
       </section>
 
+
+
       {/* ============================================================
-          SECTION 06 — OUTCOMES (WORKFORCE NEEDS)
+          SECTION 06 ΓÇö OUTCOMES (WORKFORCE NEEDS)
          ============================================================ */}
-      <section className="py-24 lg:py-36 bg-[#F7F9FC]">
+      <section className="py-14 lg:py-20 bg-[#F7F9FC]">
         <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
-          <div className="max-w-2xl mx-auto text-center space-y-4 mb-20">
+          <div className="max-w-2xl mx-auto text-center space-y-4 mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
               Designed Around Real Workforce Needs.
             </h2>
-            <p className="text-base sm:text-lg text-[#52657A]">
-              Tailored value architectures for individual officers, cadre leadership, and training academies.
+            <p className="text-base sm:text-lg text-[#475569]">
+              Tailored value architectures for individual officers, cadre leadership, and national training academies.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#2563D9] flex items-center justify-center mb-7">
-                <Users className="w-7 h-7" />
+            <div className="bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-10 shadow-sm hover:shadow-2xl hover:border-blue-300 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 to-cyan-500" />
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-[#2563EB] flex items-center justify-center mb-6">
+                  <Users className="w-6 h-6" />
+                </div>
+                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#2563EB] mb-1.5">
+                  GOVERNMENT OFFICIALS
+                </h3>
+                <h4 className="text-2xl font-extrabold text-[#0F172A] mb-4 tracking-tight">
+                  Know what to learn next.
+                </h4>
+                <ul className="space-y-3 text-sm text-[#475569] leading-relaxed">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Eliminates ambiguity on role competency requirements.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Direct links to official iGOT and NSSTA training modules.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Constructive, non-punitive adaptive diagnostic tests.</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#2563D9] mb-1.5">
-                GOVERNMENT OFFICIALS
-              </h3>
-              <h4 className="text-2xl font-bold text-[#102A43] mb-4">
-                Know what to learn next.
-              </h4>
-              <ul className="space-y-3 text-sm text-[#52657A] leading-relaxed">
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Eliminates ambiguity on role competency requirements.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Direct links to official iGOT and NSSTA training modules.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Constructive, non-punitive adaptive diagnostic tests.</span>
-                </li>
-              </ul>
             </div>
 
-            <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-[#16845B] flex items-center justify-center mb-7">
-                <Building2 className="w-7 h-7" />
+            <div className="bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-10 shadow-sm hover:shadow-2xl hover:border-emerald-300 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-600 to-teal-500" />
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mb-6">
+                  <Buildings className="w-6 h-6" />
+                </div>
+                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 mb-1.5">
+                  ORGANIZATIONS
+                </h3>
+                <h4 className="text-2xl font-extrabold text-[#0F172A] mb-4 tracking-tight">
+                  Understand capability deficits.
+                </h4>
+                <ul className="space-y-3 text-sm text-[#475569] leading-relaxed">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Division-level competency heatmaps and deficits.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Data-driven workforce succession and capacity planning.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Evidence-based budget and training resource allocations.</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#16845B] mb-1.5">
-                ORGANIZATIONS
-              </h3>
-              <h4 className="text-2xl font-bold text-[#102A43] mb-4">
-                Understand where capability gaps exist.
-              </h4>
-              <ul className="space-y-3 text-sm text-[#52657A] leading-relaxed">
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Division-level competency heatmaps and deficits.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Data-driven workforce succession and capacity planning.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Evidence-based budget and training resource allocations.</span>
-                </li>
-              </ul>
             </div>
 
-            <div className="bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-10 shadow-xs">
-              <div className="w-14 h-14 rounded-2xl bg-amber-50 text-[#E8871A] flex items-center justify-center mb-7">
-                <Award className="w-7 h-7" />
+            <div className="bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-10 shadow-sm hover:shadow-2xl hover:border-amber-300 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 to-orange-500" />
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mb-6">
+                  <Bank className="w-6 h-6" />
+                </div>
+                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-amber-700 mb-1.5">
+                  TRAINING TEAMS
+                </h3>
+                <h4 className="text-2xl font-extrabold text-[#0F172A] mb-4 tracking-tight">
+                  Build targeted learning experiences.
+                </h4>
+                <ul className="space-y-3 text-sm text-[#475569] leading-relaxed">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Identifies exact topics where cadres struggle during diagnostics.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Pre/post score delta telemetry validates course impact.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                    <span>Instant document-to-quiz generation from official PDF manuals.</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#E8871A] mb-1.5">
-                TRAINING TEAMS
-              </h3>
-              <h4 className="text-2xl font-bold text-[#102A43] mb-4">
-                Build more targeted learning experiences.
-              </h4>
-              <ul className="space-y-3 text-sm text-[#52657A] leading-relaxed">
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Identifies exact topics where cadres struggle during diagnostics.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Pre/post score delta telemetry validates course impact.</span>
-                </li>
-                <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                  <span>Instant document-to-quiz generation from official PDF manuals.</span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
@@ -1611,40 +897,41 @@ export const LandingPage: React.FC = () => {
       {/* ============================================================
           SECTION 07 — FAQ (Accessible Accordion)
          ============================================================ */}
-      <section id="faq" className="py-24 lg:py-36 bg-white border-t border-b border-[#DCE3EA]">
+      <section id="faq" className="py-14 lg:py-20 bg-white border-t border-b border-slate-200">
         <div className="max-w-[1000px] mx-auto px-6 sm:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
-              FREQUENTLY ASKED QUESTIONS
+          <div className="text-center space-y-4 mb-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-[#2563EB] text-xs font-mono font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-4 h-4" />
+              <span>FREQUENTLY ASKED QUESTIONS</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#0F172A] tracking-tight">
               Answers to Common Questions.
             </h2>
-            <p className="text-base text-[#52657A]">
-              Everything you need to know about the Ekalavya platform and mission.
+            <p className="text-base text-[#64748B]">
+              Everything you need to know about the Ekalavya platform and institutional mission.
             </p>
           </div>
 
-          <div className="divide-y divide-[#DCE3EA] border-t border-b border-[#DCE3EA]">
+          <div className="space-y-4">
             {faqItems.map((item, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
-                <div key={idx} className="py-5 sm:py-6">
+                <div key={idx} className="rounded-2xl bg-[#F8FAFC] border border-slate-200/80 overflow-hidden transition-all duration-200 hover:border-slate-300">
                   <button
                     onClick={() => toggleFaq(idx)}
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${idx}`}
-                    className="w-full flex items-center justify-between text-left py-2 font-bold text-base sm:text-lg text-[#102A43] hover:text-[#2563D9] transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#2563D9] focus:ring-offset-2 rounded-lg px-2"
+                    className="w-full flex items-center justify-between text-left p-6 font-bold text-base sm:text-lg text-[#0F172A] hover:text-[#2563EB] transition-colors cursor-pointer focus:outline-none"
                   >
                     <span>{item.q}</span>
-                    <span className="ml-4 flex-shrink-0 text-[#52657A]">
-                      {isOpen ? <ChevronUp className="w-5 h-5 text-[#2563D9]" /> : <ChevronDown className="w-5 h-5" />}
+                    <span className="ml-4 flex-shrink-0 text-slate-400">
+                      {isOpen ? <CaretUp className="w-5 h-5 text-[#2563EB]" /> : <CaretDown className="w-5 h-5" />}
                     </span>
                   </button>
                   {isOpen && (
                     <div
                       id={`faq-answer-${idx}`}
-                      className="pt-3 pb-2 px-2 text-sm sm:text-base text-[#52657A] leading-relaxed animate-fadeIn"
+                      className="px-6 pb-6 text-sm sm:text-base text-[#475569] leading-relaxed border-t border-slate-200/60 pt-4"
                     >
                       {item.a}
                     </div>
@@ -1660,34 +947,32 @@ export const LandingPage: React.FC = () => {
           SECTION 08 — FINAL CTA (Mountain Landscape)
          ============================================================ */}
       <section
-        className="relative py-28 lg:py-36 bg-[#071931] text-white overflow-hidden"
+        className="relative py-16 lg:py-22 bg-[#071931] text-white overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(7, 25, 49, 0.94) 40%, rgba(16, 42, 67, 0.85) 100%), url('/images/cta_mountain_landscape.jpg')`,
+          backgroundImage: `linear-gradient(to right, rgba(7, 25, 49, 0.95) 40%, rgba(16, 42, 67, 0.88) 100%), url('/images/cta_mountain_landscape.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
+
         <div className="max-w-[1240px] mx-auto px-6 sm:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-8 space-y-7">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-['Noto_Sans',sans-serif] leading-tight">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
                 Ready to Build Your Skills <br />
                 for a Greater Tomorrow?
               </h2>
 
               <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-normal max-w-xl">
-                Start your learning journey with Ekalavya today.
+                Start your competency learning journey with Ekalavya today.
               </p>
 
               <div className="pt-3 space-y-3">
                 <div className="flex items-center gap-5 flex-wrap">
-                  <button
-                    onClick={() => navigate('/login')}
-                    className="inline-flex items-center gap-3 bg-[#2563D9] hover:bg-[#1D4ED8] text-white font-semibold text-base px-9 py-4 rounded-full transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer"
-                  >
+                  <ShimmerButton onClick={() => navigate('/login')}>
                     <span>Get Started</span>
                     <ArrowRight className="w-5 h-5" />
-                  </button>
+                  </ShimmerButton>
 
                   <span className="text-sm text-slate-300 font-medium">
                     Free to use • No complicated setup
@@ -1711,7 +996,7 @@ export const LandingPage: React.FC = () => {
       {/* ============================================================
           SECTION 09 — FOOTER (DEEP NAVY)
          ============================================================ */}
-      <footer className="bg-[#071931] text-slate-400 text-xs sm:text-sm border-t border-white/10 pt-20 pb-14">
+      <footer className="bg-[#050E1A] text-slate-400 text-xs sm:text-sm border-t border-white/10 pt-20 pb-14">
         <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 mb-16">
             <div className="md:col-span-4 space-y-5">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { type OfficialDetail, type OfficialCreate, createOfficial } from '../services/api';
-import { X, UserPlus, Sparkles, Building, Briefcase, GraduationCap, Award } from 'lucide-react';
+import { X, UserPlus, ShieldCheck, Buildings, Briefcase, GraduationCap, Trophy } from '@phosphor-icons/react';
 
 interface CreateOfficialModalProps {
   isOpen: boolean;
@@ -18,12 +18,15 @@ export const CreateOfficialModal: React.FC<CreateOfficialModalProps> = ({
     designation: 'Senior Statistical Officer',
     department: 'Survey Design & Research Division (SDRD)',
     job_role: 'Survey Sampling & Estimation',
-    education: 'M.Stat / M.Sc. Statistics',
-    experience_years: 5,
-    past_trainings: ['Official Statistics Induction'],
+    experience_years: 6,
+    education: 'M.Sc. Statistics',
+    past_trainings: ['Survey Sampling Methodology', 'Data Quality Audits'],
     role: 'learner',
   });
-  const [trainingsInput, setTrainingsInput] = useState('Official Statistics Induction, PLFS Methodology');
+
+  const [trainingsInput, setTrainingsInput] = useState<string>(
+    'Survey Sampling Methodology, Data Quality Audits'
+  );
   const [submitting, setSubmitting] = useState(false);
 
   if (!isOpen) return null;
@@ -34,17 +37,18 @@ export const CreateOfficialModal: React.FC<CreateOfficialModalProps> = ({
 
     setSubmitting(true);
     try {
-      const past_trainings = trainingsInput
+      const parsedTrainings = trainingsInput
         .split(',')
         .map((t) => t.trim())
-        .filter(Boolean);
+        .filter((t) => t.length > 0);
 
-      const created = await createOfficial({
+      const payload: OfficialCreate = {
         ...formData,
-        past_trainings,
-      });
+        past_trainings: parsedTrainings,
+      };
 
-      onOfficialCreated(created);
+      const newOfficial = await createOfficial(payload);
+      onOfficialCreated(newOfficial);
       onClose();
     } catch (err) {
       console.error('Failed to create official:', err);
@@ -54,43 +58,42 @@ export const CreateOfficialModal: React.FC<CreateOfficialModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
       <div 
-        className="bg-white rounded-[32px] max-w-xl w-full p-8 shadow-2xl border border-[var(--mc-border-light)] relative max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-[var(--mc-border-light)] relative max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 w-9 h-9 rounded-full bg-[var(--mc-canvas)] text-[var(--mc-ink)] hover:bg-gray-200 flex items-center justify-center transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-2 rounded-full hover:bg-gray-100 transition-colors text-[var(--mc-slate-gray)] cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Modal Header */}
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--mc-canvas)] text-[var(--mc-signal-orange)] text-xs font-bold uppercase tracking-wider mb-2">
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>Profile Provisioning</span>
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-2xl bg-[var(--mc-canvas)] flex items-center justify-center text-[var(--mc-ink)]">
+            <UserPlus className="w-5 h-5" />
           </div>
-          <h2 className="text-2xl font-medium text-[var(--mc-ink)] tracking-tight">
-            Register MoSPI Cadre Official
-          </h2>
-          <p className="text-xs text-[var(--mc-slate-gray)] mt-1">
-            Creates a live profile in the database. The AI baseline engine will instantly evaluate their job role, department, and past trainings to compute baseline competency scores.
-          </p>
+          <div>
+            <h2 className="text-lg font-bold text-[var(--mc-ink)]">Register MoSPI Official</h2>
+            <p className="text-xs text-[var(--mc-slate-gray)]">
+              Add a new official to track competency gaps and training paths
+            </p>
+          </div>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-[var(--mc-ink)] mb-1.5">
-              Full Name *
+              Full Official Name *
             </label>
             <input
               type="text"
               required
-              placeholder="e.g. Dr. Vikramaditya Sen"
+              placeholder="e.g. Dr. Rajesh Verma"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-4 py-2.5 rounded-2xl bg-[var(--mc-canvas)] border border-transparent focus:border-[var(--mc-ink)] outline-none text-sm text-[var(--mc-ink)]"
@@ -113,7 +116,7 @@ export const CreateOfficialModal: React.FC<CreateOfficialModalProps> = ({
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-[var(--mc-ink)] mb-1.5 flex items-center gap-1.5">
-                <Building className="w-3.5 h-3.5 text-[var(--mc-light-orange)]" />
+                <Buildings className="w-3.5 h-3.5 text-[var(--mc-light-orange)]" />
                 <span>Department</span>
               </label>
               <input
@@ -140,7 +143,7 @@ export const CreateOfficialModal: React.FC<CreateOfficialModalProps> = ({
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-[var(--mc-ink)] mb-1.5 flex items-center gap-1.5">
-                <Award className="w-3.5 h-3.5 text-[var(--mc-light-orange)]" />
+                <Trophy className="w-3.5 h-3.5 text-[var(--mc-light-orange)]" />
                 <span>Experience (Years)</span>
               </label>
               <input
@@ -194,7 +197,7 @@ export const CreateOfficialModal: React.FC<CreateOfficialModalProps> = ({
               disabled={submitting || !formData.name.trim()}
               className="mc-btn-primary flex items-center gap-2"
             >
-              <Sparkles className="w-4 h-4 text-[var(--mc-yellow)]" />
+              <ShieldCheck className="w-4 h-4 text-[var(--mc-yellow)]" />
               <span>{submitting ? 'Registering...' : 'Register Official'}</span>
             </button>
           </div>

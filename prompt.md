@@ -1,1094 +1,1212 @@
-You are the senior frontend engineer responsible for implementing
-the approved Ekalavya landing page design.
+You are a senior UI/UX engineer and frontend motion designer.
 
-PROJECT:
-EKALAVYA
+I am providing a reference image for a section called:
 
-TAGLINE:
-Learn Today. Serve Better.
+"THE EKALAVYA APPROACH"
 
-============================================================
-YOUR ROLE
-============================================================
+Your job is to IMPLEMENT THIS SECTION in the existing project.
 
-You are NOT a product designer at this stage.
+IMPORTANT:
 
-The visual design has already been decided.
+This time, visual fidelity is the priority.
 
-Your job is to faithfully IMPLEMENT the approved design in code.
+Do NOT redesign the composition.
 
-Do not redesign the page.
-Do not invent new sections.
-Do not change the visual hierarchy.
-Do not replace the approved layout with your preferred layout.
-Do not add unnecessary UI.
+Do NOT replace the pipeline with a different UI concept.
 
-Treat the approved Google Stitch design/reference screenshot as the
-VISUAL SOURCE OF TRUTH.
+Do NOT make it more "creative".
 
-Treat the existing project architecture and functional requirements
-as the TECHNICAL SOURCE OF TRUTH.
+Do NOT introduce AI-generated design patterns.
 
-If something is unclear visually, inspect the reference before making
-a design decision.
+Reproduce the reference's:
 
-============================================================
-FIRST ACTION — INSPECT THE PROJECT
-============================================================
-
-Before changing any code:
-
-1. Inspect the entire existing frontend structure.
-2. Identify the framework and build system.
-3. Identify the routing system.
-4. Identify existing reusable components.
-5. Identify existing Tailwind/CSS configuration.
-6. Identify existing fonts.
-7. Identify existing assets.
-8. Identify the supplied Ekalavya logo.
-9. Identify whether a loading animation already exists.
-10. Identify whether the project already contains dashboard,
-    authentication, or other application screens.
-
-Do NOT delete existing functionality blindly.
-
-Do NOT rewrite the entire project unless absolutely necessary.
-
-First understand what already exists.
-
-After inspection, implement only the LANDING PAGE in this phase.
-
-Do not modify dashboard functionality unless required for routing.
-
-============================================================
-DESIGN SOURCE OF TRUTH
-============================================================
-
-Use the approved Ekalavya landing-page reference design supplied
-with this task.
-
-The visual result must closely reproduce the reference.
-
-Match:
-
-- layout
-- spacing
-- typography
-- alignment
+- hierarchy
 - proportions
-- section heights
-- button dimensions
-- border radius
-- borders
-- shadows
-- image treatment
-- navigation positioning
-- product mockups
-- visual hierarchy
-- responsive behavior
+- spacing
+- composition
+- visual weight
+- colors
+- typography hierarchy
+- pipeline structure
+- card arrangement
+- dark panel
+- CTA placement
 
-Do not merely reproduce the content.
+Then improve the implementation quality, responsiveness and interaction using Motion for React.
 
-Reproduce the DESIGN LANGUAGE.
+The final result should look like the reference at first glance.
 
-============================================================
-BRAND
-============================================================
+--------------------------------------------------
+TECHNOLOGY
+--------------------------------------------------
 
-Brand:
-Ekalavya
+Use the existing project's framework.
 
-Tagline:
-Learn Today. Serve Better.
+Use Motion for React.
 
-Use the supplied Ekalavya logo.
+Import:
 
-Do NOT redesign the logo.
+import { motion } from "motion/react";
 
-Do NOT replace it with:
-- a generic icon
-- an SVG icon library
-- a generated logo
-- a government emblem
+Use standard Motion APIs only.
 
-The Ekalavya logo is the official product mark.
+Allowed:
 
-If the logo asset exists in the project, reuse it.
+motion
+variants
+whileInView
+whileHover
+whileTap
+useScroll
+useTransform
+useReducedMotion
+layout
 
-If multiple versions exist, choose the clean transparent version.
+Do NOT require Motion+.
 
-============================================================
-IMPORTANT BRANDING RULE
-============================================================
+Do NOT use premium Motion+ components.
 
-The landing page must NEVER contain:
+Motion's standard React API supports viewport-triggered animation, gestures and coordinated variants. Use those capabilities appropriately.
 
-"SIH"
+Reference:
+https://motion.dev/docs/react
 
-"Smart India Hackathon"
+--------------------------------------------------
+SECTION OBJECTIVE
+--------------------------------------------------
 
-"Hackathon"
+This section explains the Ekalavya competency-development approach.
 
-or hackathon branding.
+The conceptual flow is:
 
-The product should be presented entirely as:
+ROLE
+↓
+PROFILE
+↓
+GAP ANALYSIS
+↓
+LEARNING
+↓
+ASSESSMENT
+↓
+GROWTH
 
-Ekalavya
+This six-stage pipeline is the PRIMARY visual element.
 
-Do not falsely represent Ekalavya as an existing official government
-service.
+The user should immediately understand:
 
-Use synthetic/demo information where required.
+"We identify what the role requires,
+understand the person's current competency,
+identify gaps,
+recommend learning,
+measure the result,
+and demonstrate growth."
 
-============================================================
-VISUAL DIRECTION
-============================================================
+--------------------------------------------------
+OVERALL COMPOSITION
+--------------------------------------------------
 
-The product should feel like:
+Create a large white section.
 
-Premium Indian GovTech
-+
-modern enterprise software
-+
-accessible public-service design
-+
-AI/data intelligence
+Background:
 
-It must NOT feel like:
-
-- generic SaaS
-- startup template
-- crypto dashboard
-- gaming UI
-- futuristic cyberpunk AI
-- excessive glassmorphism
-- neon interface
-- conventional government website clone
-
-We want:
-
-"Government-ready"
-
-not:
-
-"Government website copy."
-
-============================================================
-DESIGN PRINCIPLES
-============================================================
-
-Apply these principles throughout the implementation:
-
-1. If you have to explain it, simplify it.
-2. White space is part of the design.
-3. If everything stands out, nothing does.
-4. Two focal points = zero focus.
-5. Use color with purpose.
-6. Simplicity is earned.
-7. Typography should feel invisible.
-8. Good design solves a problem.
-
-Do not add visual elements merely to fill empty space.
-
-============================================================
-COLOR TOKENS
-============================================================
-
-Use CSS variables/design tokens.
-
-Primary Deep Navy:
-#102A43
-
-Intelligence Blue:
-#2563D9
-
-Growth Green:
-#16845B
-
-Saffron:
-#E8871A
-
-Page Background:
-#F7F9FC
-
-White:
 #FFFFFF
 
-Primary Text:
-#102A43
+The section should have substantial whitespace.
 
-Secondary Text:
-#52657A
+Maximum content width:
 
-Border:
-#DCE3EA
+approximately 1280–1320px.
 
-Do not introduce unrelated colors.
+Center everything horizontally.
 
-Do not use purple gradients.
+Desktop section:
 
-Do not use neon colors.
+approximately 900–1000px tall.
 
-Do not turn the website into an Indian-flag color theme.
+The composition is:
 
-Color must communicate meaning:
+                EYEBROW
 
-Blue:
-primary action / intelligence
+        MAIN HEADLINE
+             ↓
+        DESCRIPTION
 
-Green:
-progress / improvement / positive competency state
+             ↓
 
-Saffron:
-attention / important highlights
+     ┌─────────────────────────────┐
+     │                             │
+     │   DARK PIPELINE CONTAINER   │
+     │                             │
+     │  01 → 02 → 03 → 04 → 05 → 06
+     │                             │
+     │                             │
+     │  VALIDATION      CTA        │
+     └─────────────────────────────┘
 
-Neutral:
-structure / content
+Do not move the pipeline to the left or right.
 
-============================================================
-TYPOGRAPHY
-============================================================
+It is centered beneath the introduction.
 
-Use Noto Sans.
+--------------------------------------------------
+TOP EYEBROW
+--------------------------------------------------
 
-If Noto Sans is not currently configured:
+Centered.
 
-configure it properly.
-
-Do not substitute a decorative or futuristic font.
-
-Typography hierarchy:
-
-Hero:
-approximately 60–68px desktop
-
-Section headings:
-approximately 40–48px
-
-Body:
-16–18px
-
-Navigation:
-14–15px
-
-Small labels:
-12–13px
-
-Use appropriate line-height.
-
-Do not use excessive font weights.
-
-Do not use all-caps paragraphs.
-
-Typography should feel effortless and highly readable.
-
-============================================================
-PAGE CONTAINER
-============================================================
-
-Use a consistent maximum content width:
-
-approximately 1200–1320px.
-
-Maintain the same horizontal alignment across sections.
-
-Use a 12-column desktop grid where appropriate.
-
-Do not make every section full-width without reason.
-
-Use generous whitespace.
-
-============================================================
-NAVIGATION
-============================================================
-
-Implement a minimal premium navigation.
-
-Desktop:
-
-LEFT:
-Ekalavya logo
-
-CENTER:
-How it works
-FAQ
-For Officials
-For Organizations
-
-RIGHT:
-EN ▼
-Get Started
-
-Only "Get Started" is the primary CTA.
-
-Do not add unnecessary navigation items.
-
-Do not add:
-- Dashboard
-- About
-- Resources
-- Blog
-- Pricing
-
-unless explicitly required later.
-
-The navbar should feel lightweight.
-
-It must not look like a conventional government navigation bar.
-
-============================================================
-HERO SECTION
-============================================================
-
-The hero is the primary visual focus.
-
-Use the approved reference composition.
-
-Left side:
-
-Eyebrow:
-
-AI-POWERED COMPETENCY INTELLIGENCE
-
-Headline:
-
-Turn Your Potential
-Into Greater Impact.
-
-Supporting copy:
-
-Understand your competencies, identify skill gaps,
-get personalized learning, and measure real progress —
-all in one place.
-
-Primary CTA:
-
-Get Started →
-
-Under CTA:
-
-Free to use • No complicated setup
-
-Do NOT add another prominent CTA.
-
-============================================================
-HERO BACKGROUND
-============================================================
-
-Use a premium, realistic background image consistent with the
-approved design.
-
-Recommended visual direction:
-
-A professional Indian government/statistical official working
-at a desk with a laptop in a modern institutional environment.
-
-The person must not be identifiable.
-
-The image should be subtle.
-
-Do not use:
-- politicians
-- famous public figures
-- prominent government buildings
-- tourist imagery
-- excessive Indian flags
-- stereotypical government imagery
-
-Use a dark/navy overlay if required for text contrast.
-
-The background must support the content rather than compete with it.
-
-============================================================
-HERO PRODUCT VISUAL
-============================================================
-
-The hero product preview is critical.
-
-Create a realistic Ekalavya product interface showing:
-
-MY COMPETENCY PROFILE
-
-Overall Competency
-68%
-
-Statistical Methods
-82%
-
-Python
-42%
-
-Cybersecurity
-32%
-
-Survey Design
-54%
-
-Then an insight card:
-
-3 Priority Gaps Identified
-
-Your personalized learning path is ready.
-
-[ View Learning Path ]
-
-This is a visual representation of the product.
-
-It must look like a real product interface.
-
-Use:
-
-- subtle borders
-- realistic spacing
-- clean typography
-- restrained charts
-- professional cards
-- no excessive shadows
-- no unnecessary gradients
-
-============================================================
-HERO JOURNEY
-============================================================
-
-Subtly communicate:
-
-IDENTIFY
-→
-LEARN
-→
-ASSESS
-→
-IMPROVE
-
-This should support the product visual.
-
-Do not make this a giant additional graphic.
-
-============================================================
-SOCIAL PROOF / TRUST STRIP
-============================================================
-
-After hero:
-
-Heading:
-
-Built for India’s Government Learning Ecosystem
-
-Show:
-
-Competency Framework
-iGOT Karmayogi
-NSSTA
-AI-Powered Learning & Assessment
-
-Do not invent:
-
-- user counts
-- department counts
-- government adoption statistics
-- testimonials
-- awards
-- fake partner logos
-
-============================================================
-PROBLEM SECTION
-============================================================
-
-Label:
-
-THE CHALLENGE
-
-Headline:
-
-Access to Learning Is Not Enough.
-
-Supporting copy:
-
-Knowing what to learn, why it matters, and whether it is actually
-improving your competencies can be difficult.
-
-Show three problem areas:
-
-01
-Unclear Skill Gaps
-
-Know where development is needed.
-
-02
-One-Size-Fits-All Learning
-
-Different officials can require different learning paths.
-
-03
-Limited Feedback
-
-Learning completion does not always demonstrate competency.
-
-Use minimal line icons.
-
-Do not create huge colorful cards.
-
-============================================================
-SOLUTION SECTION
-============================================================
-
-Label:
+Text:
 
 THE EKALAVYA APPROACH
 
-Headline:
+Uppercase.
+
+Font:
+
+12–13px.
+
+Weight:
+
+700.
+
+Letter spacing:
+
+approximately 0.12em.
+
+Color:
+
+#2563EB
+
+Add extremely subtle horizontal rules on either side if they match the reference.
+
+Keep them thin.
+
+Do not make the eyebrow large.
+
+--------------------------------------------------
+HEADLINE
+--------------------------------------------------
+
+Exact text:
 
 From Competency Gaps
 to Measurable Growth.
 
-Supporting text:
+Center aligned.
 
-Ekalavya brings competency intelligence, personalized learning,
-adaptive assessment and progress measurement into one continuous
-learning experience.
+Desktop:
 
-Show the product journey:
+approximately 40–44px.
+
+Weight:
+
+600–650.
+
+Line height:
+
+1.05–1.12.
+
+Color:
+
+#102E4A.
+
+The phrase:
+
+"Measurable Growth."
+
+should have blue emphasis.
+
+Use:
+
+#2563EB
+
+Do NOT use a blue gradient.
+
+Do NOT animate individual letters.
+
+Do NOT use typewriter animation.
+
+The typography should feel institutional and polished.
+
+--------------------------------------------------
+DESCRIPTION
+--------------------------------------------------
+
+Exact text:
+
+Ekalavya brings competency intelligence, personalized learning, adaptive assessment and progress measurement into one continuous learning experience.
+
+Maximum width:
+
+approximately 680–720px.
+
+Center aligned.
+
+Font:
+
+18px.
+
+Line height:
+
+1.55–1.65.
+
+Color:
+
+#55708F.
+
+Spacing below headline:
+
+approximately 22–26px.
+
+--------------------------------------------------
+MAIN PIPELINE CONTAINER
+--------------------------------------------------
+
+This is the most important element.
+
+Create a large dark navy panel.
+
+Approximate desktop dimensions:
+
+1260px wide
+
+430px high
+
+Use:
+
+background:
+#071B35
+
+or a very close deep navy.
+
+Border:
+
+1px solid rgba(255,255,255,0.08)
+
+Border radius:
+
+26–30px.
+
+Shadow:
+
+0 24px 60px rgba(7,27,53,0.16)
+
+The panel should feel premium and substantial.
+
+It should NOT look like a dashboard.
+
+It is an explanatory system diagram.
+
+--------------------------------------------------
+PIPELINE PANEL HEADER
+--------------------------------------------------
+
+Inside the panel:
+
+top padding:
+56px
+
+horizontal padding:
+60px
+
+Create a header row.
+
+LEFT:
+
+small cyan/blue status dot.
+
+Text:
+
+CONTINUOUS COMPETENCY INTELLIGENCE PIPELINE
+
+Typography:
+
+12–13px
+
+uppercase
+
+monospace or technical-looking font is acceptable ONLY for this small label.
+
+Weight:
+
+600–700.
+
+Color:
+
+#D6E4F5
+
+Dot:
+
+#22D3EE
+
+RIGHT:
+
+Real-time Telemetry
+
+Font:
+
+12–13px.
+
+Color:
+
+#8EA7C4
+
+Optional small green/cyan status dot.
+
+Keep this extremely subtle.
+
+--------------------------------------------------
+HEADER DIVIDER
+--------------------------------------------------
+
+Below the header:
+
+1px horizontal line.
+
+Color:
+
+rgba(255,255,255,0.09)
+
+Spacing:
+
+approximately 24px below header.
+
+--------------------------------------------------
+PIPELINE STAGE AREA
+--------------------------------------------------
+
+Create six stages horizontally.
+
+Exactly:
+
+01 ROLE
+02 PROFILE
+03 GAP ANALYSIS
+04 LEARNING
+05 ASSESSMENT
+06 GROWTH
+
+Each stage is a card.
+
+Desktop:
+
+six cards in one row.
+
+They should fit inside the dark container.
+
+Do NOT make them too small.
+
+Use approximately:
+
+150–175px width each.
+
+Gap:
+
+20–22px.
+
+--------------------------------------------------
+STAGE CARD STYLE
+--------------------------------------------------
+
+Background:
+
+#132945
+
+or similar.
+
+Border:
+
+1px solid rgba(148,163,184,0.16)
+
+Border radius:
+
+16px.
+
+Height:
+
+135px approximately.
+
+Padding:
+
+20px.
+
+Cards should have a subtle inset/depth effect.
+
+Do NOT use strong shadows.
+
+--------------------------------------------------
+STAGE NUMBER
+--------------------------------------------------
+
+Each card has a small stage number.
+
+01
+02
+03
+04
+05
+06
+
+Position:
+
+top-right or centered above title depending on reference fidelity.
+
+Font:
+
+11–12px.
+
+Weight:
+
+700.
+
+Each stage can use a restrained accent color:
+
+01 blue
+02 violet
+03 amber
+04 green
+05 pink/red
+06 blue
+
+The accents should be subtle.
+
+--------------------------------------------------
+STAGE ICONS
+--------------------------------------------------
+
+Use a small icon area inside each card.
+
+Do NOT use giant illustrations.
+
+Suggested icons:
+
+ROLE:
+document / badge
+
+PROFILE:
+users
+
+GAP ANALYSIS:
+bar chart
+
+LEARNING:
+book
+
+ASSESSMENT:
+check-square
+
+GROWTH:
+trending-up
+
+Use Lucide icons if already installed.
+
+If not, install/use the project's existing icon system.
+
+Each icon sits in a small pale tinted square.
+
+Approximately:
+
+44 × 44px.
+
+Radius:
+
+10–12px.
+
+--------------------------------------------------
+STAGE CONTENT
+--------------------------------------------------
+
+Stage 01:
+
+ROLE
+
+Designation & Cadre
+Framework
+
+Stage 02:
+
+PROFILE
+
+Baseline
+Competency Matrix
+
+Stage 03:
+
+GAP ANALYSIS
+
+AI-Ranked Skill
+Deficits
+
+Stage 04:
+
+LEARNING
+
+Curated iGOT &
+NSSTA Modules
+
+Stage 05:
+
+ASSESSMENT
+
+Live Adaptive
+Diagnostic
+
+Stage 06:
+
+GROWTH
+
+Demonstrated Score
+Mastery
+
+Title:
+
+16–17px.
+
+Weight:
+
+700.
+
+Color:
+
+white.
+
+Description:
+
+13–14px.
+
+Line height:
+
+1.35.
+
+Color:
+
+#9DB3CD.
+
+--------------------------------------------------
+CONNECTIONS
+--------------------------------------------------
+
+Between each stage:
+
+show a small circular arrow connector.
+
+Example:
+
+[ ROLE ]  →  [ PROFILE ]  →  [ GAP ANALYSIS ]
+
+The connector should visually communicate a process.
+
+Do not make arrows huge.
+
+Circle:
+
+approximately 32px.
+
+Border:
+
+rgba(255,255,255,0.10)
+
+Background:
+
+#142B47
+
+Arrow:
+
+#D7E5F5.
+
+Use a thin connecting line behind or between the circles.
+
+--------------------------------------------------
+IMPORTANT: PIPELINE SHOULD FEEL INTERACTIVE
+--------------------------------------------------
+
+This is where Motion becomes important.
+
+When the user hovers a stage:
+
+the active card should subtly brighten.
+
+Example:
+
+background:
+slightly lighter navy
+
+border:
+slightly stronger
+
+y:
+-2px
+
+The icon should move approximately:
+
+y: -1px
+
+The stage number can become slightly brighter.
+
+The connector leading to the next stage can become more visible.
+
+Do NOT scale cards dramatically.
+
+Do NOT use glowing neon effects.
+
+--------------------------------------------------
+PIPELINE ENTRANCE ANIMATION
+--------------------------------------------------
+
+When the pipeline enters the viewport:
+
+Animate the entire dark container:
+
+opacity:
+0 → 1
+
+y:
+30 → 0
+
+scale:
+0.985 → 1
+
+Duration:
+
+0.7–0.8 seconds.
+
+Use:
+
+whileInView="visible"
+
+viewport:
+
+{
+  once: true,
+  amount: 0.2
+}
+
+--------------------------------------------------
+STAGE ENTRANCE ANIMATION
+--------------------------------------------------
+
+The six cards should enter sequentially.
+
+Do NOT animate each card from a completely different direction.
+
+Use:
+
+opacity:
+0 → 1
+
+y:
+18 → 0
+
+Scale:
+
+0.98 → 1
+
+Stagger:
+
+approximately 80–100ms.
+
+Sequence:
 
 ROLE
 ↓
-COMPETENCY PROFILE
+PROFILE
 ↓
-AI GAP ANALYSIS
+GAP ANALYSIS
 ↓
-PERSONALIZED LEARNING
+LEARNING
 ↓
-ADAPTIVE ASSESSMENT
+ASSESSMENT
 ↓
-MEASURED IMPROVEMENT
+GROWTH
 
-This should feel like a product system rather than a decorative
-infographic.
+The animation should visually reinforce the pipeline.
 
-============================================================
-FEATURES
-============================================================
+--------------------------------------------------
+CONNECTION ANIMATION
+--------------------------------------------------
 
-Create six major feature experiences.
+After each card enters:
 
-Do NOT make all six identical cards.
+animate the connector line / arrow.
 
-Use varied editorial layouts while maintaining one design system.
+Use a subtle opacity transition.
 
-FEATURE 01
+Do NOT make arrows continuously move.
 
-Personalized Competency Profile
+However, when the section first loads, a very subtle left-to-right progression can occur:
 
-Benefit:
+ROLE
+→
+PROFILE
+→
+GAP ANALYSIS
+→
+LEARNING
+→
+ASSESSMENT
+→
+GROWTH
 
-See where your competencies stand.
+This should happen ONLY ONCE.
 
-Visual:
-Competency radar / profile interface.
+The motion should be approximately:
 
-------------------------------------------------------------
+200–300ms per connection.
 
-FEATURE 02
+Do not make it look like a loading indicator.
 
-AI Skill-Gap Analysis
+--------------------------------------------------
+BOTTOM PIPELINE BAR
+--------------------------------------------------
 
-Benefit:
+Below the six stages:
 
-Focus development where it matters most.
+horizontal divider.
 
-Visual:
+Then create a bottom row.
 
-Python
+LEFT:
 
-42% ─────────────── 80%
+green/cyan check-circle.
 
-Gap:
-38%
+Text:
 
-------------------------------------------------------------
+Zero guesswork. Every recommendation targets a validated deficit.
 
-FEATURE 03
+Font:
 
-Relevant Learning Recommendations
+14–15px.
 
-Benefit:
+Color:
 
-Spend less time searching and more time learning.
+#C7D7E9.
 
-Visual:
+The phrase:
 
-94% Competency Match
+validated deficit
 
-Python for Government Data Analysis
+can have slightly stronger emphasis.
 
-✓ Python
-✓ Data Processing
-✓ Statistical Analysis
+RIGHT:
 
-------------------------------------------------------------
+text CTA:
 
-FEATURE 04
+Experience Interactive Pipeline
 
-Adaptive Assessments
+followed by:
 
-Benefit:
+→
 
-Assessments respond to what you know.
+Color:
 
-Visual flow:
+#22D3EE or bright blue.
 
-Question
-↓
-Wrong Answer
-↓
-Reinforce Same Concept
-↓
-Easier Question
-↓
-Correct Answer
-↓
-Mastery
+IMPORTANT:
 
-This is a key product differentiator.
+The CTA should NOT be a giant button in the initial desktop version.
 
-Give this feature stronger visual emphasis.
+The reference uses a text-based action.
 
-------------------------------------------------------------
+Preserve that visual hierarchy.
 
-FEATURE 05
+--------------------------------------------------
+CTA INTERACTION
+--------------------------------------------------
 
-Measure Your Progress
+On hover:
 
-Benefit:
+text moves:
 
-See demonstrated learning reflected in your competency profile.
+x: 3px
 
-Visual:
+arrow moves:
 
-Cybersecurity
+x: 5px
 
-Before
-32%
+Color becomes slightly brighter.
 
-After
-48%
+No scale.
 
-+16 points
+No giant background.
 
-Do not visually imply that a single assessment guarantees mastery.
+No glow.
 
-------------------------------------------------------------
+If the existing application has a dedicated pipeline interaction page, make the CTA navigate to that route.
 
-FEATURE 06
+If the route does not exist:
 
-Workforce Intelligence
+create a clearly identifiable placeholder route rather than inventing a destination.
 
-Benefit:
+--------------------------------------------------
+INTERACTIVE PIPELINE BEHAVIOR
+--------------------------------------------------
 
-Help organizations understand capability gaps at scale.
+I want this section to feel alive but still professional.
 
-Visual:
+When a user hovers over a stage:
 
-Department competency heatmap.
+1. stage becomes slightly brighter
+2. icon gains slightly more contrast
+3. stage number becomes brighter
+4. connector toward the next stage becomes more visible
 
-============================================================
-HOW IT WORKS
-============================================================
+No dramatic animations.
 
-Heading:
+The pipeline should feel like a sophisticated system diagram.
 
-Four Steps. One Clear Learning Journey.
+--------------------------------------------------
+OPTIONAL ACTIVE STAGE STATE
+--------------------------------------------------
 
-Steps:
+If implementation allows it without complicating the existing application:
 
-01
-CREATE YOUR PROFILE
+allow clicking a stage.
 
-02
-IDENTIFY YOUR GAPS
+Selected stage:
 
-03
-LEARN & ASSESS
+slightly brighter background
+stronger border
+accent color visible
+subtle elevation
 
-04
-TRACK YOUR GROWTH
+But do NOT introduce a large modal or dashboard.
 
-Desktop:
-horizontal journey.
+The interaction should remain within the pipeline.
 
-Mobile:
-vertical journey.
+If this feature is implemented, use Motion's layout animation carefully so state transitions feel smooth.
 
-Below:
+--------------------------------------------------
+BACKGROUND
+--------------------------------------------------
 
-No complicated setup.
-No course hunting.
-No one-size-fits-all assessment.
+The surrounding page remains predominantly white.
 
-============================================================
-OUTCOMES
-============================================================
+Do NOT use a giant gradient.
 
-Heading:
+Do NOT use purple.
 
-Designed Around Real Workforce Needs.
+Do NOT use animated blobs.
 
-Three audiences:
+Do NOT use excessive glassmorphism.
 
-Government Officials
-Know what to learn next.
+If additional visual depth is required:
 
-Organizations
-Understand where capability gaps exist.
+use extremely subtle blue radial light behind the panel.
 
-Training Teams
-Build more targeted learning experiences.
+Opacity:
 
-Keep this section concise.
+very low.
 
-============================================================
-FAQ
-============================================================
+The dark pipeline itself should create the visual contrast.
 
-Create an accessible accordion.
+--------------------------------------------------
+INDIAN / GOVERNMENT CONTEXT
+--------------------------------------------------
 
-Questions:
+Keep the design institutional.
 
-What is Ekalavya?
+Use:
 
-How does Ekalavya identify competency gaps?
+navy
+white
+government blue
+subtle cyan
+restrained green
+restrained amber
 
-Is Ekalavya free to use?
+Do NOT add:
 
-How are learning recommendations generated?
+Indian flag everywhere
+Ashoka Chakra decorations
+fake government logos
+fake ministry names
+fake statistics
+fake certifications
 
-Are the assessments adaptive?
+The product should feel like:
 
-What happens when I answer incorrectly?
+a modern Government of India digital competency platform.
 
-Is Ekalavya a replacement for iGOT?
+Not a government portal from 2010.
 
-Can organizations use Ekalavya?
+--------------------------------------------------
+MOTION DESIGN PRINCIPLES
+--------------------------------------------------
 
-How is my competency profile updated?
+Motion is supporting the information architecture.
 
-Is Ekalavya connected to live government systems?
+It is NOT the attraction.
 
-FAQ must support:
+Use Motion for:
 
-keyboard navigation
-focus states
-ARIA attributes
-smooth but restrained animation
-reduced-motion preference
-
-============================================================
-FINAL CTA
-============================================================
-
-Use the approved visual composition.
-
-Background:
-subtle premium Indian landscape.
-
-Avoid famous landmarks.
-
-Avoid tourist imagery.
-
-Avoid flags.
-
-Headline:
-
-Ready to Build Your Skills
-for a Greater Tomorrow?
-
-Supporting:
-
-Start your learning journey with Ekalavya today.
-
-Primary CTA:
-
-Get Started →
-
-Below:
-
-Free to use • No complicated setup
-
-============================================================
-FOOTER
-============================================================
-
-Deep navy footer.
-
-Ekalavya logo.
-
-Learn Today. Serve Better.
-
-Links:
-
-PLATFORM
-How It Works
-For Officials
-For Organizations
-
-SUPPORT
-FAQ
-Accessibility
-Help
-Contact
-
-LEGAL
-Privacy
-Terms
-Sitemap
-
-Bottom:
-
-© Ekalavya
-
-Do not mention SIH.
-
-============================================================
-ACCESSIBILITY
-============================================================
-
-Accessibility is a core requirement.
-
-Implement:
-
-- semantic HTML
-- proper heading hierarchy
-- keyboard navigation
-- visible focus indicators
-- accessible buttons
-- accessible accordion
-- sufficient contrast
-- alt text
-- reduced motion support
-- responsive text
-- touch-friendly controls
-
-Do not rely on color alone to communicate status.
-
-For charts and competency visuals, provide accessible textual
-information.
-
-============================================================
-RESPONSIVENESS
-============================================================
-
-Support:
-
-1920px
-1440px
-1280px
-1024px
-768px
-390px
-
-Desktop:
-full editorial layout.
-
-Tablet:
-reduce columns intelligently.
-
-Mobile:
-stack sections.
-
-Navigation:
-collapse into accessible mobile menu.
-
-Hero:
-stack headline and product visual.
-
-Feature layouts:
-convert to single-column where necessary.
-
-How It Works:
-vertical.
-
-FAQ:
-full-width accordion.
-
-No horizontal scrolling.
-
-Do not simply shrink the desktop layout.
-
-Actually redesign the spacing behavior for mobile while preserving
-the approved visual hierarchy.
-
-============================================================
-ANIMATION
-============================================================
-
-Keep motion subtle.
-
-The existing logo loading animation should remain separate.
-
-Landing page animation:
-
-- subtle fade-in
-- restrained product-preview movement
-- small chart animations
-- gentle hover states
-- smooth FAQ expansion
+1. section reveal
+2. pipeline reveal
+3. stage stagger
+4. connector progression
+5. hover feedback
+6. CTA micro-interaction
+7. optional active stage layout animation
 
 Do NOT use:
 
-- parallax overload
-- bouncing cards
-- spinning logos
-- excessive particles
-- glowing neon effects
-- scroll hijacking
-- large entrance animations
+- infinite floating
+- excessive parallax
+- text scrambling
+- typewriter
+- spinning cards
+- 3D rotations
+- elastic bouncing
+- cursor effects
+- magnetic buttons
+- infinite loops
+
+Use Motion's standard React API.
+
+--------------------------------------------------
+MOTION VARIANTS
+--------------------------------------------------
+
+Prefer variants for coordinated animation.
+
+Conceptually:
+
+const pipelineVariants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+    scale: 0.985
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.75,
+      ease: "easeOut"
+    }
+  }
+}
+
+const stageVariants = {
+  hidden: {
+    opacity: 0,
+    y: 18
+  },
+  visible: (index) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.45,
+      delay: index * 0.08,
+      ease: "easeOut"
+    }
+  })
+}
+
+Adapt this to the project's actual architecture.
+
+Do not blindly copy these values if visual testing shows a better result.
+
+--------------------------------------------------
+VIEWPORT BEHAVIOR
+--------------------------------------------------
+
+Use:
+
+viewport={{
+  once: true,
+  amount: 0.2
+}}
+
+The pipeline entrance should happen once.
+
+Do not repeatedly replay when scrolling.
+
+Motion officially supports this `whileInView` + `viewport.once` pattern for one-time scroll-triggered animation.
+
+--------------------------------------------------
+REDUCED MOTION
+--------------------------------------------------
 
 Respect:
 
-prefers-reduced-motion
+prefers-reduced-motion.
 
-============================================================
-IMAGES
-============================================================
+Use:
 
-Do not download random stock images without evaluating them.
+useReducedMotion()
 
-If image assets already exist in the project, inspect and reuse them.
+When reduced motion is requested:
 
-If placeholder images are needed during implementation, create a clear
-asset abstraction so they can easily be replaced later.
+remove:
 
-Do not use broken image URLs.
+scale animation
+y movement
+stagger movement
+connector progression
 
-Do not use copyrighted/random celebrity images.
+Use simple opacity or immediate rendering.
 
-============================================================
-CODE QUALITY
-============================================================
+Do not compromise accessibility for visual effects.
 
-Build reusable components.
+--------------------------------------------------
+RESPONSIVE DESIGN
+--------------------------------------------------
 
-Suggested structure:
+Desktop:
 
-LandingPage
-├── Navbar
-├── Hero
-├── TrustStrip
-├── ProblemSection
-├── SolutionSection
-├── FeatureSection
-├── AdaptiveAssessmentFeature
-├── HowItWorks
-├── Outcomes
-├── FAQ
-├── FinalCTA
-└── Footer
+six stages in one row.
 
-Create reusable:
+Tablet:
 
-Button
-SectionHeading
-FeatureVisual
-CompetencyBar
-ProductCard
-Accordion
-Container
+six stages can remain horizontal if there is sufficient width.
 
-Use existing project conventions where appropriate.
+If not:
 
-Do not introduce unnecessary dependencies.
+allow controlled horizontal scrolling OR transform into a two-row grid.
 
-Keep the implementation maintainable.
+Do NOT shrink text until it becomes unreadable.
 
-============================================================
-IMPORTANT — DO NOT TOUCH
-============================================================
+Mobile:
 
-Unless required for landing-page routing:
+The pipeline should become vertically readable.
 
-Do not modify:
+Preferred mobile structure:
 
-- authentication logic
-- dashboard logic
-- backend APIs
-- database
-- Firebase
-- AI integration
-- assessment engine
-- admin functionality
+01 ROLE
+↓
+02 PROFILE
+↓
+03 GAP ANALYSIS
+↓
+04 LEARNING
+↓
+05 ASSESSMENT
+↓
+06 GROWTH
 
-This phase is specifically for the landing page.
+Connect each stage vertically.
 
-============================================================
-ROUTING
-============================================================
+The dark panel should remain.
 
-Landing page should be available at:
+CTA should move below the validation message.
 
-/
+Do not simply squeeze six cards into a tiny horizontal row.
 
-"Get Started" should route to the existing authentication/login
-flow if one already exists.
+--------------------------------------------------
+MOBILE MOTION
+--------------------------------------------------
 
-Do not build fake authentication just for the landing page.
+On mobile:
 
-If authentication is not yet implemented, create a clean route
-placeholder without breaking the rest of the project.
+keep the same entrance sequence.
 
-============================================================
-FINAL IMPLEMENTATION REQUIREMENT
-============================================================
+Do not add swipe gestures unless they are genuinely useful.
 
-Before considering the landing page complete:
+The pipeline should remain accessible to touch users.
 
-1. Run the application.
-2. Inspect the landing page at desktop width.
-3. Inspect at 1440px.
-4. Inspect tablet.
-5. Inspect 390px mobile.
-6. Check all navigation links.
-7. Check Get Started.
-8. Check FAQ accordion.
-9. Check keyboard navigation.
-10. Check console for errors.
-11. Check image loading.
-12. Check responsive overflow.
-13. Check typography.
-14. Check spacing.
-15. Check visual hierarchy.
+Hover-only behavior must not be required for understanding.
 
-Then perform a visual comparison against the approved reference.
+--------------------------------------------------
+COMPONENT ARCHITECTURE
+--------------------------------------------------
 
-Correct:
+Create reusable components:
 
-- spacing
-- proportions
-- alignment
-- font sizes
-- section heights
-- CTA placement
-- image scale
-- card sizes
-- border radius
-- colors
+EkalavyaApproach
+ApproachIntro
+Pipeline
+PipelineStage
+PipelineConnector
+PipelineFooter
 
-Do NOT stop at "the page works."
+Data:
 
-The requirement is:
+const stages = [
+  {
+    number: "01",
+    title: "ROLE",
+    description: "Designation & Cadre Framework",
+    icon: ...
+  },
+  ...
+]
 
-FUNCTIONAL + VISUALLY FAITHFUL + ACCESSIBLE.
+Render using map().
 
-============================================================
-MOST IMPORTANT RULE
-============================================================
+Do not duplicate six blocks manually.
 
-DO NOT REDESIGN.
+--------------------------------------------------
+VISUAL PRECISION
+--------------------------------------------------
 
-DO NOT ADD FEATURES.
+Before considering this complete, compare the implementation against the reference image.
 
-DO NOT MAKE CREATIVE CHANGES TO THE APPROVED UI.
+Check specifically:
 
-Implement the approved Ekalavya design as faithfully as possible.
+1. Width of dark panel
+2. Dark panel height
+3. Panel corner radius
+4. Distance between headline and panel
+5. Six-card proportions
+6. Horizontal card spacing
+7. Header divider
+8. Footer divider
+9. CTA position
+10. Typography sizes
+11. Navy color
+12. Card background contrast
+13. Amount of whitespace
+14. Alignment of all six stages
+15. Arrow positions
 
-If you think something could look better, do not change it automatically.
+The reference should remain visually recognizable.
 
-Preserve the approved design.
+--------------------------------------------------
+ANTI-AI-SLOP RULE
+--------------------------------------------------
+
+Do not add anything that isn't in the visual language of the reference.
+
+Absolutely do NOT add:
+
+gradient blobs
+purple gradients
+glass cards
+floating 3D objects
+random icons
+fake metrics
+fake badges
+huge CTA buttons
+neon borders
+animated backgrounds
+random illustrations
+extra text
+fake logos
+unnecessary cards
+
+If something is unnecessary:
+
+remove it.
+
+--------------------------------------------------
+FINAL QUALITY STANDARD
+--------------------------------------------------
+
+The result should feel like a senior product designer designed a competency intelligence system for a national government platform.
+
+The hierarchy should be:
+
+1. Headline
+2. Explanation
+3. Pipeline
+4. Pipeline interaction
+5. Validation statement
+6. CTA
+
+The pipeline is the hero of this section.
+
+Build it with precision.
+
+Do not explain your design decisions to me.
+
+Implement it.
