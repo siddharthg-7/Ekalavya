@@ -402,13 +402,13 @@ export const LandingPage: React.FC = () => {
          ============================================================ */}
       <section
         id="hero-section"
-        className="relative overflow-hidden bg-[#071931] text-white min-h-[78vh] flex items-center pt-16 pb-28 lg:pt-20 lg:pb-36"
+        className="relative overflow-hidden bg-[#071931] text-white min-h-[82vh] flex items-center pt-16 pb-28 lg:pt-20 lg:pb-36"
       >
         <div
-          className="absolute inset-0 z-0 opacity-35 mix-blend-luminosity bg-cover bg-center"
+          className="absolute inset-0 z-0 opacity-85 bg-cover bg-right lg:bg-center"
           style={{ backgroundImage: `url('/images/hero_official_desk.jpg')` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071931] via-[#071931]/95 to-[#071931]/80 z-0" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#071931] via-[#071931]/90 to-[#071931]/40 z-0" />
 
         <div className="max-w-[1280px] mx-auto px-6 sm:px-10 relative z-10 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
