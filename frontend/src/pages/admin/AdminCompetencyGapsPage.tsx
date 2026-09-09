@@ -21,7 +21,7 @@ export const AdminCompetencyGapsPage: React.FC = () => {
         setData(adminRes);
         setOfficials(offRes.data);
       } catch (e) {
-        console.error('Failed to load admin gaps:', e);
+        console.error('Failed to load admin gaps: ', e);
       } finally {
         setLoading(false);
       }
