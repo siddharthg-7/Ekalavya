@@ -9,7 +9,7 @@ export const AccessibilityPage: React.FC = () => {
     <div className="max-w-3xl mx-auto space-y-8 py-4">
       <button
         onClick={() => navigate(-1)}
-        className="text-xs font-semibold text-[var(--mc-slate-gray)] hover:text-[var(--mc-ink)] flex items-center gap-1.5 cursor-pointer"
+        className="text-xs font-semibold text-[#52657A] hover:text-[#2563D9] flex items-center gap-1.5 cursor-pointer transition-colors"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         <span>Back</span>
@@ -20,15 +20,15 @@ export const AccessibilityPage: React.FC = () => {
           <span className="mc-eyebrow-dot" />
           <span>INCLUSIVITY & STANDARDS</span>
         </div>
-        <h1 className="text-3xl font-medium text-[var(--mc-ink)]">
+        <h1 className="text-xl sm:text-2xl font-bold text-[#102A43] tracking-tight">
           Accessibility Statement
         </h1>
-        <p className="text-xs sm:text-sm text-[var(--mc-slate-gray)] mt-1">
+        <p className="text-xs sm:text-sm text-[#52657A] mt-1">
           Committed to GIGW (Guidelines for Indian Government Websites) and WCAG 2.1 AA accessibility standards.
         </p>
       </div>
 
-      <div className="bg-white rounded-[28px] p-6 border border-[var(--mc-border-light)] space-y-4 text-xs text-[var(--mc-granite)] leading-relaxed">
+      <div className="bg-white rounded-2xl p-6 border border-[#DCE3EA] shadow-2xs space-y-4 text-xs text-[#52657A] leading-relaxed">
         <p>
           Ekalavya is engineered to ensure all government officials, regardless of physical or technical capability, can navigate competency assessments and access training.
         </p>

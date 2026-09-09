@@ -35,7 +35,7 @@ export const AssessmentsPage: React.FC = () => {
         <div>
           <button
             onClick={() => navigate('/learner')}
-            className="text-xs font-semibold text-[var(--mc-slate-gray)] hover:text-[var(--mc-ink)] flex items-center gap-1 cursor-pointer mb-2"
+            className="text-xs font-semibold text-[#52657A] hover:text-[#2563D9] flex items-center gap-1.5 cursor-pointer mb-2 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Dashboard</span>
@@ -44,10 +44,10 @@ export const AssessmentsPage: React.FC = () => {
             <span className="mc-eyebrow-dot" />
             <span>ASSESSMENT ENGINE</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-medium text-[var(--mc-ink)]">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#102A43] tracking-tight">
             Diagnostic Assessments
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--mc-slate-gray)] mt-1">
+          <p className="text-xs sm:text-sm text-[#52657A] mt-1">
             Adaptive, generative evaluations powered by Gemini and calibrated to your competency gaps.
           </p>
         </div>
@@ -62,16 +62,16 @@ export const AssessmentsPage: React.FC = () => {
       </div>
 
       {/* Hero CTA Box */}
-      <div className="bg-white rounded-[32px] p-8 border border-[var(--mc-border-light)] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE3EA] shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-[var(--mc-canvas)] text-[var(--mc-signal-orange)] flex items-center justify-center shrink-0">
+          <div className="w-14 h-14 rounded-full bg-blue-50 text-[#2563D9] flex items-center justify-center shrink-0 border border-blue-100">
             <Brain className="w-7 h-7" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-[var(--mc-ink)]">
+            <h3 className="text-lg font-semibold text-[#102A43]">
               Evaluate Knowledge from Training Manuals
             </h3>
-            <p className="text-xs text-[var(--mc-slate-gray)] mt-0.5 max-w-xl">
+            <p className="text-xs text-[#52657A] mt-0.5 max-w-xl">
               Upload any PDF or PPT training document. The AI extracts concepts, determines your starting difficulty, and runs a real-time remedial check on incorrect responses.
             </p>
           </div>
@@ -88,16 +88,16 @@ export const AssessmentsPage: React.FC = () => {
 
       {/* Past Assessment History */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-[var(--mc-ink)]">
+        <h3 className="text-lg font-medium text-[#102A43]">
           Completed Diagnostic Sessions ({attempts.length})
         </h3>
 
         {loading ? (
-          <div className="py-12 text-center text-xs text-[var(--mc-slate-gray)]">
+          <div className="py-12 text-center text-xs text-[#52657A]">
             Loading past assessment records...
           </div>
         ) : attempts.length === 0 ? (
-          <div className="p-8 text-center bg-white rounded-3xl border border-[var(--mc-border-light)] text-xs text-[var(--mc-slate-gray)]">
+          <div className="p-8 text-center bg-white rounded-3xl border border-[#DCE3EA] text-xs text-[#52657A]">
             No completed assessments yet. Click "Create New Assessment" to generate your first adaptive diagnostic.
           </div>
         ) : (
@@ -105,18 +105,18 @@ export const AssessmentsPage: React.FC = () => {
             {attempts.map((att, idx) => (
               <div
                 key={att.id || idx}
-                className="bg-white rounded-2xl p-5 border border-[var(--mc-border-light)] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="bg-white rounded-2xl p-5 border border-[#DCE3EA] hover:border-[#2563D9]/40 hover:shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-[var(--mc-ink)] text-white flex items-center justify-center shrink-0">
-                    <Award className="w-5 h-5 text-[var(--mc-yellow)]" />
+                  <div className="w-10 h-10 rounded-full bg-[#102A43] text-white flex items-center justify-center shrink-0">
+                    <Award className="w-5 h-5 text-[#8CCBFF]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-semibold text-[var(--mc-ink)]">
+                      <h4 className="text-sm font-semibold text-[#102A43]">
                         Adaptive Assessment Diagnostic
                       </h4>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono">
                         Score: {att.score} / {att.total}
                       </span>
                     </div>
@@ -132,7 +132,7 @@ export const AssessmentsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="text-xs text-[var(--mc-slate-gray)] flex items-center gap-1.5 self-end sm:self-center">
+                <div className="text-xs text-[#52657A] flex items-center gap-1.5 self-end sm:self-center font-mono">
                   <Clock className="w-3.5 h-3.5" />
                   <span>{new Date(att.taken_at).toLocaleDateString()}</span>
                 </div>

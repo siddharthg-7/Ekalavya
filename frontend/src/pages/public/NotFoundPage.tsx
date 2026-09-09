@@ -19,15 +19,15 @@ export const NotFoundPage: React.FC = () => {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-6 text-center">
-      <div className="max-w-md w-full bg-white rounded-[36px] p-8 sm:p-12 border border-[var(--mc-border-light)] shadow-sm">
-        <div className="w-16 h-16 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-6">
-          <AlertCircle className="w-8 h-8" />
+      <div className="max-w-md w-full bg-white rounded-2xl p-8 sm:p-10 border border-[#DCE3EA] shadow-2xs">
+        <div className="w-14 h-14 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-5 border border-amber-200">
+          <AlertCircle className="w-7 h-7" />
         </div>
 
-        <h1 className="text-3xl font-medium text-[var(--mc-ink)] mb-2">
+        <h1 className="text-xl sm:text-2xl font-bold text-[#102A43] mb-2 tracking-tight">
           Page Not Found
         </h1>
-        <p className="text-xs sm:text-sm text-[var(--mc-slate-gray)] mb-8">
+        <p className="text-xs sm:text-sm text-[#52657A] mb-8">
           The route you requested does not exist or has been relocated within the competency platform.
         </p>
 

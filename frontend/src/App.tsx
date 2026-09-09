@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Layouts
 import { PublicLayout } from './layouts/PublicLayout';
@@ -39,6 +41,7 @@ export function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover theme="colored" />
         <Routes>
           {/* ============================================================
               FULL-FIDELITY IMMERSIVE LANDING PAGE

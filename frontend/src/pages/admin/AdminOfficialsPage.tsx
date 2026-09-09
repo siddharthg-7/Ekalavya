@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Users, Search, ChevronRight, Building2, Briefcase, GraduationCap, UserPlus } from 'lucide-react';
 import { fetchOfficials, type OfficialDetail } from '../../services/api';
@@ -45,22 +45,22 @@ export const AdminOfficialsPage: React.FC = () => {
       <div>
         <Link
           to="/admin"
-          className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-800 mb-3 transition-colors"
+          className="inline-flex items-center text-sm font-medium text-[#52657A] hover:text-[#2563D9] mb-3 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Admin Dashboard
         </Link>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-serif font-bold text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#102A43] tracking-tight">
               MoSPI Statistical Cadre Directory
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-xs sm:text-sm text-[#52657A] mt-1">
               Select an official to inspect individual competency mastery scores, diagnostic histories, and skill gaps.
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
-              <Users className="w-3.5 h-3.5 mr-1 text-slate-500" />
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#F7F9FC] text-[#52657A] border border-[#DCE3EA]">
+              <Users className="w-3.5 h-3.5 mr-1 text-[#2563D9]" />
               {officials.length} Registered Officials
             </span>
             <button
@@ -75,24 +75,24 @@ export const AdminOfficialsPage: React.FC = () => {
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div className="bg-white border border-[#DCE3EA] rounded-2xl p-4 shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
         <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52657A]" />
           <input
             type="text"
             placeholder="Search by name, role, or division..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+            className="w-full pl-9 pr-4 py-2 border border-[#DCE3EA] rounded-full text-xs text-[#102A43] placeholder:text-[#52657A] bg-[#F7F9FC] focus:outline-none focus:ring-2 focus:ring-[#2563D9] focus:border-transparent"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full md:w-auto">
-          <label className="text-xs font-medium text-slate-500 whitespace-nowrap">Division:</label>
+          <label className="text-xs font-semibold text-[#52657A] whitespace-nowrap">Division:</label>
           <select
             value={departmentFilter}
             onChange={e => setDepartmentFilter(e.target.value)}
-            className="w-full md:w-64 px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="w-full md:w-64 px-3 py-1.5 border border-[#DCE3EA] rounded-full text-xs text-[#102A43] bg-[#F7F9FC] focus:outline-none focus:ring-2 focus:ring-[#2563D9] cursor-pointer"
           >
             {departments.map((dept, i) => (
               <option key={i} value={dept}>
@@ -105,12 +105,12 @@ export const AdminOfficialsPage: React.FC = () => {
 
       {/* Officials List */}
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-400">
-          <div className="animate-spin w-8 h-8 border-2 border-slate-300 border-t-slate-800 rounded-full mx-auto mb-3" />
+        <div className="bg-white border border-[#DCE3EA] rounded-2xl p-12 text-center text-[#52657A]">
+          <div className="animate-spin w-8 h-8 border-2 border-[#DCE3EA] border-t-[#2563D9] rounded-full mx-auto mb-3" />
           <p className="text-sm">Fetching statistical cadre directory...</p>
         </div>
       ) : filteredOfficials.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500">
+        <div className="bg-white border border-[#DCE3EA] rounded-2xl p-12 text-center text-[#52657A]">
           <p className="text-sm">No officials matched your search criteria.</p>
         </div>
       ) : (
@@ -119,49 +119,49 @@ export const AdminOfficialsPage: React.FC = () => {
             <Link
               key={off.id}
               to={`/admin/officials/${off.id}`}
-              className="group bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-slate-400 hover:shadow-md transition-all flex flex-col justify-between"
+              className="group bg-white border border-[#DCE3EA] rounded-2xl p-5 shadow-xs hover:border-[#2563D9]/40 hover:shadow-md transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-serif font-bold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-[#102A43] text-white flex items-center justify-center font-bold text-sm">
                       {off.name
                         .split(' ')
                         .map(n => n[0])
                         .join('')}
                     </div>
                     <div>
-                      <h2 className="font-semibold text-base text-slate-900 group-hover:text-blue-600 transition-colors">
+                      <h2 className="font-semibold text-base text-[#102A43] group-hover:text-[#2563D9] transition-colors">
                         {off.name}
                       </h2>
-                      <div className="text-xs text-slate-500 font-medium">{off.designation}</div>
+                      <div className="text-xs text-[#52657A] font-medium">{off.designation}</div>
                     </div>
                   </div>
                   <span
                     className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium ${
                       off.role === 'admin'
                         ? 'bg-purple-100 text-purple-700'
-                        : 'bg-slate-100 text-slate-600'
+                        : 'bg-[#F7F9FC] text-[#52657A] border border-[#DCE3EA]'
                     }`}
                   >
                     {off.role || 'learner'}
                   </span>
                 </div>
 
-                <div className="mt-4 space-y-1.5 text-xs text-slate-600">
+                <div className="mt-4 space-y-1.5 text-xs text-[#52657A]">
                   <div className="flex items-center gap-2">
-                    <Building2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                    <Building2 className="w-3.5 h-3.5 text-[#52657A] shrink-0" />
                     <span className="truncate">{off.department}</span>
                   </div>
                   {off.job_role && (
                     <div className="flex items-center gap-2">
-                      <Briefcase className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                      <Briefcase className="w-3.5 h-3.5 text-[#52657A] shrink-0" />
                       <span className="truncate">{off.job_role}</span>
                     </div>
                   )}
                   {off.education && (
                     <div className="flex items-center gap-2">
-                      <GraduationCap className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                      <GraduationCap className="w-3.5 h-3.5 text-[#52657A] shrink-0" />
                       <span className="truncate">{off.education}</span>
                     </div>
                   )}
@@ -169,10 +169,10 @@ export const AdminOfficialsPage: React.FC = () => {
               </div>
 
               <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-mono">
+                <span className="text-[#52657A] font-mono">
                   Exp: {off.experience_years ? `${off.experience_years} yrs` : 'N/A'}
                 </span>
-                <span className="inline-flex items-center font-medium text-slate-900 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all">
+                <span className="inline-flex items-center font-semibold text-[#2563D9] group-hover:translate-x-0.5 transition-all">
                   View Competencies <ChevronRight className="w-3.5 h-3.5 ml-1" />
                 </span>
               </div>
@@ -192,4 +192,3 @@ export const AdminOfficialsPage: React.FC = () => {
     </div>
   );
 };
-

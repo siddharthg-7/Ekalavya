@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { EkalavyaLogo } from '../../components/EkalavyaLogo';
 import TiltedCard from '../../components/TiltedCard';
 import { PipelineReactFlow } from '../../components/PipelineReactFlow';
+import { FeatureStorySection } from '../../components/feature-story/FeatureStorySection';
 
 import {
   ArrowRight,
@@ -13,11 +14,8 @@ import {
   Users,
   CheckCircle,
   Briefcase,
-  UserCheck,
-  Target,
   BookOpen,
   ClipboardText,
-  TrendUp,
   Bank,
   ShieldCheck,
   List,
@@ -88,6 +86,15 @@ const heroAnimStyles = `
     .ek-gov-mark { display:none; }
     .ek-shimmer-button { width:100%; }
   }
+  @media (max-height: 860px) {
+    .ek-hero-content-inner { padding-top: 24px !important; padding-bottom: 160px !important; }
+    .ek-hero-headline { font-size: clamp(38px, 4.5vw, 56px) !important; margin-bottom: 16px !important; }
+    .ek-hero-desc { font-size: 16px !important; margin-bottom: 22px !important; }
+    .ek-hero-cta-row { margin-bottom: 20px !important; }
+  }
+  @media (max-height: 720px) {
+    .ek-scroll-btn { display: none !important; }
+  }
 `;
 
 const ShimmerButton: React.FC<{
@@ -105,7 +112,6 @@ export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading]           = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [adaptiveStep, setAdaptiveStep]     = useState<number>(0);
   const [openFaqIndex, setOpenFaqIndex]     = useState<number|null>(0);
 
   const toggleFaq = (i: number) => setOpenFaqIndex(openFaqIndex === i ? null : i);
@@ -209,12 +215,10 @@ export const LandingPage: React.FC = () => {
 
         {/* ── HERO CONTENT ───────────────────────────────────────────── */}
         <div id="hero-content" style={{ position:'relative', zIndex:10, padding:'0 106px' }}>
-          <div style={{ maxWidth:'700px', paddingTop:'66px', paddingBottom:'210px' }}>
-
-            
+          <div className="ek-hero-content-inner" style={{ maxWidth:'700px', paddingTop:'clamp(20px, 4vh, 52px)', paddingBottom:'clamp(150px, 18vh, 200px)' }}>
 
             {/* Headline */}
-            <h1 className="ek-fade-up-2" style={{ fontSize:'clamp(52px,5.5vw,72px)', fontWeight:800, lineHeight:1.01, letterSpacing:'-0.03em', color:'#FFFFFF', marginBottom:'24px', maxWidth:'680px' }}>
+            <h1 className="ek-fade-up-2 ek-hero-headline" style={{ fontSize:'clamp(52px,5.5vw,72px)', fontWeight:800, lineHeight:1.01, letterSpacing:'-0.03em', color:'#FFFFFF', marginBottom:'20px', maxWidth:'680px' }}>
               Turn Your Potential<br />
               Into{' '}
               <span style={{ background:'linear-gradient(90deg,#8ACBFF 0%,#5EAFFF 45%,#3187F7 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
@@ -223,14 +227,14 @@ export const LandingPage: React.FC = () => {
             </h1>
 
             {/* Description */}
-            <p className="ek-fade-up-3" style={{ fontSize:'19px', fontWeight:400, lineHeight:1.56, color:'rgba(255,255,255,0.78)', maxWidth:'590px', marginBottom:'36px', letterSpacing:'-0.005em' }}>
+            <p className="ek-fade-up-3 ek-hero-desc" style={{ fontSize:'19px', fontWeight:400, lineHeight:1.56, color:'rgba(255,255,255,0.78)', maxWidth:'590px', marginBottom:'28px', letterSpacing:'-0.005em' }}>
               Understand your competencies, identify skill gaps,<br />
               get personalized learning, and measure real progress —<br />
               all in one place.
             </p>
 
             {/* CTA row */}
-            <div className="ek-fade-in" style={{ display:'flex', alignItems:'center', gap:'28px', marginBottom:'40px' }}>
+            <div className="ek-fade-in ek-hero-cta-row" style={{ display:'flex', alignItems:'center', gap:'28px', marginBottom:'28px' }}>
               <ShimmerButton onClick={() => navigate('/login')} ariaLabel="Get Started with Ekalavya">
                 Get Started
                 <ArrowRight style={{ width:'20px', height:'20px' }} />
@@ -245,12 +249,12 @@ export const LandingPage: React.FC = () => {
               className="ek-scroll-btn"
               style={{ background:'transparent', border:'none', padding:0, cursor:'pointer', display:'flex', alignItems:'center', gap:'12px', fontFamily:'inherit', transition:'all 0.2s' }}
               aria-label="Scroll to explore">
-              <span className="ek-scroll-circle" style={{ width:'40px', height:'40px', borderRadius:'50%', border:'1px solid rgba(255,255,255,0.30)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, transition:'border-color 0.2s' }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <span className="ek-scroll-circle" style={{ width:'38px', height:'38px', borderRadius:'50%', border:'1px solid rgba(255,255,255,0.30)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, transition:'border-color 0.2s' }}>
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
                   <path d="M7 2v10M3 8l4 4 4-4" stroke="rgba(255,255,255,0.68)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span style={{ fontSize:'14px', fontWeight:500, color:'rgba(255,255,255,0.52)', letterSpacing:'0.01em' }}>Scroll to explore</span>
+              <span style={{ fontSize:'13px', fontWeight:500, color:'rgba(255,255,255,0.52)', letterSpacing:'0.01em' }}>Scroll to explore</span>
             </button>
 
           </div>
@@ -306,7 +310,7 @@ export const LandingPage: React.FC = () => {
                 THE CHALLENGE
               </div>
 
-              <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#102A43] tracking-tight leading-tight">
                 Access to Learning Is Not Enough.
               </h2>
 
@@ -400,7 +404,6 @@ export const LandingPage: React.FC = () => {
           SECTION 03 — HOW IT WORKS (REACT FLOW INTERACTIVE PIPELINE)
          ============================================================ */}
       <section id="how-it-works" className="relative py-14 lg:py-20 bg-[#040D1A] border-t border-b border-white/10 overflow-hidden">
-
         <div className="max-w-[1320px] mx-auto px-6 sm:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.985 }}
@@ -414,418 +417,50 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ============================================================
-          SECTION 04 — FEATURES (Alternating Editorial Showcases)
+          SECTION 04 — CONTINUOUS COMPETENCY INTELLIGENCE LOOP
+          (Sticky Scroll-Driven Storytelling Experience)
          ============================================================ */}
-      <section id="for-officials" className="py-14 lg:py-20 bg-[#F8FAFC]">
-        <div className="max-w-[1280px] mx-auto px-6 sm:px-8 lg:grid lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-14 xl:gap-16">
-          <div className="max-w-2xl lg:sticky lg:top-24 lg:self-start lg:pb-12 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#2563EB] text-xs font-mono font-bold uppercase tracking-wider">
-              <ShieldCheck className="w-4 h-4" />
-              <span>CORE CAPABILITIES</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0F172A] tracking-tight leading-[1.15]">
-              An Intelligent System Tailored to Public Service.
-            </h2>
-            <p className="text-base sm:text-lg text-[#475569] leading-relaxed">
-              Designed with institutional precision to eliminate capability bottlenecks across MoSPI cadres, directorates, and field operations.
-            </p>
-          </div>
-
-          <div className="mt-8 space-y-8 lg:mt-0 lg:space-y-10">
-          {/* FEATURE 1: Text Left, Product Visualization Right */}
-          <div className="ek-story-card bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-12 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-6 space-y-4">
-                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#2563EB]">
-                  <UserCheck className="w-4 h-4" />
-                  <span>FEATURE 01</span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
-                  Personalized Competency Profile
-                </h3>
-                <p className="text-base text-[#334155] font-semibold">
-                  Comprehensive visibility into officer capability baselines.
-                </p>
-                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed">
-                  Every official receives a dynamic competency matrix continuously mapped against MoSPI cadre standards, highlighting specialized domain strengths and critical focus areas.
-                </p>
-                <div className="pt-2 flex items-center gap-2 text-sm font-bold text-[#2563EB]">
-                  <span>Live Profile Telemetry Active</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </div>
-
-              <div className="lg:col-span-6">
-                <div className="p-6 sm:p-8 rounded-2xl bg-[#F8FAFC] border border-slate-200 space-y-4 shadow-inner">
-                  <div className="flex items-center justify-between text-xs sm:text-sm font-semibold">
-                    <span className="font-bold text-[#0F172A]">Statistical & Sampling Theory</span>
-                    <span className="font-mono text-emerald-700 font-bold px-2.5 py-0.5 rounded-md bg-emerald-50 border border-emerald-200">82% • Advanced</span>
-                  </div>
-                  <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-emerald-600 h-full rounded-full" style={{ width: '82%' }} />
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs sm:text-sm font-semibold pt-2">
-                    <span className="font-bold text-[#0F172A]">Python & Automated Survey ETL</span>
-                    <span className="font-mono text-amber-700 font-bold px-2.5 py-0.5 rounded-md bg-amber-50 border border-amber-200">42% • Developing</span>
-                  </div>
-                  <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-amber-500 h-full rounded-full" style={{ width: '42%' }} />
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs sm:text-sm font-semibold pt-2">
-                    <span className="font-bold text-[#0F172A]">National Data Security Standards</span>
-                    <span className="font-mono text-rose-700 font-bold px-2.5 py-0.5 rounded-md bg-rose-50 border border-rose-200">32% • Focus Deficit</span>
-                  </div>
-                  <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-rose-500 h-full rounded-full" style={{ width: '32%' }} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* FEATURE 2: Product Visualization Left, Text Right */}
-          <div className="ek-story-card bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-12 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-6 order-2 lg:order-1">
-                <div className="p-6 sm:p-8 rounded-2xl bg-[#F8FAFC] border border-slate-200 space-y-5">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-lg text-[#0F172A]">Python Automated Survey Data</span>
-                    <span className="font-mono font-bold text-xs px-3 py-1 rounded-full bg-rose-100 border border-rose-300 text-rose-800">
-                      Evaluated Deficit: 38%
-                    </span>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs sm:text-sm font-semibold">
-                      <span className="text-[#64748B]">Evaluated Level: <strong className="text-[#0F172A]">42%</strong></span>
-                      <span className="text-[#64748B]">Cadre Benchmark: <strong className="text-emerald-700">80%</strong></span>
-                    </div>
-
-                    <div className="w-full bg-slate-200 h-3.5 rounded-full overflow-hidden relative">
-                      <div className="bg-amber-500 h-full rounded-full" style={{ width: '42%' }} />
-                      <div className="absolute top-0 bottom-0 left-[80%] w-1.5 bg-emerald-600 z-10" title="Target Benchmark (80%)" />
-                    </div>
-                  </div>
-
-                  <div className="text-xs sm:text-sm text-[#475569] bg-white p-4 rounded-xl border border-slate-200 leading-relaxed font-medium">
-                    <span className="font-bold text-[#0F172A]">AI Rationale:</span> Automated Python ETL is required for upcoming PLFS survey release deadlines.
-                  </div>
-                </div>
-              </div>
-
-              <div className="lg:col-span-6 space-y-4 order-1 lg:order-2">
-                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#D97706]">
-                  <Target className="w-4 h-4" />
-                  <span>FEATURE 02</span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
-                  AI Skill-Gap Analysis
-                </h3>
-                <p className="text-base text-[#334155] font-semibold">
-                  Pinpoint capability gaps with surgical accuracy.
-                </p>
-                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed">
-                  Ekalavya calculates the exact delta between an official's evaluated score and cadre benchmark requirements, eliminating subjective evaluations in favor of data-backed insights.
-                </p>
-                <div className="pt-2 flex items-center gap-2 text-sm font-bold text-[#D97706]">
-                  <span>Curriculum Mapping Active</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* FEATURE 3: Text Left, Product Visualization Right */}
-          <div className="ek-story-card bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-12 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-6 space-y-4">
-                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-600">
-                  <BookOpen className="w-4 h-4" />
-                  <span>FEATURE 03</span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
-                  Relevant Learning Recommendations
-                </h3>
-                <p className="text-base text-[#334155] font-semibold">
-                  Targeted courses from official national repositories.
-                </p>
-                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed">
-                  Instead of browsing uncurated catalogues, officers receive precise course matches from iGOT Karmayogi and NSSTA directly aligned with their identified skill gaps.
-                </p>
-              </div>
-
-              <div className="lg:col-span-6">
-                <div className="p-6 sm:p-8 rounded-2xl border border-slate-200 bg-[#F8FAFC] shadow-inner space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="px-3 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 font-mono font-bold text-xs flex items-center gap-1.5">
-                      <BookOpen className="w-4 h-4 text-emerald-600" />
-                      <span>94% Competency Match</span>
-                    </span>
-                    <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">iGOT Karmayogi</span>
-                  </div>
-
-                  <h4 className="text-lg sm:text-xl font-bold text-[#0F172A]">
-                    Python for Government Data Processing & ETL
-                  </h4>
-
-                  <div className="flex flex-wrap gap-2 text-xs font-semibold text-emerald-800 pt-2">
-                    <span className="px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200">
-                      ✓ Python
-                    </span>
-                    <span className="px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200">
-                      ✓ Data Processing
-                    </span>
-                    <span className="px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200">
-                      ✓ Survey Analytics
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* FEATURE 4: Large Full-Width Adaptive Assessment Showcase */}
-          <div className="ek-story-card bg-[#071931] text-white rounded-[32px] p-8 sm:p-12 lg:p-14 border border-slate-700/60 shadow-2xl relative overflow-hidden">
-            <div className="max-w-2xl mb-10">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
-                <Target className="w-4 h-4" />
-                <span>FEATURE 04 • SIGNATURE CAPABILITY</span>
-              </div>
-              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
-                Adaptive Assessment Engine
-              </h3>
-              <p className="text-base sm:text-lg text-slate-300 mt-3 font-normal leading-relaxed">
-                Dynamic evaluation that adjusts difficulty based on officer responses in real time.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              {/* Left Column: 4 Diagnostic Steps */}
-              <div className="lg:col-span-5 space-y-3">
-                <div
-                  onClick={() => setAdaptiveStep(0)}
-                  className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all ${
-                    adaptiveStep === 0
-                      ? 'bg-white/15 border-cyan-400 text-white shadow-lg'
-                      : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-                  }`}
-                >
-                  <div className="text-xs font-mono font-bold text-cyan-300">STEP 01 • INITIAL SERVED</div>
-                  <div className="font-bold text-sm sm:text-base text-white mt-1">Diagnostic Question Served</div>
-                </div>
-
-                <div
-                  onClick={() => setAdaptiveStep(1)}
-                  className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all ${
-                    adaptiveStep === 1
-                      ? 'bg-white/15 border-rose-400 text-white shadow-lg'
-                      : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-                  }`}
-                >
-                  <div className="text-xs font-mono font-bold text-rose-300">STEP 02 • INCORRECT OPTION</div>
-                  <div className="font-bold text-sm sm:text-base text-white mt-1">Engine Diagnoses Specific Deficit</div>
-                </div>
-
-                <div
-                  onClick={() => setAdaptiveStep(2)}
-                  className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all ${
-                    adaptiveStep === 2
-                      ? 'bg-white/15 border-amber-400 text-white shadow-lg'
-                      : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-                  }`}
-                >
-                  <div className="text-xs font-mono font-bold text-amber-300">STEP 03 • CONCEPT REINFORCEMENT</div>
-                  <div className="font-bold text-sm sm:text-base text-white mt-1">Targeted Scaffolding Question</div>
-                </div>
-
-                <div
-                  onClick={() => setAdaptiveStep(3)}
-                  className={`p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all ${
-                    adaptiveStep === 3
-                      ? 'bg-white/15 border-emerald-400 text-white shadow-lg'
-                      : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-                  }`}
-                >
-                  <div className="text-xs font-mono font-bold text-emerald-300">STEP 04 • MASTERY VERIFIED</div>
-                  <div className="font-bold text-sm sm:text-base text-white mt-1">Score Elevated & Profile Updated</div>
-                </div>
-              </div>
-
-              {/* Right Column: Simulated Quiz Diagnostic Panel */}
-              <div className="lg:col-span-7 bg-[#0B1D33] border border-white/20 rounded-2xl p-6 sm:p-8 shadow-2xl">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-5 text-xs font-mono">
-                  <span className="text-slate-400">SESSION: DIA-9021</span>
-                  <span className="text-cyan-300 font-bold px-2.5 py-1 rounded bg-cyan-500/10 border border-cyan-500/30">ADAPTIVE MODE</span>
-                </div>
-
-                <h4 className="text-base sm:text-lg font-semibold text-white mb-5 leading-snug">
-                  In stratified sampling for the Periodic Labour Force Survey (PLFS), why are weights calibrated against Census projections?
-                </h4>
-
-                <div className="space-y-3 text-xs sm:text-sm">
-                  <div className="p-3.5 sm:p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-200 flex items-center justify-between">
-                    <span>A) To correct frame under-coverage and ensure demographic consistency</span>
-                    <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 ml-2" />
-                  </div>
-                  <div className="p-3.5 sm:p-4 rounded-xl border border-white/10 bg-white/5 text-slate-400 flex items-center justify-between">
-                    <span>B) To artificially deflate variance estimates</span>
-                    <span className="text-slate-500 font-mono text-xs">Option B</span>
-                  </div>
-                </div>
-
-                <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-950/80 to-cyan-950/60 border border-cyan-500/30 text-xs sm:text-sm">
-                  <div className="font-bold text-cyan-300 flex items-center gap-2 mb-1">
-                    <CheckCircle className="w-4 h-4" />
-                    <span>Engine Action: Concept Mastered (+16 pts)</span>
-                  </div>
-                  <p className="text-slate-300 leading-relaxed">
-                    Calibration rationale verified. Proficiency updated on official profile.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* FEATURE 5: Product Visualization Left, Text Right */}
-          <div className="ek-story-card bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-12 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-6 order-2 lg:order-1">
-                <div className="p-6 sm:p-8 rounded-2xl bg-[#F8FAFC] border border-slate-200 space-y-5">
-                  <div className="flex items-center justify-between font-bold text-base sm:text-lg text-[#0F172A]">
-                    <span>National Data Security</span>
-                    <span className="font-mono text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full">
-                      +16 points gained
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200">
-                      <div className="text-xs text-[#64748B] font-mono font-semibold">INITIAL DIAGNOSTIC</div>
-                      <div className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] font-mono mt-1">32%</div>
-                      <span className="text-xs text-slate-500 font-medium">Baseline Score</span>
-                    </div>
-
-                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-300 bg-emerald-50/50">
-                      <div className="text-xs text-emerald-800 font-mono font-bold">POST-ASSESSMENT</div>
-                      <div className="text-2xl sm:text-3xl font-extrabold text-emerald-700 font-mono mt-1">48%</div>
-                      <span className="text-xs text-emerald-800 font-semibold">
-                        Demonstrated Growth
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="lg:col-span-6 space-y-4 order-1 lg:order-2">
-                <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-600">
-                  <TrendUp className="w-4 h-4" />
-                  <span>FEATURE 05</span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
-                  Measure Your Progress
-                </h3>
-                <p className="text-base text-[#334155] font-semibold">
-                  Verifiable competency growth over time.
-                </p>
-                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed">
-                  Competency profiles update strictly through verified assessment performance, creating transparent telemetry for officers and training authorities.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* FEATURE 6: Text Left, Organization Intelligence Right */}
-          <div
-            id="for-organizations"
-            className="ek-story-card bg-white border border-[#DCE3EA] rounded-3xl p-8 sm:p-12 lg:p-14 shadow-xs"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-              <div className="lg:col-span-6 space-y-4">
-                <div className="text-xs font-bold font-mono uppercase tracking-wider text-[#2563D9]">
-                  FEATURE 06
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-[#102A43]">
-                  Workforce Intelligence
-                </h3>
-                <p className="text-base sm:text-lg text-[#52657A] font-medium">
-                  Help organizations understand capability gaps at scale.
-                </p>
-                <p className="text-sm sm:text-base text-[#52657A] leading-relaxed">
-                  Cadre administrators gain aggregate department-level heatmaps, enabling evidence-based
-                  training investments and targeted capacity interventions.
-                </p>
-                <div className="pt-2">
-                  <span className="font-semibold text-sm text-[#2563D9]">Admin Analytics Console Active ΓåÆ</span>
-                </div>
-              </div>
-
-              <div className="lg:col-span-6">
-                <div className="p-6 sm:p-8 rounded-2xl bg-[#F7F9FC] border border-[#DCE3EA] space-y-3.5 text-sm">
-                  <div className="flex items-center justify-between font-semibold text-[#102A43]">
-                    <span>Survey Design & Research (SDRD)</span>
-                    <span className="text-emerald-700 font-mono font-bold">84% Ready</span>
-                  </div>
-                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-2 border-t border-slate-200">
-                    <span>National Accounts Division (NAD)</span>
-                    <span className="text-blue-700 font-mono font-bold">78% Ready</span>
-                  </div>
-                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-2 border-t border-slate-200">
-                    <span>Field Operations Division (FOD)</span>
-                    <span className="text-amber-700 font-mono font-bold">62% Ready</span>
-                  </div>
-                  <div className="flex items-center justify-between font-semibold text-[#102A43] pt-2 border-t border-slate-200">
-                    <span>Data Informatics & Innovation (DIID)</span>
-                    <span className="text-rose-600 font-mono font-bold">54% Ready</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          </div>
-        </div>
-      </section>
+      <FeatureStorySection />
 
 
 
       {/* ============================================================
-          SECTION 06 ΓÇö OUTCOMES (WORKFORCE NEEDS)
+          SECTION 06 — OUTCOMES (WORKFORCE NEEDS)
          ============================================================ */}
       <section className="py-14 lg:py-20 bg-[#F7F9FC]">
         <div className="max-w-[1240px] mx-auto px-6 sm:px-8">
-          <div className="max-w-2xl mx-auto text-center space-y-4 mb-12">
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#102A43] tracking-tight">
+          <div className="max-w-2xl mx-auto text-center space-y-3 mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#102A43] tracking-tight">
               Designed Around Real Workforce Needs.
             </h2>
-            <p className="text-base sm:text-lg text-[#475569]">
+            <p className="text-sm sm:text-base text-[#475569]">
               Tailored value architectures for individual officers, cadre leadership, and national training academies.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-10 shadow-sm hover:shadow-2xl hover:border-blue-300 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md hover:border-blue-300 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 to-cyan-500" />
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-[#2563EB] flex items-center justify-center mb-6">
-                  <Users className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 text-[#2563EB] flex items-center justify-center mb-5">
+                  <Users className="w-5 h-5" />
                 </div>
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#2563EB] mb-1.5">
+                <h3 className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#2563EB] mb-1">
                   GOVERNMENT OFFICIALS
                 </h3>
-                <h4 className="text-2xl font-extrabold text-[#0F172A] mb-4 tracking-tight">
+                <h4 className="text-lg sm:text-xl font-bold text-[#0F172A] mb-3 tracking-tight">
                   Know what to learn next.
                 </h4>
-                <ul className="space-y-3 text-sm text-[#475569] leading-relaxed">
-                  <li className="flex items-start gap-2.5">
+                <ul className="space-y-2.5 text-xs sm:text-sm text-[#475569] leading-relaxed">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Eliminates ambiguity on role competency requirements.</span>
                   </li>
-                  <li className="flex items-start gap-2.5">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Direct links to official iGOT and NSSTA training modules.</span>
                   </li>
-                  <li className="flex items-start gap-2.5">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Constructive, non-punitive adaptive diagnostic tests.</span>
                   </li>
@@ -833,28 +468,28 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-10 shadow-sm hover:shadow-2xl hover:border-emerald-300 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md hover:border-emerald-300 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-600 to-teal-500" />
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mb-6">
-                  <Buildings className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mb-5">
+                  <Buildings className="w-5 h-5" />
                 </div>
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 mb-1.5">
+                <h3 className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-700 mb-1">
                   ORGANIZATIONS
                 </h3>
-                <h4 className="text-2xl font-extrabold text-[#0F172A] mb-4 tracking-tight">
+                <h4 className="text-lg sm:text-xl font-bold text-[#0F172A] mb-3 tracking-tight">
                   Understand capability deficits.
                 </h4>
-                <ul className="space-y-3 text-sm text-[#475569] leading-relaxed">
-                  <li className="flex items-start gap-2.5">
+                <ul className="space-y-2.5 text-xs sm:text-sm text-[#475569] leading-relaxed">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Division-level competency heatmaps and deficits.</span>
                   </li>
-                  <li className="flex items-start gap-2.5">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Data-driven workforce succession and capacity planning.</span>
                   </li>
-                  <li className="flex items-start gap-2.5">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Evidence-based budget and training resource allocations.</span>
                   </li>
@@ -862,28 +497,28 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200/80 rounded-[28px] p-8 sm:p-10 shadow-sm hover:shadow-2xl hover:border-amber-300 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md hover:border-amber-300 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 to-orange-500" />
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mb-6">
-                  <Bank className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center mb-5">
+                  <Bank className="w-5 h-5" />
                 </div>
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-amber-700 mb-1.5">
+                <h3 className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700 mb-1">
                   TRAINING TEAMS
                 </h3>
-                <h4 className="text-2xl font-extrabold text-[#0F172A] mb-4 tracking-tight">
+                <h4 className="text-lg sm:text-xl font-bold text-[#0F172A] mb-3 tracking-tight">
                   Build targeted learning experiences.
                 </h4>
-                <ul className="space-y-3 text-sm text-[#475569] leading-relaxed">
-                  <li className="flex items-start gap-2.5">
+                <ul className="space-y-2.5 text-xs sm:text-sm text-[#475569] leading-relaxed">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Identifies exact topics where cadres struggle during diagnostics.</span>
                   </li>
-                  <li className="flex items-start gap-2.5">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Pre/post score delta telemetry validates course impact.</span>
                   </li>
-                  <li className="flex items-start gap-2.5">
+                  <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
                     <span>Instant document-to-quiz generation from official PDF manuals.</span>
                   </li>
@@ -899,39 +534,39 @@ export const LandingPage: React.FC = () => {
          ============================================================ */}
       <section id="faq" className="py-14 lg:py-20 bg-white border-t border-b border-slate-200">
         <div className="max-w-[1000px] mx-auto px-6 sm:px-8">
-          <div className="text-center space-y-4 mb-10">
+          <div className="text-center space-y-3 mb-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-[#2563EB] text-xs font-mono font-bold uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4" />
               <span>FREQUENTLY ASKED QUESTIONS</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-[#0F172A] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#0F172A] tracking-tight">
               Answers to Common Questions.
             </h2>
-            <p className="text-base text-[#64748B]">
+            <p className="text-xs sm:text-sm text-[#64748B]">
               Everything you need to know about the Ekalavya platform and institutional mission.
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {faqItems.map((item, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
-                <div key={idx} className="rounded-2xl bg-[#F8FAFC] border border-slate-200/80 overflow-hidden transition-all duration-200 hover:border-slate-300">
+                <div key={idx} className="rounded-xl bg-[#F8FAFC] border border-slate-200/80 overflow-hidden transition-all duration-200 hover:border-slate-300">
                   <button
                     onClick={() => toggleFaq(idx)}
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${idx}`}
-                    className="w-full flex items-center justify-between text-left p-6 font-bold text-base sm:text-lg text-[#0F172A] hover:text-[#2563EB] transition-colors cursor-pointer focus:outline-none"
+                    className="w-full flex items-center justify-between text-left p-5 font-bold text-sm sm:text-base text-[#0F172A] hover:text-[#2563EB] transition-colors cursor-pointer focus:outline-none"
                   >
                     <span>{item.q}</span>
                     <span className="ml-4 flex-shrink-0 text-slate-400">
-                      {isOpen ? <CaretUp className="w-5 h-5 text-[#2563EB]" /> : <CaretDown className="w-5 h-5" />}
+                      {isOpen ? <CaretUp className="w-4 h-4 text-[#2563EB]" /> : <CaretDown className="w-4 h-4" />}
                     </span>
                   </button>
                   {isOpen && (
                     <div
                       id={`faq-answer-${idx}`}
-                      className="px-6 pb-6 text-sm sm:text-base text-[#475569] leading-relaxed border-t border-slate-200/60 pt-4"
+                      className="px-5 pb-5 text-xs sm:text-sm text-[#475569] leading-relaxed border-t border-slate-200/60 pt-3.5"
                     >
                       {item.a}
                     </div>
@@ -947,7 +582,7 @@ export const LandingPage: React.FC = () => {
           SECTION 08 — FINAL CTA (Mountain Landscape)
          ============================================================ */}
       <section
-        className="relative py-16 lg:py-22 bg-[#071931] text-white overflow-hidden"
+        className="relative py-14 lg:py-20 bg-[#071931] text-white overflow-hidden"
         style={{
           backgroundImage: `linear-gradient(to right, rgba(7, 25, 49, 0.95) 40%, rgba(16, 42, 67, 0.88) 100%), url('/images/cta_mountain_landscape.jpg')`,
           backgroundSize: 'cover',
@@ -956,25 +591,25 @@ export const LandingPage: React.FC = () => {
       >
 
         <div className="max-w-[1240px] mx-auto px-6 sm:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-8 space-y-7">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-8 space-y-5">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
                 Ready to Build Your Skills <br />
                 for a Greater Tomorrow?
               </h2>
 
-              <p className="text-base sm:text-lg lg:text-xl text-slate-300 font-normal max-w-xl">
+              <p className="text-sm sm:text-base text-slate-300 font-normal max-w-xl">
                 Start your competency learning journey with Ekalavya today.
               </p>
 
-              <div className="pt-3 space-y-3">
+              <div className="pt-2 space-y-3">
                 <div className="flex items-center gap-5 flex-wrap">
                   <ShimmerButton onClick={() => navigate('/login')}>
                     <span>Get Started</span>
-                    <ArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-4 h-4" />
                   </ShimmerButton>
 
-                  <span className="text-sm text-slate-300 font-medium">
+                  <span className="text-xs text-slate-300 font-medium">
                     Free to use • No complicated setup
                   </span>
                 </div>
@@ -982,11 +617,11 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div className="lg:col-span-4 flex flex-col justify-center items-start lg:items-end border-l lg:border-l-0 border-white/10 pl-8 lg:pl-0">
-              <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-300 leading-tight space-y-1.5 font-mono">
+              <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-300 leading-tight space-y-1 font-mono">
                 <div className="text-white">Learn</div>
                 <div className="text-blue-400">Grow</div>
                 <div className="text-emerald-400">Serve</div>
-                <div className="text-amber-400 text-xl font-bold">A Stronger India</div>
+                <div className="text-amber-400 text-lg font-bold">A Stronger India</div>
               </div>
             </div>
           </div>

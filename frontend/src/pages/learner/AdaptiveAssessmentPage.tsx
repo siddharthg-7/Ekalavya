@@ -92,12 +92,12 @@ export const AdaptiveAssessmentPage: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6 py-2">
       {/* Header Bar */}
-      <div className="flex items-center justify-between pb-3 border-b border-[var(--mc-border-light)]">
+      <div className="flex items-center justify-between pb-3 border-b border-[#DCE3EA]">
         <div className="flex items-center gap-3">
-          <span className="text-[11px] uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-[var(--mc-canvas)] text-[var(--mc-granite)]">
+          <span className="text-[11px] uppercase font-bold tracking-wider px-3 py-1 rounded-full bg-[#F7F9FC] text-[#52657A] border border-[#DCE3EA]">
             Question #{questionCount}
           </span>
-          <span className="text-xs text-[var(--mc-slate-gray)] font-medium truncate max-w-[200px] sm:max-w-md">
+          <span className="text-xs text-[#52657A] font-medium truncate max-w-[200px] sm:max-w-md">
             {quizTitle}
           </span>
         </div>
@@ -115,7 +115,7 @@ export const AdaptiveAssessmentPage: React.FC = () => {
             </span>
 
             {currentQuestion.is_remedial && (
-              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FFF5F2] text-[var(--mc-signal-orange)] border border-[var(--mc-signal-orange)]/30 flex items-center gap-1">
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-[#E8871A] border border-amber-200 flex items-center gap-1">
                 <Brain className="w-3 h-3" />
                 Remedial
               </span>
@@ -126,13 +126,13 @@ export const AdaptiveAssessmentPage: React.FC = () => {
 
       {/* Remedial Intervention Cue */}
       {currentQuestion?.is_remedial && (
-        <div className="p-4 rounded-2xl bg-[#FFF5F2] border border-[var(--mc-signal-orange)]/20 flex items-start gap-3">
-          <AlertTriangle className="w-4 h-4 text-[var(--mc-signal-orange)] shrink-0 mt-0.5" />
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-start gap-3">
+          <AlertTriangle className="w-4 h-4 text-[#E8871A] shrink-0 mt-0.5" />
           <div className="text-xs">
-            <h4 className="font-bold uppercase tracking-wider text-[var(--mc-signal-orange)]">
+            <h4 className="font-bold uppercase tracking-wider text-[#E8871A]">
               Reinforcing Core Concept: {currentQuestion.competency_name}
             </h4>
-            <p className="text-[var(--mc-granite)] mt-0.5">
+            <p className="text-[#52657A] mt-0.5">
               The AI identified ambiguity in prior responses. This foundational check reinforces core principles before climbing back up.
             </p>
           </div>
@@ -141,19 +141,19 @@ export const AdaptiveAssessmentPage: React.FC = () => {
 
       {/* Loading state */}
       {loadingQuestion && (
-        <div className="bg-white rounded-[32px] p-16 text-center border border-[var(--mc-border-light)] text-xs text-[var(--mc-slate-gray)] flex flex-col items-center justify-center gap-3">
-          <div className="w-6 h-6 border-2 border-[var(--mc-ink)] border-t-transparent rounded-full animate-spin" />
+        <div className="bg-white rounded-2xl p-12 text-center border border-[#DCE3EA] text-xs text-[#52657A] flex flex-col items-center justify-center gap-3">
+          <div className="w-6 h-6 border-2 border-[#2563D9] border-t-transparent rounded-full animate-spin" />
           <span>Adapting your next question from the curriculum...</span>
         </div>
       )}
 
       {/* Error state */}
       {error && !loadingQuestion && (
-        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center justify-between">
+        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center justify-between">
           <span>{error}</span>
           <button
             onClick={loadNext}
-            className="font-bold underline cursor-pointer"
+            className="font-bold underline cursor-pointer hover:text-red-900"
           >
             Retry
           </button>
@@ -162,12 +162,12 @@ export const AdaptiveAssessmentPage: React.FC = () => {
 
       {/* Active Question Card */}
       {!loadingQuestion && currentQuestion && (
-        <div className="bg-white rounded-[36px] p-8 sm:p-10 border border-[var(--mc-border-light)] shadow-sm space-y-6">
+        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE3EA] shadow-2xs space-y-6">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--mc-slate-gray)]">
-              Target Competency: <strong className="text-[var(--mc-ink)]">{currentQuestion.competency_name}</strong>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#52657A]">
+              Target Competency: <strong className="text-[#102A43]">{currentQuestion.competency_name}</strong>
             </span>
-            <h2 className="text-xl sm:text-2xl font-medium text-[var(--mc-ink)] leading-snug mt-2">
+            <h2 className="text-base sm:text-lg font-bold text-[#102A43] leading-snug mt-2">
               {currentQuestion.question}
             </h2>
           </div>
@@ -197,8 +197,8 @@ export const AdaptiveAssessmentPage: React.FC = () => {
                       : isWrongSelection
                         ? 'bg-red-50 border-red-400 text-red-950 font-medium'
                         : isSelected
-                          ? 'bg-[var(--mc-canvas)] border-[var(--mc-ink)] text-[var(--mc-ink)] font-medium shadow-xs'
-                          : 'bg-white hover:bg-gray-50 border-gray-200 text-[var(--mc-granite)]'
+                          ? 'bg-blue-50/70 border-[#2563D9] text-[#102A43] font-medium shadow-xs'
+                          : 'bg-white hover:bg-slate-50 border-[#DCE3EA] text-[#52657A]'
                   }`}
                 >
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
@@ -207,8 +207,8 @@ export const AdaptiveAssessmentPage: React.FC = () => {
                       : isWrongSelection
                         ? 'bg-red-600 text-white'
                         : isSelected
-                          ? 'bg-[var(--mc-ink)] text-white'
-                          : 'border border-gray-300 text-gray-500'
+                          ? 'bg-[#2563D9] text-white'
+                          : 'border border-slate-300 text-slate-500'
                   }`}>
                     {optLetter}
                   </div>
@@ -237,11 +237,11 @@ export const AdaptiveAssessmentPage: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="pt-4 border-t border-gray-100 space-y-4 animate-in fade-in duration-150">
+            <div className="pt-4 border-t border-slate-100 space-y-4 animate-in fade-in duration-150">
               <div className={`p-4 rounded-2xl border ${
                 answerResult.is_correct
                   ? 'bg-emerald-50 border-emerald-200 text-emerald-950'
-                  : 'bg-[#FFF5F2] border-[var(--mc-signal-orange)]/20 text-amber-950'
+                  : 'bg-amber-50 border-amber-200 text-amber-950'
               }`}>
                 <div className="flex items-center gap-2 font-semibold text-xs mb-1">
                   {answerResult.is_correct ? (
@@ -251,7 +251,7 @@ export const AdaptiveAssessmentPage: React.FC = () => {
                     </>
                   ) : (
                     <>
-                      <AlertTriangle className="w-4 h-4 text-[var(--mc-signal-orange)]" />
+                      <AlertTriangle className="w-4 h-4 text-[#E8871A]" />
                       <span>Conceptual Discrepancy</span>
                     </>
                   )}
@@ -263,8 +263,8 @@ export const AdaptiveAssessmentPage: React.FC = () => {
                 {/* Adaptive Action Notice */}
                 <div className="mt-3 pt-2.5 border-t border-black/5 flex items-center justify-between text-[11px] font-semibold">
                   <span>Engine Action:</span>
-                  <span className="uppercase tracking-wider">
-                    {answerResult.action === 'escalate' && '⚡ Consecutive Correct • Escalating Level'}
+                  <span className="uppercase tracking-wider font-mono">
+                    {answerResult.action === 'escalate' && '▲ Consecutive Correct • Escalating Level'}
                     {answerResult.action === 'remediate' && `🔄 Reinforcing: ${answerResult.concept_name}`}
                     {answerResult.action === 'continue' && '➡️ Calibrating Assessment Queue'}
                     {answerResult.action === 'session_complete' && '🏁 Assessment Completed'}
