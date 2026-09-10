@@ -28,13 +28,12 @@ def recommend_for_official(official: dict, gap_analysis: list[dict]) -> list[dic
     course_texts = [f"{c['title']}. {c.get('description', '')}" for c in catalogue]
     course_embeddings = embed_batch(course_texts)
 
-    top_gaps = sorted(gap_analysis, key=lambda g: g["gap"], reverse=True)[:_TOP_GAPS_TO_ADDRESS]
+    top_gaps = [g for g in sorted(gap_analysis, key=lambda g: g["gap"], reverse=True) if g["gap"] > 0][:_TOP_GAPS_TO_ADDRESS]
 
-    all_recommendations = []
+    gap_matches = []
+    candidates_to_explain = []
+
     for gap in top_gaps:
-        if gap["gap"] <= 0:
-            continue
-
         gap_text = f"{gap['domain']} competency: {gap['name']}"
         gap_embedding = embed_text(gap_text)
 
@@ -43,45 +42,43 @@ def recommend_for_official(official: dict, gap_analysis: list[dict]) -> list[dic
             for i in range(len(catalogue))
         ]
         scored.sort(key=lambda x: x[0], reverse=True)
-        shortlist = scored[:_SHORTLIST_PER_GAP]
+        top_picks = scored[:_FINAL_RECS_PER_GAP]
 
-        # LLM re-rank + reason generation for this gap's shortlist
-        prompt = f"""
-Official: {official.get('designation')} in {official.get('department')},
-{official.get('experience_years')} years experience.
-Skill gap to address: {gap['name']} (domain: {gap['domain']}, current score {gap['score']}/100).
+        for s, c in top_picks:
+            gap_matches.append((gap, s, c))
+            candidates_to_explain.append({"title": c["title"], "source": c.get("source", "iGOT"), "addresses_gap": gap["name"]})
 
-Candidate training options (mix of iGOT courses and NSSTA programmes):
-{[{"title": c["title"], "source": c.get("source", "iGOT"), "level": c.get("level")} for _, c in shortlist]}
+    # One single LLM call for all shortlisted courses
+    prompt = f"""
+Official: {official.get('designation', 'Officer')} in {official.get('department', 'MoSPI')},
+{official.get('experience_years', 5)} years experience.
 
-Pick the best {_FINAL_RECS_PER_GAP} options for this official and, for each, write a
-one-sentence reason (max 20 words) tailored to their role and experience level.
+Recommended courses:
+{candidates_to_explain}
 
+For each course, write a one-sentence reason (max 20 words) explaining why it was recommended for this official.
 Return JSON array: [{{"title": "...", "reason": "..."}}]
 """
-        try:
-            picks = generate_json(prompt)
-        except Exception:
-            # fallback: just take top similarity results with a generic reason
-            picks = [{"title": c["title"], "reason": f"Closes your {gap['name']} gap."} for _, c in shortlist[:_FINAL_RECS_PER_GAP]]
+    try:
+        picks = generate_json(prompt)
+        reason_map = {p.get("title"): p.get("reason") for p in picks if isinstance(p, dict)}
+    except Exception:
+        reason_map = {}
 
-        title_to_course = {c["title"]: c for _, c in shortlist}
-        title_to_score = {c["title"]: s for s, c in shortlist}
-        for pick in picks:
-            course = title_to_course.get(pick.get("title"))
-            if not course:
-                continue
-            all_recommendations.append(
-                {
-                    "title": course["title"],
-                    "domain": course.get("domain"),
-                    "source": course.get("source", "iGOT"),   # merged pool: iGOT or NSSTA, per user's scope decision
-                    "duration_hrs": course.get("duration_hrs"),
-                    "url": course.get("url"),                 # placeholder link -- swap for real iGOT/NSSTA URL when API access exists
-                    "reason": pick.get("reason", ""),
-                    "score": round(title_to_score.get(pick["title"], 0.0), 3),
-                    "addresses_gap": gap["name"],
-                }
-            )
+    all_recommendations = []
+    for gap, score, course in gap_matches:
+        default_reason = f"Directly bridges your {gap['name']} gap for your role in {official.get('department', 'MoSPI')}."
+        all_recommendations.append(
+            {
+                "title": course["title"],
+                "domain": course.get("domain"),
+                "source": course.get("source", "iGOT"),
+                "duration_hrs": course.get("duration_hrs"),
+                "url": course.get("url"),
+                "reason": reason_map.get(course["title"]) or default_reason,
+                "score": round(score, 3),
+                "addresses_gap": gap["name"],
+            }
+        )
 
     return all_recommendations

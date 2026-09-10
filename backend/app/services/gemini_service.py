@@ -53,7 +53,7 @@ def generate_text(prompt: str) -> str:
             return _groq_fallback(prompt, e)
     elif _legacy_model and settings.GEMINI_API_KEY:
         try:
-            resp = _legacy_model.generate_content(prompt)
+            resp = _legacy_model.generate_content(prompt, request_options={"timeout": 8})
             return resp.text or ""
         except Exception as e:
             logger.warning("google.generativeai error, attempting fallback: %s", e)
@@ -118,6 +118,8 @@ def _groq_fallback(prompt: str, original_error: Exception) -> str:
             resp = client.chat.completions.create(
                 model=settings.GROQ_MODEL,
                 messages=[{"role": "user", "content": prompt}],
+                max_tokens=1024,
+                timeout=8,
             )
             return resp.choices[0].message.content or ""
         except Exception as fallback_error:
