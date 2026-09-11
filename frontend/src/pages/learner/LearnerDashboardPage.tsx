@@ -7,7 +7,12 @@ import { type LearnerDashboardData, fetchLearnerDashboard } from '../../services
 import { 
   ArrowRight, 
   Brain, 
-  Target
+  BookOpen,
+  Sparkles,
+  AlertCircle,
+  Zap,
+  Award,
+  ChevronRight
 } from 'lucide-react';
 
 export const LearnerDashboardPage: React.FC = () => {
@@ -19,6 +24,7 @@ export const LearnerDashboardPage: React.FC = () => {
   const [activeHoveredKey, setActiveHoveredKey] = useState<string | null>(null);
   const [hoveredProgressIndex, setHoveredProgressIndex] = useState<number | null>(null);
   const [activeLearningStage, setActiveLearningStage] = useState<number>(1); // Step 02 active by default
+  const [selectedMoveGapIndex, setSelectedMoveGapIndex] = useState<number>(0);
   const [radarMode, setRadarMode] = useState<'balanced' | 'domains' | 'gaps'>('balanced');
 
   useEffect(() => {
@@ -620,127 +626,231 @@ export const LearnerDashboardPage: React.FC = () => {
       {/* ═════════════════════════════════════════════════════════════════
           4. NEXT BEST LEARNING MOVES (Sections 10 & 11 - Connected Journey)
          ═════════════════════════════════════════════════════════════════ */}
-      <section 
-        aria-label="Next Best Learning Moves"
-        className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE3EA] shadow-2xs space-y-5"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg sm:text-xl font-bold text-[#102A43] tracking-tight">
-              Your next best learning moves
-            </h2>
-            <p className="text-xs text-[#52657A] mt-0.5">
-              Personalized learning sequence mapped directly to identified competency deficits.
-            </p>
-          </div>
+      {(() => {
+        const targetGap = priorityGaps[selectedMoveGapIndex] || priorityGaps[0] || {
+          label: 'Statistical Methodology & Sampling',
+          gap: 15,
+          current: 65,
+          target: 80,
+          domain: 'Statistical',
+          key: 'comp_default'
+        };
 
-          <button
-            onClick={() => handleAction('Curriculum Recommendations', '/learner/learning')}
-            className="px-4 py-2 rounded-lg bg-[#16845B] hover:bg-[#126b4a] text-white text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-2xs self-start sm:self-auto"
+        const learningSteps = [
+          {
+            id: 0,
+            step: '01',
+            title: 'IDENTIFIED GAP',
+            headline: targetGap.label,
+            sub: `Deficit: -${targetGap.gap} pts below target`,
+            icon: AlertCircle,
+            badge: `${targetGap.domain} Domain`,
+            detailTitle: `Priority Capability Deficit: ${targetGap.label}`,
+            detailDesc: `Your current proficiency score is ${targetGap.current} pts against the official MoSPI cadre benchmark of ${targetGap.target}.0 pts. Closing this ${targetGap.gap}-point gap is prioritized for your cadre advancement.`,
+            ctaText: 'Analyze Skill Gap',
+            ctaPath: '/learner/gaps'
+          },
+          {
+            id: 1,
+            step: '02',
+            title: 'RECOMMENDED COURSE',
+            headline: `Curriculum on ${targetGap.label.length > 20 ? targetGap.label.slice(0, 18) + '…' : targetGap.label}`,
+            sub: 'iGOT Karmayogi & NSSTA accredited',
+            icon: BookOpen,
+            badge: 'iGOT Karmayogi',
+            detailTitle: `Specialized Learning Module: ${targetGap.label}`,
+            detailDesc: `Interactive 45-minute self-paced course tailored to bridge your ${targetGap.gap}-point deficit with Ministry case studies and practical statistical guidance.`,
+            ctaText: 'Start iGOT Course',
+            ctaPath: '/learner/learning'
+          },
+          {
+            id: 2,
+            step: '03',
+            title: 'PRACTICAL DRILLS',
+            headline: `${targetGap.domain} Queries`,
+            sub: 'MoSPI sandbox aggregation drills',
+            icon: Zap,
+            badge: 'Hands-on Practice',
+            detailTitle: `Practical Sandbox Exercises: ${targetGap.label}`,
+            detailDesc: `Execute data aggregation, schema validation, and policy report compilation drills in a simulated MoSPI statistical sandbox.`,
+            ctaText: 'Launch Practice Drills',
+            ctaPath: '/learner/assessments/new'
+          },
+          {
+            id: 3,
+            step: '04',
+            title: 'ADAPTIVE DIAGNOSTIC',
+            headline: `Dynamic Difficulty Test`,
+            sub: 'Recalibrates to answer correctness',
+            icon: Brain,
+            badge: 'Adaptive Engine',
+            detailTitle: `Dynamic Diagnostic Validation: ${targetGap.label}`,
+            detailDesc: `Take a 10-question adaptive assessment that dynamically adjusts difficulty based on your responses to verify real concept mastery.`,
+            ctaText: 'Take Assessment',
+            ctaPath: '/learner/assessments/new'
+          },
+          {
+            id: 4,
+            step: '05',
+            title: 'BENCHMARK VERIFIED',
+            headline: `Cadre Target Achieved`,
+            sub: `Reach ${targetGap.target}.0 pts target standard`,
+            icon: Award,
+            badge: 'Profile Updated',
+            detailTitle: `Cadre Proficiency Goal: ${targetGap.label}`,
+            detailDesc: `Upon passing the diagnostic assessment, your profile mastery score automatically updates in real-time across national cadre records.`,
+            ctaText: 'View Progress Trajectory',
+            ctaPath: '/learner/progress'
+          }
+        ];
+
+        const activeStep = learningSteps[activeLearningStage] || learningSteps[1];
+
+        return (
+          <section 
+            aria-label="Next Best Learning Moves"
+            className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DCE3EA] shadow-2xs space-y-6"
           >
-            <span>Continue Learning</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
+            {/* Header & Gap Switcher */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[#E8871A]" />
+                  <h2 className="text-lg sm:text-xl font-bold text-[#102A43] tracking-tight">
+                    Your next best learning moves
+                  </h2>
+                </div>
+                <p className="text-xs text-[#52657A] mt-0.5">
+                  Personalized learning sequence mapped directly to identified competency deficits.
+                </p>
+              </div>
 
-        {/* Connected Horizontal Progression (Vertical on Mobile) */}
-        <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-1">
-          
-          {/* Stage 01: Identified Gap */}
-          <div 
-            onMouseEnter={() => setActiveLearningStage(0)}
-            onClick={() => handleAction('Skill Gap Analysis', '/learner/gaps')}
-            className={`p-4 rounded-xl transition-all cursor-pointer ${
-              activeLearningStage === 0 
-                ? 'bg-amber-100/90 border-2 border-[#E8871A] shadow-xs' 
-                : 'bg-amber-50/80 border border-amber-200 hover:shadow-xs'
-            } text-amber-900`}
-          >
-            <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#E8871A] mb-1">
-              01 IDENTIFIED GAP
+              {/* Priority Gap Tabs */}
+              {priorityGaps.length > 0 && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                  <span className="text-[11px] font-bold uppercase text-[#52657A] mr-1 shrink-0">Focus Deficit:</span>
+                  {priorityGaps.map((gap, idx) => (
+                    <button
+                      key={gap.key}
+                      type="button"
+                      onClick={() => {
+                        setSelectedMoveGapIndex(idx);
+                        setActiveLearningStage(1);
+                      }}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
+                        selectedMoveGapIndex === idx
+                          ? 'bg-[#102A43] text-white shadow-xs'
+                          : 'bg-[#F7F9FC] hover:bg-slate-200 text-[#52657A] border border-[#DCE3EA]'
+                      }`}
+                    >
+                      <span className="truncate max-w-[130px]">{gap.label}</span>
+                      <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
+                        selectedMoveGapIndex === idx ? 'bg-amber-400 text-slate-900' : 'bg-amber-100 text-amber-900'
+                      }`}>
+                        -{gap.gap}pt
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="text-xs font-bold text-[#102A43]">
-              {priorityGaps[0]?.label || 'Statistical Methodology'}
-            </div>
-            <p className="text-[11px] text-amber-800 mt-1 leading-snug">
-              {priorityGaps[0]?.gap ? `${priorityGaps[0].gap} pt deficit below target benchmark` : 'Capability alignment tracking active'}
-            </p>
-          </div>
 
-          {/* Stage 02: Active Next Move (Growth Green Highlight) */}
-          <div 
-            onMouseEnter={() => setActiveLearningStage(1)}
-            onClick={() => handleAction('Personalized Learning Module', '/learner/learning')}
-            className={`p-4 rounded-xl transition-all cursor-pointer ${
-              activeLearningStage === 1
-                ? 'bg-emerald-50 border-2 border-[#16845B] shadow-xs'
-                : 'bg-emerald-50/60 border border-emerald-300'
-            } text-emerald-900`}
-          >
-            <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#16845B] mb-1 flex items-center gap-1">
-              <Target className="w-3 h-3 text-[#16845B]" /> 02 ACTIVE NEXT MOVE
-            </div>
-            <div className="text-xs font-bold text-[#102A43]">
-              {priorityGaps[0] ? `Curriculum on ${priorityGaps[0].label}` : 'MoSPI Specialized Program'}
-            </div>
-            <p className="text-[11px] text-emerald-800 mt-1 leading-snug">
-              iGOT Karmayogi & NSSTA verified
-            </p>
-          </div>
+            {/* 5-Step Horizontal Progression Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-1">
+              {learningSteps.map((step, idx) => {
+                const isActive = activeLearningStage === step.id;
+                const StepIcon = step.icon;
 
-          {/* Stage 03: Practice */}
-          <div 
-            onMouseEnter={() => setActiveLearningStage(2)}
-            onClick={() => handleAction('Adaptive Drill', '/learner/assessments/new')}
-            className={`p-4 rounded-xl transition-all cursor-pointer ${
-              activeLearningStage === 2
-                ? 'bg-slate-100 border-2 border-[#2563D9] shadow-xs'
-                : 'bg-[#F7F9FC] border border-[#DCE3EA] hover:bg-slate-100'
-            } text-[#102A43]`}
-          >
-            <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#52657A] mb-1">
-              03 PRACTICE
-            </div>
-            <div className="text-xs font-bold text-[#102A43]">Survey Query Exercises</div>
-            <p className="text-[11px] text-[#52657A] mt-1 leading-snug">Practical MoSPI aggregation drills</p>
-          </div>
+                return (
+                  <motion.div
+                    key={step.id}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: idx * 0.05 }}
+                    whileHover={{ y: -3 }}
+                    onClick={() => setActiveLearningStage(step.id)}
+                    onMouseEnter={() => setActiveLearningStage(step.id)}
+                    className={`p-4 rounded-xl transition-all cursor-pointer relative flex flex-col justify-between ${
+                      isActive
+                        ? step.id === 0
+                          ? 'bg-amber-100/90 border-2 border-[#E8871A] shadow-xs'
+                          : step.id === 1
+                            ? 'bg-emerald-50 border-2 border-[#16845B] shadow-xs'
+                            : 'bg-blue-50 border-2 border-[#2563D9] shadow-xs'
+                        : 'bg-[#F7F9FC] border border-[#DCE3EA] hover:bg-slate-100/80'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-1 mb-1.5">
+                        <span className={`text-[10px] font-mono font-extrabold uppercase tracking-wider ${
+                          isActive ? 'text-[#102A43]' : 'text-[#52657A]'
+                        }`}>
+                          {step.step} {step.title}
+                        </span>
+                        <StepIcon className={`w-3.5 h-3.5 ${
+                          isActive ? 'text-[#2563D9]' : 'text-slate-400'
+                        }`} />
+                      </div>
+                      <div className="text-xs font-bold text-[#102A43] leading-snug line-clamp-2">
+                        {step.headline}
+                      </div>
+                      <p className="text-[11px] text-[#52657A] mt-1 leading-snug line-clamp-2">
+                        {step.sub}
+                      </p>
+                    </div>
 
-          {/* Stage 04: Reassess */}
-          <div 
-            onMouseEnter={() => setActiveLearningStage(3)}
-            onClick={() => handleAction('Diagnostic Assessment', '/learner/assessments/new')}
-            className={`p-4 rounded-xl transition-all cursor-pointer ${
-              activeLearningStage === 3
-                ? 'bg-slate-100 border-2 border-[#2563D9] shadow-xs'
-                : 'bg-[#F7F9FC] border border-[#DCE3EA] hover:bg-slate-100'
-            } text-[#102A43]`}
-          >
-            <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#52657A] mb-1">
-              04 REASSESS
+                    {/* Step indicator footer */}
+                    <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500 font-medium">
+                      <span>{step.badge}</span>
+                      {isActive && <ChevronRight className="w-3.5 h-3.5 text-[#2563D9]" />}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
-            <div className="text-xs font-bold text-[#102A43]">Dynamic Diagnostic</div>
-            <p className="text-[11px] text-[#52657A] mt-1 leading-snug">Adaptive difficulty validation</p>
-          </div>
 
-          {/* Stage 05: Progress */}
-          <div 
-            onMouseEnter={() => setActiveLearningStage(4)}
-            onClick={() => handleAction('Competency Progress', '/learner/progress')}
-            className={`p-4 rounded-xl transition-all cursor-pointer ${
-              activeLearningStage === 4
-                ? 'bg-slate-100 border-2 border-[#2563D9] shadow-xs'
-                : 'bg-[#F7F9FC] border border-[#DCE3EA] hover:bg-slate-100'
-            } text-[#102A43]`}
-          >
-            <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#52657A] mb-1">
-              05 PROGRESS
-            </div>
-            <div className="text-xs font-bold text-[#102A43]">Profile Delta Verified</div>
-            <p className="text-[11px] text-[#52657A] mt-1 leading-snug">Cadre benchmark updated</p>
-          </div>
+            {/* Active Stage Spotlight Card */}
+            <motion.div
+              key={activeStep.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+              className="p-5 rounded-2xl bg-gradient-to-r from-[#08233D] to-[#102A43] text-white border border-[#8CCBFF]/30 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-5 mt-2"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-white/10 text-[#8CCBFF] border border-white/15 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                  {React.createElement(activeStep.icon, { className: "w-6 h-6" })}
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#8CCBFF] bg-blue-500/20 px-2 py-0.5 rounded border border-blue-400/30">
+                      STEP {activeStep.step} • {activeStep.title}
+                    </span>
+                    <span className="text-[10px] font-semibold text-amber-300">
+                      ● {activeStep.badge}
+                    </span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                    {activeStep.detailTitle}
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
+                    {activeStep.detailDesc}
+                  </p>
+                </div>
+              </div>
 
-        </div>
-      </section>
+              <button
+                type="button"
+                onClick={() => handleAction(activeStep.ctaText, activeStep.ctaPath)}
+                className="px-5 py-2.5 rounded-xl bg-[#2563D9] hover:bg-[#1D4ED8] text-white font-bold text-xs transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer shadow-sm hover:shadow-md border border-white/20 self-start sm:self-auto"
+              >
+                <span>{activeStep.ctaText}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          </section>
+        );
+      })()}
 
       {/* ═════════════════════════════════════════════════════════════════
           5. ADAPTIVE ASSESSMENT SECTION (Section 12 - Integrated Dark Navy)
