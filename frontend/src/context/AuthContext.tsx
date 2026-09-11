@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { type OfficialDetail, fetchOfficialDetail } from '../services/api';
+import { type OfficialDetail, fetchOfficialDetail, pingBackendHealth } from '../services/api';
 
 export type UserRole = 'learner' | 'admin' | null;
 export type UserMode = 'demo' | 'authenticated';
@@ -57,6 +57,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [currentOfficial, setCurrentOfficial] = useState<OfficialDetail | null>(null);
   const [loadingOfficial, setLoadingOfficial] = useState<boolean>(false);
+
+  // Ping backend health to wake up cold container on startup
+  useEffect(() => {
+    pingBackendHealth();
+  }, []);
 
   // Synchronize current official whenever officialId changes
   useEffect(() => {

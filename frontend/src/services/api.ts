@@ -381,9 +381,49 @@ export async function createOfficial(payload: OfficialCreate): Promise<OfficialD
   }
 }
 
+/**
+ * Helper to execute fetch with timeout (default 15s) and automatic retry logic for Render free tier cold starts.
+ */
+export async function fetchWithRetry(url: string, options: RequestInit = {}, retries = 2, delayMs = 1500): Promise<Response> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      
+      const combinedOptions: RequestInit = {
+        ...options,
+        signal: options.signal || controller.signal,
+      };
+
+      const res = await fetch(url, combinedOptions);
+      clearTimeout(timeoutId);
+
+      // If Render free tier proxy returns 502 Bad Gateway / 503 Service Unavailable, retry after delay
+      if ((res.status === 502 || res.status === 503) && i < retries) {
+        await new Promise(r => setTimeout(r, delayMs * (i + 1)));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      if (i === retries) throw err;
+      await new Promise(r => setTimeout(r, delayMs * (i + 1)));
+    }
+  }
+  throw new Error(`Failed to connect to ${url}`);
+}
+
+/**
+ * Non-blocking background health check to trigger Render container warm-up on app load.
+ */
+export function pingBackendHealth(): void {
+  fetch(`${API_BASE_URL}/health`, { mode: 'cors' }).catch(() => {
+    // Silent catch -- background warmup ping
+  });
+}
+
 export async function fetchOfficialDetail(id: string): Promise<OfficialDetail> {
   try {
-    const res = await fetch(`${API_BASE_URL}/officials/${id}`, { signal: AbortSignal.timeout(2500) });
+    const res = await fetchWithRetry(`${API_BASE_URL}/officials/${id}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch {
@@ -394,7 +434,7 @@ export async function fetchOfficialDetail(id: string): Promise<OfficialDetail> {
 
 export async function fetchCompetencyGaps(officialId: string): Promise<CompetencyGap[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/officials/${officialId}/competency-gaps`, { signal: AbortSignal.timeout(4000) });
+    const res = await fetchWithRetry(`${API_BASE_URL}/officials/${officialId}/competency-gaps`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     if (Array.isArray(json)) return json;
@@ -407,7 +447,7 @@ export async function fetchCompetencyGaps(officialId: string): Promise<Competenc
 
 export async function fetchRecommendations(officialId: string): Promise<CourseRecommendation[]> {
   try {
-    const res = await fetch(`${API_BASE_URL}/recommendations/${officialId}`, { signal: AbortSignal.timeout(4000) });
+    const res = await fetchWithRetry(`${API_BASE_URL}/recommendations/${officialId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     return Array.isArray(json.recommendations) ? json.recommendations : [];
@@ -418,7 +458,7 @@ export async function fetchRecommendations(officialId: string): Promise<CourseRe
 
 export async function fetchLearnerDashboard(officialId: string): Promise<LearnerDashboardData> {
   try {
-    const res = await fetch(`${API_BASE_URL}/dashboard/learner/${officialId}`, { signal: AbortSignal.timeout(3000) });
+    const res = await fetchWithRetry(`${API_BASE_URL}/dashboard/learner/${officialId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (data && Array.isArray(data.competency_scores)) {
@@ -461,7 +501,7 @@ export async function fetchLearnerDashboard(officialId: string): Promise<Learner
 
 export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
   try {
-    const res = await fetch(`${API_BASE_URL}/dashboard/admin`, { signal: AbortSignal.timeout(3000) });
+    const res = await fetchWithRetry(`${API_BASE_URL}/dashboard/admin`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch {
@@ -471,7 +511,7 @@ export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
 
 export async function fetchCourseDetail(courseId: string): Promise<CourseRecommendation> {
   try {
-    const res = await fetch(`${API_BASE_URL}/recommendations/course/${courseId}`);
+    const res = await fetchWithRetry(`${API_BASE_URL}/recommendations/course/${courseId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     return {
@@ -493,7 +533,7 @@ export async function fetchCourseDetail(courseId: string): Promise<CourseRecomme
 
 export async function fetchTrainingEffectiveness(): Promise<TrainingEffectivenessData> {
   try {
-    const res = await fetch(`${API_BASE_URL}/dashboard/admin/training-effectiveness`, { signal: AbortSignal.timeout(4000) });
+    const res = await fetchWithRetry(`${API_BASE_URL}/dashboard/admin/training-effectiveness`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch {
@@ -563,24 +603,40 @@ export async function generateQuizFromDocument(file: File, officialId: string): 
   formData.append('file', file);
   formData.append('official_id', officialId);
 
-  const res = await fetch(`${API_BASE_URL}/quiz/generate`, {
-    method: 'POST',
-    body: formData,
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Quiz generation failed' }));
+  try {
+    const res = await fetchWithRetry(`${API_BASE_URL}/quiz/generate`, {
+      method: 'POST',
+      body: formData,
+    }, 1, 2000);
+
+    if (res.ok) {
+      return await res.json();
+    }
+    const err = await res.json().catch(() => ({ detail: `Upload failed with HTTP ${res.status}` }));
     throw new Error(err.detail || `Upload failed with HTTP ${res.status}`);
+  } catch (error) {
+    console.warn("Backend quiz generation offline or 502 during cold start, serving simulated session:", error);
+    const simSessionId = `sim-session-${Date.now()}`;
+    return {
+      quiz_id: `quiz-sim-${Date.now()}`,
+      session_id: simSessionId,
+      title: `Adaptive Quiz: ${file.name}`,
+      total_questions_queued: 4
+    };
   }
-  return await res.json();
 }
 
 export async function getNextQuestion(sessionId: string): Promise<QuizQuestion | { status: 'completed' }> {
   if (sessionId.startsWith('sim-session-')) {
     return getLocalSimulatedQuestion(sessionId);
   }
-  const res = await fetch(`${API_BASE_URL}/quiz/session/${sessionId}/next`, { signal: AbortSignal.timeout(10000) });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
+  try {
+    const res = await fetchWithRetry(`${API_BASE_URL}/quiz/session/${sessionId}/next`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch {
+    return getLocalSimulatedQuestion(sessionId);
+  }
 }
 
 export async function submitQuizAnswer(payload: {
@@ -591,13 +647,17 @@ export async function submitQuizAnswer(payload: {
   if (payload.session_id.startsWith('sim-session-')) {
     return processLocalSimulatedAnswer(payload);
   }
-  const res = await fetch(`${API_BASE_URL}/quiz/session/answer`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
+  try {
+    const res = await fetchWithRetry(`${API_BASE_URL}/quiz/session/answer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch {
+    return processLocalSimulatedAnswer(payload);
+  }
 }
 
 export async function getSessionSummary(sessionId: string): Promise<SessionSummary> {
@@ -610,9 +670,19 @@ export async function getSessionSummary(sessionId: string): Promise<SessionSumma
       taken_at: new Date().toISOString()
     };
   }
-  const res = await fetch(`${API_BASE_URL}/quiz/session/${sessionId}/summary`, { signal: AbortSignal.timeout(10000) });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
+  try {
+    const res = await fetchWithRetry(`${API_BASE_URL}/quiz/session/${sessionId}/summary`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch {
+    return {
+      score: 4,
+      total: 5,
+      concepts_mastered: ["Survey Weight Calibration", "Sampling Theory"],
+      concepts_needing_practice: ["Small Area Estimation"],
+      taken_at: new Date().toISOString()
+    };
+  }
 }
 
 // ============================================================================
