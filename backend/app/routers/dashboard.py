@@ -1,15 +1,16 @@
 from fastapi import APIRouter, HTTPException
-from app.database import fetch_all, fetch_one
+from app.database import fetch_all, fetch_one, resolve_official
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 @router.get("/learner/{official_id}")
 def learner_dashboard(official_id: str):
-    official = fetch_one("SELECT * FROM officials WHERE id = %s", (official_id,))
+    official = resolve_official(official_id)
     if not official:
         raise HTTPException(status_code=404, detail="Official not found")
 
+    real_id = str(official["id"])
     scores = fetch_all(
         """
         SELECT cs.*, c.domain, c.name AS competency_name
@@ -17,12 +18,12 @@ def learner_dashboard(official_id: str):
         JOIN competencies c ON c.id = cs.competency_id
         WHERE cs.official_id = %s
         """,
-        (official_id,),
+        (real_id,),
     )
 
     attempts = fetch_all(
         "SELECT * FROM quiz_attempts WHERE official_id = %s ORDER BY taken_at DESC",
-        (official_id,),
+        (real_id,),
     )
 
     return {"official": official, "competency_scores": scores, "quiz_attempts": attempts}

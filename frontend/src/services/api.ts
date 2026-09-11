@@ -142,7 +142,7 @@ export interface TrainingEffectivenessData {
 
 export const FALLBACK_OFFICIALS: OfficialDetail[] = [
   {
-    id: "f101-anjali-sharma",
+    id: "ddbffb96-2eb5-4246-b7ed-4c5065f3ac15",
     name: "Anjali Sharma",
     designation: "Deputy Director",
     department: "National Statistical Office - Survey Design and Research Division (SDRD)",
@@ -153,10 +153,10 @@ export const FALLBACK_OFFICIALS: OfficialDetail[] = [
     role: "learner"
   },
   {
-    id: "f102-rajesh-verma",
-    name: "Rajesh Verma",
-    designation: "Senior Statistical Officer",
-    department: "Central Statistics Division - National Accounts Division (NAD)",
+    id: "6f24d808-f6f7-4988-a7ff-9a6c076ed91c",
+    name: "Rajesh Kumar Verma",
+    designation: "Joint Director",
+    department: "National Statistical Office - National Accounts Division (NAD)",
     job_role: "GDP Compilation and SUT Modeling",
     education: "M.Sc. Economics (Delhi School of Economics)",
     experience_years: 6,
@@ -164,43 +164,43 @@ export const FALLBACK_OFFICIALS: OfficialDetail[] = [
     role: "learner"
   },
   {
-    id: "f103-priya-patel",
-    name: "Priya Patel",
-    designation: "Junior Statistical Officer",
-    department: "Field Operations Division (FOD) - Regional Office, Ahmedabad",
-    job_role: "Household Survey Supervisor & CAPI Auditor",
-    education: "B.Sc. Statistics (Gujarat University)",
-    experience_years: 3,
-    past_trainings: ["PLFS Field Enumeration Handbook"],
-    role: "learner"
-  },
-  {
-    id: "f104-suresh-kumar",
-    name: "Suresh Kumar",
-    designation: "Joint Director",
-    department: "Data Informatics and Innovation Division (DIID)",
-    job_role: "Enterprise Data Lake & Statistical Portal Architect",
+    id: "3f6a5973-22d5-4bfb-86c4-d0cd2d1cc3d0",
+    name: "Priya Nair",
+    designation: "Assistant Director",
+    department: "Computer Centre - Data Systems Division",
+    job_role: "Data Systems Architect & Database Administrator",
     education: "B.Tech Computer Science + PG Diploma in Big Data",
-    experience_years: 14,
+    experience_years: 5,
     past_trainings: ["Cloud Infrastructure for Governance (iGOT)", "Cybersecurity Frameworks"],
     role: "learner"
   },
   {
-    id: "f105-meera-nair",
-    name: "Meera Nair",
-    designation: "Assistant Director",
-    department: "Price Statistics Division - Consumer Price Index (CPI)",
-    job_role: "Index Number Methodology and Scanner Data Integration",
+    id: "b4f1eefd-06f0-4690-b849-4364cf989272",
+    name: "Suresh Iyer",
+    designation: "Regional Director",
+    department: "National Sample Survey Office - Field Operations Division",
+    job_role: "Household Survey Supervisor & CAPI Auditor",
+    education: "B.Sc. Statistics (Gujarat University)",
+    experience_years: 12,
+    past_trainings: ["PLFS Field Enumeration Handbook"],
+    role: "learner"
+  },
+  {
+    id: "ef2aaa16-6c0d-425f-b21b-d963382bce7e",
+    name: "Meera Joshi",
+    designation: "Section Officer",
+    department: "Social Statistics Division - SDG Monitoring Cell",
+    job_role: "SDG Indicators Tracking & Social Statistics Reporting",
     education: "M.Sc. Applied Statistics (University of Kerala)",
     experience_years: 7,
     past_trainings: ["Time Series Forecasting with R (NSSTA)"],
     role: "learner"
   },
   {
-    id: "f106-arvind-singh",
-    name: "Arvind Singh",
-    designation: "Director",
-    department: "Coordination and Publication Division (CPD)",
+    id: "0fc0f4f0-e9a0-4a75-ae8e-a233abef0623",
+    name: "Arvind Menon",
+    designation: "Deputy Director General",
+    department: "Training Division - NSSTA",
     job_role: "Statistical Dissemination & Inter-Ministerial Data Governance",
     education: "Ph.D. Economics (JNU)",
     experience_years: 18,
@@ -210,7 +210,7 @@ export const FALLBACK_OFFICIALS: OfficialDetail[] = [
 ];
 
 export const FALLBACK_GAPS: Record<string, CompetencyGap[]> = {
-  "f101-anjali-sharma": [
+  "ddbffb96-2eb5-4246-b7ed-4c5065f3ac15": [
     { competency_id: "c1", domain: "Statistical", name: "Sample Weight Calibration", score: 72, target_score: 85, gap: 13, rationale: "Strong theoretical base from M.Stat; calibration on multi-round PLFS non-response warrants refresh." },
     { competency_id: "c2", domain: "Statistical", name: "Small Area Estimation", score: 58, target_score: 80, gap: 22, rationale: "Fay-Herriot and empirical Bayes models require focused hands-on training for sub-district statistics." },
     { competency_id: "c3", domain: "Technical", name: "Python for Data Processing", score: 45, target_score: 75, gap: 30, rationale: "Prior workflow relied predominantly on SAS/SPSS; automated ETL migration needed." },
@@ -219,7 +219,7 @@ export const FALLBACK_GAPS: Record<string, CompetencyGap[]> = {
     { competency_id: "c6", domain: "DigitalGovernance", name: "Data Privacy & Anonymization", score: 65, target_score: 80, gap: 15, rationale: "Differential privacy integration for open microdata under India DPDP Act." },
     { competency_id: "c7", domain: "Behavioural", name: "Technical Presentation Skills", score: 70, target_score: 80, gap: 10, rationale: "Effective executive briefing for National Statistical Commission committee reviews." },
   ],
-  "f102-rajesh-verma": [
+  "6f24d808-f6f7-4988-a7ff-9a6c076ed91c": [
     { competency_id: "c8", domain: "Statistical", name: "System of National Accounts (SNA 2008)", score: 82, target_score: 90, gap: 8, rationale: "Solid grasp of GDP compilation; needs update on digital economy capitalization." },
     { competency_id: "c9", domain: "Statistical", name: "Supply and Use Tables (SUT)", score: 68, target_score: 85, gap: 17, rationale: "Commodity balance balancing algorithms require practical refresher." },
     { competency_id: "c10", domain: "Technical", name: "SQL for Complex Aggregation", score: 55, target_score: 80, gap: 25, rationale: "Direct querying of corporate MCA-21 database returns high optimization gain." },
@@ -339,10 +339,10 @@ export async function fetchOfficials(): Promise<{ data: OfficialDetail[]; isLive
     const res = await fetch(`${API_BASE_URL}/officials`, { signal: AbortSignal.timeout(2500) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    // Merge runtime created officials that might not yet be in the database
+    // Merge runtime created custom officials that might not yet be in the database
     const combined = [...data];
     for (const ro of runtimeOfficials) {
-      if (!combined.some(o => o.id === ro.id)) {
+      if (ro.id.startsWith('custom-') && !combined.some(o => o.id === ro.id)) {
         combined.push(ro);
       }
     }

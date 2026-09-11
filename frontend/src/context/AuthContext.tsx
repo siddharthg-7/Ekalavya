@@ -21,6 +21,15 @@ export interface AuthContextType {
 
 const STORAGE_KEY = 'ekalavya_session';
 
+const LEGACY_ID_MAP: Record<string, string> = {
+  'f101-anjali-sharma': 'ddbffb96-2eb5-4246-b7ed-4c5065f3ac15',
+  'f102-rajesh-verma': '6f24d808-f6f7-4988-a7ff-9a6c076ed91c',
+  'f103-priya-patel': '3f6a5973-22d5-4bfb-86c4-d0cd2d1cc3d0',
+  'f104-suresh-kumar': 'b4f1eefd-06f0-4690-b849-4364cf989272',
+  'f105-meera-nair': 'ef2aaa16-6c0d-425f-b21b-d963382bce7e',
+  'f106-arvind-singh': '0fc0f4f0-e9a0-4a75-ae8e-a233abef0623',
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -30,6 +39,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.role && parsed.mode) {
+          if (parsed.officialId && LEGACY_ID_MAP[parsed.officialId]) {
+            parsed.officialId = LEGACY_ID_MAP[parsed.officialId];
+          }
           return parsed;
         }
       }

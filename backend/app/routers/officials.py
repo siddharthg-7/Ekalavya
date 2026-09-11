@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from app.database import fetch_all, fetch_one, execute
-from app.schemas import OfficialCreate
+from app.database import fetch_all, fetch_one, execute, resolve_official
 from app.services.competency_engine import compute_gap_analysis
+from app.schemas import OfficialCreate
 
 router = APIRouter(prefix="/officials", tags=["officials"])
 
@@ -31,7 +31,7 @@ def create_official(payload: OfficialCreate):
 
 @router.get("/{official_id}")
 def get_official(official_id: str):
-    official = fetch_one("SELECT * FROM officials WHERE id = %s", (official_id,))
+    official = resolve_official(official_id)
     if not official:
         raise HTTPException(status_code=404, detail="Official not found")
     return official
@@ -39,13 +39,14 @@ def get_official(official_id: str):
 
 @router.get("/{official_id}/competency-gaps")
 def get_competency_gaps(official_id: str):
-    official = fetch_one("SELECT * FROM officials WHERE id = %s", (official_id,))
+    official = resolve_official(official_id)
     if not official:
         raise HTTPException(status_code=404, detail="Official not found")
 
+    real_id = str(official["id"])
     competencies = fetch_all("SELECT * FROM competencies")
     score_rows = fetch_all(
-        "SELECT competency_id, score, target_score FROM competency_scores WHERE official_id = %s", (official_id,)
+        "SELECT competency_id, score, target_score FROM competency_scores WHERE official_id = %s", (real_id,)
     )
     existing_scores = {str(r["competency_id"]): float(r["score"]) for r in score_rows}
     gaps = compute_gap_analysis(official, competencies, existing_scores=existing_scores)
@@ -60,7 +61,7 @@ def get_competency_gaps(official_id: str):
                 ON CONFLICT (official_id, competency_id)
                 DO NOTHING
                 """,
-                (official_id, g["competency_id"], g["score"], g["target_score"]),
+                (real_id, g["competency_id"], g["score"], g["target_score"]),
             )
 
     return gaps

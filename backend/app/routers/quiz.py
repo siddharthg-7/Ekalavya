@@ -1,6 +1,6 @@
 import json
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
-from app.database import fetch_all, fetch_one, execute
+from app.database import fetch_all, fetch_one, execute, resolve_official
 from app.services.doc_parser import extract_text
 from app.services import quiz_engine
 from app.schemas import AnswerRequest, AnswerResponse
@@ -44,13 +44,14 @@ async def generate_quiz(file: UploadFile = File(...), official_id: str = Form(..
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    official = fetch_one("SELECT * FROM officials WHERE id = %s", (official_id,))
+    official = resolve_official(official_id)
     if not official:
         raise HTTPException(status_code=404, detail="Official not found")
+    real_official_id = str(official["id"])
 
     competencies = fetch_all("SELECT * FROM competencies")
     score_rows = fetch_all(
-        "SELECT competency_id, score FROM competency_scores WHERE official_id = %s", (official_id,)
+        "SELECT competency_id, score FROM competency_scores WHERE official_id = %s", (real_official_id,)
     )
     scores_by_competency_id = {r["competency_id"]: float(r["score"]) for r in score_rows}
 
@@ -61,11 +62,11 @@ async def generate_quiz(file: UploadFile = File(...), official_id: str = Form(..
 
     material = execute(
         "INSERT INTO learning_materials (uploaded_by, file_name, extracted_text) VALUES (%s, %s, %s) RETURNING *",
-        (official_id, file.filename, text[:8000]),
+        (real_official_id, file.filename, text[:8000]),
     )
     quiz = execute(
         "INSERT INTO quizzes (material_id, official_id, title) VALUES (%s, %s, %s) RETURNING *",
-        (material["id"], official_id, f"Quiz: {file.filename}"),
+        (material["id"], real_official_id, f"Quiz: {file.filename}"),
     )
 
     question_rows = _insert_questions(quiz["id"], questions)
@@ -86,7 +87,7 @@ async def generate_quiz(file: UploadFile = File(...), official_id: str = Form(..
         VALUES (%s, %s, %s, %s, 'in_progress')
         RETURNING *
         """,
-        (quiz["id"], official_id, json.dumps(concept_state), json.dumps(question_ids)),
+        (quiz["id"], real_official_id, json.dumps(concept_state), json.dumps(question_ids)),
     )
 
     return {

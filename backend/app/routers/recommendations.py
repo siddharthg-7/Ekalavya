@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.database import fetch_all, fetch_one
+from app.database import fetch_all, fetch_one, resolve_official
 from app.services.competency_engine import compute_gap_analysis
 from app.services.recommendation_engine import recommend_for_official
 
@@ -8,19 +8,20 @@ router = APIRouter(prefix="/recommendations", tags=["recommendations"])
 
 @router.get("/{official_id}")
 def get_recommendations(official_id: str):
-    official = fetch_one("SELECT * FROM officials WHERE id = %s", (official_id,))
+    official = resolve_official(official_id)
     if not official:
         raise HTTPException(status_code=404, detail="Official not found")
 
+    real_id = str(official["id"])
     competencies = fetch_all("SELECT * FROM competencies")
     score_rows = fetch_all(
-        "SELECT competency_id, score FROM competency_scores WHERE official_id = %s", (official_id,)
+        "SELECT competency_id, score FROM competency_scores WHERE official_id = %s", (real_id,)
     )
     existing_scores = {str(r["competency_id"]): float(r["score"]) for r in score_rows}
     gap_analysis = compute_gap_analysis(official, competencies, existing_scores=existing_scores)
 
     recs = recommend_for_official(official, gap_analysis)
-    return {"official_id": official_id, "recommendations": recs}
+    return {"official_id": real_id, "recommendations": recs}
 
 
 @router.get("/course/{course_id}")

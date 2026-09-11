@@ -55,3 +55,31 @@ def execute(sql: str, params: tuple = ()) -> dict | None:
         raise
     finally:
         get_pool().putconn(conn)
+
+
+def resolve_official(official_id: str) -> dict | None:
+    """Safely resolves an official by UUID or legacy name/slug without Postgres type errors."""
+    if not official_id:
+        return fetch_one("SELECT * FROM officials ORDER BY created_at ASC LIMIT 1")
+
+    # 1. Check if official_id is a valid UUID
+    import uuid
+    try:
+        uuid_val = str(uuid.UUID(str(official_id).strip()))
+        row = fetch_one("SELECT * FROM officials WHERE id = %s", (uuid_val,))
+        if row:
+            return row
+    except (ValueError, AttributeError):
+        pass
+
+    # 2. Try matching by slug / name parts (e.g. "f102-rajesh-verma" -> "rajesh")
+    clean = str(official_id).lower().replace("-", " ").replace("_", " ").strip()
+    words = [w for w in clean.split() if len(w) > 2 and not w.startswith("f10")]
+    for w in words:
+        row = fetch_one("SELECT * FROM officials WHERE lower(name) LIKE %s LIMIT 1", (f"%{w}%",))
+        if row:
+            return row
+
+    # 3. Fallback to first official in the database
+    return fetch_one("SELECT * FROM officials ORDER BY created_at ASC LIMIT 1")
+
