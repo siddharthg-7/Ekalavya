@@ -52,8 +52,8 @@ const LottieGovernmentBuilding: React.FC = () => {
           background="transparent"
           speed="0.8"
           style={{ width: '100%', height: '100%', filter: 'brightness(1.4) contrast(1.1)' }}
-          loop
-          autoplay
+          loop={true}
+          autoplay={true}
         />
       ) : (
         <iframe

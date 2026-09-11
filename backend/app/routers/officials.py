@@ -48,7 +48,11 @@ def get_competency_gaps(official_id: str):
     score_rows = fetch_all(
         "SELECT competency_id, score, target_score FROM competency_scores WHERE official_id = %s", (real_id,)
     )
-    existing_scores = {str(r["competency_id"]): float(r["score"]) for r in score_rows}
+    existing_scores = {
+        str(r["competency_id"]): float(r["score"])
+        for r in score_rows
+        if r.get("competency_id") is not None and r.get("score") is not None
+    }
     gaps = compute_gap_analysis(official, competencies, existing_scores=existing_scores)
 
     for g in gaps:

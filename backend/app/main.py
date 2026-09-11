@@ -14,10 +14,16 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# Wide open for hackathon demo speed -- tighten before anything resembling production.
+# Allow Vercel, localhost, and all origins dynamically
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://ekalavya-chi.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost:4173",
+    ],
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,11 +33,13 @@ app.add_middleware(
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.exception("Unhandled error on %s %s: %s", request.method, request.url.path, exc)
+    origin = request.headers.get("origin", "*")
     response = JSONResponse(
         status_code=500,
         content={"detail": str(exc)},
     )
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = origin
+    response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "*"
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response

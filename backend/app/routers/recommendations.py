@@ -17,7 +17,11 @@ def get_recommendations(official_id: str):
     score_rows = fetch_all(
         "SELECT competency_id, score FROM competency_scores WHERE official_id = %s", (real_id,)
     )
-    existing_scores = {str(r["competency_id"]): float(r["score"]) for r in score_rows}
+    existing_scores = {
+        str(r["competency_id"]): float(r["score"])
+        for r in score_rows
+        if r.get("competency_id") is not None and r.get("score") is not None
+    }
     gap_analysis = compute_gap_analysis(official, competencies, existing_scores=existing_scores)
 
     recs = recommend_for_official(official, gap_analysis)

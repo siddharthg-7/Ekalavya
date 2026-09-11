@@ -53,7 +53,11 @@ async def generate_quiz(file: UploadFile = File(...), official_id: str = Form(..
     score_rows = fetch_all(
         "SELECT competency_id, score FROM competency_scores WHERE official_id = %s", (real_official_id,)
     )
-    scores_by_competency_id = {r["competency_id"]: float(r["score"]) for r in score_rows}
+    scores_by_competency_id = {
+        str(r["competency_id"]): float(r["score"])
+        for r in score_rows
+        if r.get("competency_id") is not None and r.get("score") is not None
+    }
 
     try:
         questions = quiz_engine.generate_initial_quiz(text, official, competencies, scores_by_competency_id)

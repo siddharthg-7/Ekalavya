@@ -1,35 +1,65 @@
 """
 Embeddings for semantic matching between competency gaps and course descriptions.
 
-Using a local sentence-transformers model (all-MiniLM-L6-v2, 384-dim, free,
-no API calls) rather than Gemini's embedding API -- this runs a LOT during
-recommendation generation and dev/testing, and there's no reason to spend
-Gemini free-tier quota on it. Gemini is reserved for the reasoning/generation
-calls (gap analysis, re-ranking, MCQ generation) where it actually adds value.
+Uses a zero-dependency, lightweight feature-hashing vectorizer by default
+to avoid Out-Of-Memory (OOM) crashes on memory-constrained hosting (e.g. Render 512MB free tier),
+with optional sentence-transformers fallback if available.
 """
-from sentence_transformers import SentenceTransformer
-import numpy as np
+import math
+import re
+import logging
 
-_model: SentenceTransformer | None = None
+logger = logging.getLogger(__name__)
+
+_st_model = None
+_st_attempted = False
 
 
-def _get_model() -> SentenceTransformer:
-    global _model
-    if _model is None:
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _model
+def _init_st_model():
+    global _st_model, _st_attempted
+    if _st_attempted:
+        return
+    _st_attempted = True
+    try:
+        from sentence_transformers import SentenceTransformer
+        _st_model = SentenceTransformer("all-MiniLM-L6-v2")
+    except Exception as e:
+        logger.info("SentenceTransformer not loaded; using lightweight feature-hashing vectorizer: %s", e)
+
+
+def tokenize(text: str) -> list[str]:
+    return [w for w in re.findall(r'\w+', text.lower()) if len(w) > 2]
 
 
 def embed_text(text: str) -> list[float]:
-    vec = _get_model().encode(text, normalize_embeddings=True)
-    return vec.tolist()
+    _init_st_model()
+    if _st_model is not None:
+        try:
+            vec = _st_model.encode(text, normalize_embeddings=True)
+            return vec.tolist()
+        except Exception as e:
+            logger.warning("SentenceTransformer encoding failed: %s", e)
+
+    # 128-dimensional normalized feature hashing vectorizer (0MB memory, ultra-fast)
+    dim = 128
+    vec = [0.0] * dim
+    tokens = tokenize(text)
+    if not tokens:
+        return vec
+    for tok in tokens:
+        idx = abs(hash(tok)) % dim
+        vec[idx] += 1.0
+    norm = math.sqrt(sum(v * v for v in vec)) or 1.0
+    return [v / norm for v in vec]
 
 
 def embed_batch(texts: list[str]) -> list[list[float]]:
-    vecs = _get_model().encode(texts, normalize_embeddings=True)
-    return [v.tolist() for v in vecs]
+    return [embed_text(t) for t in texts]
 
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:
-    a_arr, b_arr = np.array(a), np.array(b)
-    return float(np.dot(a_arr, b_arr))
+    if len(a) != len(b):
+        min_len = min(len(a), len(b))
+        a = a[:min_len]
+        b = b[:min_len]
+    return float(sum(x * y for x, y in zip(a, b)))
