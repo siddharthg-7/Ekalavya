@@ -3,10 +3,11 @@ Embeddings for semantic matching between competency gaps and course descriptions
 
 Uses a zero-dependency, lightweight feature-hashing vectorizer by default
 to avoid Out-Of-Memory (OOM) crashes on memory-constrained hosting (e.g. Render 512MB free tier),
-with optional sentence-transformers fallback if available.
+with optional sentence-transformers fallback if explicitly enabled.
 """
-import math
+import os
 import re
+import math
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,6 +21,10 @@ def _init_st_model():
     if _st_attempted:
         return
     _st_attempted = True
+    # Prevent Render 512MB RAM OOM crashes: default to fast 0MB feature hasher unless explicitly opted in
+    if os.getenv("ENABLE_SENTENCE_TRANSFORMERS", "").lower() not in ("1", "true", "yes"):
+        logger.info("Using lightweight feature-hashing vectorizer (ENABLE_SENTENCE_TRANSFORMERS not enabled).")
+        return
     try:
         from sentence_transformers import SentenceTransformer
         _st_model = SentenceTransformer("all-MiniLM-L6-v2")

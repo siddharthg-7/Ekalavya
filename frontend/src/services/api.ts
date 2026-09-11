@@ -1,7 +1,27 @@
 // API Client for MoSPI Primer Platform with resilient fallback mock data
 // Aligned with Primer-api (PS 26101 - AI Skill Intelligence Platform)
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+export function getApiBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('EKALAVYA_API_URL');
+    if (custom && custom.trim()) {
+      return custom.trim().replace(/\/$/, '');
+    }
+  }
+  return (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+}
+
+export function setApiBaseUrl(url: string): void {
+  if (typeof window !== 'undefined') {
+    if (!url || !url.trim()) {
+      localStorage.removeItem('EKALAVYA_API_URL');
+    } else {
+      localStorage.setItem('EKALAVYA_API_URL', url.trim().replace(/\/$/, ''));
+    }
+  }
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 
 export interface OfficialSummary {
   id: string;
@@ -323,10 +343,22 @@ export function cleanOptionBody(optionText: string): string {
 
 export async function checkBackendHealth(): Promise<boolean> {
   try {
-    const res = await fetch(`${API_BASE_URL}/health`, { signal: AbortSignal.timeout(1500) });
+    const res = await fetch(`${getApiBaseUrl()}/health`, { signal: AbortSignal.timeout(2500) });
     return res.ok;
   } catch {
     return false;
+  }
+}
+
+export async function getBackendStatus(): Promise<{ ok: boolean; url: string; latencyMs?: number; error?: string }> {
+  const url = getApiBaseUrl();
+  const start = performance.now();
+  try {
+    const res = await fetch(`${url}/health`, { signal: AbortSignal.timeout(4000) });
+    const latencyMs = Math.round(performance.now() - start);
+    return { ok: res.ok, url, latencyMs };
+  } catch (err: any) {
+    return { ok: false, url, error: err?.message || 'Connection unreachable' };
   }
 }
 
@@ -336,7 +368,7 @@ export async function checkBackendHealth(): Promise<boolean> {
 
 export async function fetchOfficials(): Promise<{ data: OfficialDetail[]; isLive: boolean }> {
   try {
-    const res = await fetch(`${API_BASE_URL}/officials`, { signal: AbortSignal.timeout(2500) });
+    const res = await fetch(`${getApiBaseUrl()}/officials`, { signal: AbortSignal.timeout(2500) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     // Merge runtime created custom officials that might not yet be in the database
@@ -354,7 +386,7 @@ export async function fetchOfficials(): Promise<{ data: OfficialDetail[]; isLive
 
 export async function createOfficial(payload: OfficialCreate): Promise<OfficialDetail> {
   try {
-    const res = await fetch(`${API_BASE_URL}/officials`, {
+    const res = await fetch(`${getApiBaseUrl()}/officials`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -422,14 +454,14 @@ export async function fetchWithRetry(
  * Non-blocking background health check to trigger Render container warm-up on app load.
  */
 export function pingBackendHealth(): void {
-  fetch(`${API_BASE_URL}/health`, { mode: 'cors' }).catch(() => {
+  fetch(`${getApiBaseUrl()}/health`, { mode: 'cors' }).catch(() => {
     // Silent catch -- background warmup ping
   });
 }
 
 export async function fetchOfficialDetail(id: string): Promise<OfficialDetail> {
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/officials/${id}`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/officials/${id}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch {
@@ -440,7 +472,7 @@ export async function fetchOfficialDetail(id: string): Promise<OfficialDetail> {
 
 export async function fetchCompetencyGaps(officialId: string): Promise<CompetencyGap[]> {
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/officials/${officialId}/competency-gaps`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/officials/${officialId}/competency-gaps`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     if (Array.isArray(json)) return json;
@@ -453,7 +485,7 @@ export async function fetchCompetencyGaps(officialId: string): Promise<Competenc
 
 export async function fetchRecommendations(officialId: string): Promise<CourseRecommendation[]> {
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/recommendations/${officialId}`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/recommendations/${officialId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     return Array.isArray(json.recommendations) ? json.recommendations : [];
@@ -464,7 +496,7 @@ export async function fetchRecommendations(officialId: string): Promise<CourseRe
 
 export async function fetchLearnerDashboard(officialId: string): Promise<LearnerDashboardData> {
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/dashboard/learner/${officialId}`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/dashboard/learner/${officialId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (data && Array.isArray(data.competency_scores)) {
@@ -507,7 +539,7 @@ export async function fetchLearnerDashboard(officialId: string): Promise<Learner
 
 export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/dashboard/admin`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/dashboard/admin`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch {
@@ -517,7 +549,7 @@ export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
 
 export async function fetchCourseDetail(courseId: string): Promise<CourseRecommendation> {
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/recommendations/course/${courseId}`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/recommendations/course/${courseId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     return {
@@ -539,7 +571,7 @@ export async function fetchCourseDetail(courseId: string): Promise<CourseRecomme
 
 export async function fetchTrainingEffectiveness(): Promise<TrainingEffectivenessData> {
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/dashboard/admin/training-effectiveness`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/dashboard/admin/training-effectiveness`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch {
@@ -610,7 +642,7 @@ export async function generateQuizFromDocument(file: File, officialId: string): 
   formData.append('official_id', officialId);
 
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/quiz/generate`, {
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/quiz/generate`, {
       method: 'POST',
       body: formData,
     }, 1, 2000, 60000);
@@ -637,7 +669,7 @@ export async function getNextQuestion(sessionId: string): Promise<QuizQuestion |
     return getLocalSimulatedQuestion(sessionId);
   }
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/quiz/session/${sessionId}/next`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/quiz/session/${sessionId}/next`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch {
@@ -654,7 +686,7 @@ export async function submitQuizAnswer(payload: {
     return processLocalSimulatedAnswer(payload);
   }
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/quiz/session/answer`, {
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/quiz/session/answer`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -677,7 +709,7 @@ export async function getSessionSummary(sessionId: string): Promise<SessionSumma
     };
   }
   try {
-    const res = await fetchWithRetry(`${API_BASE_URL}/quiz/session/${sessionId}/summary`);
+    const res = await fetchWithRetry(`${getApiBaseUrl()}/quiz/session/${sessionId}/summary`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch {

@@ -17,6 +17,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { EkalavyaLogo } from '../components/EkalavyaLogo';
+import { BackendStatusBadge } from '../components/BackendStatusModal';
 
 export const LearnerLayout: React.FC = () => {
   const { currentOfficial, signOut } = useAuth();
@@ -161,6 +162,7 @@ export const LearnerLayout: React.FC = () => {
 
         {/* RIGHT: Institutional Badge */}
         <div className="flex items-center gap-3">
+          <BackendStatusBadge />
           <div className="hidden sm:flex items-center gap-2 text-[11px] font-medium text-[#52657A] bg-[#F7F9FC] px-3.5 py-1.5 rounded-full border border-[#DCE3EA]">
             <span className="w-2 h-2 rounded-full bg-[#2563D9]" />
             <span>Mission Karmayogi • NSSTA Framework</span>

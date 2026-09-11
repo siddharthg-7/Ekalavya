@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Compass } from 'lucide-react';
 import { EkalavyaLogo } from '../components/EkalavyaLogo';
+import { BackendStatusBadge } from '../components/BackendStatusModal';
 
 export const PublicLayout: React.FC = () => {
   const location = useLocation();
@@ -16,7 +17,8 @@ export const PublicLayout: React.FC = () => {
         </Link>
 
         {/* Navigation Links */}
-        <nav className="flex items-center gap-2 sm:gap-4 text-xs font-medium">
+        <nav className="flex items-center gap-2 sm:gap-3 text-xs font-medium">
+          <BackendStatusBadge />
           <Link
             to="/help"
             className={`px-3 py-1.5 rounded-full transition-colors ${

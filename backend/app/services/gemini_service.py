@@ -25,7 +25,7 @@ def _init_clients():
     # 1. Try modern official google.genai SDK
     try:
         from google import genai
-        _genai_client = genai.Client(api_key=api_key or "DUMMY_KEY")
+        _genai_client = genai.Client(api_key=api_key or "DUMMY_KEY", http_options={"timeout": 15000})
     except ImportError:
         pass
 

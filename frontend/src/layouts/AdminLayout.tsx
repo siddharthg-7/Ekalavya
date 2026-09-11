@@ -17,6 +17,7 @@ import {
   Shield
 } from 'lucide-react';
 import { EkalavyaLogo } from '../components/EkalavyaLogo';
+import { BackendStatusBadge } from '../components/BackendStatusModal';
 
 export const AdminLayout: React.FC = () => {
   const { signOut } = useAuth();
@@ -147,6 +148,7 @@ export const AdminLayout: React.FC = () => {
 
         {/* RIGHT: Institutional Badge */}
         <div className="flex items-center gap-3">
+          <BackendStatusBadge />
           <div className="hidden sm:flex items-center gap-2 text-[11px] font-medium text-purple-950 bg-purple-50 px-3.5 py-1.5 rounded-full border border-purple-200">
             <Shield className="w-3.5 h-3.5 text-purple-700" />
             <span>MoSPI Cadre Oversight Console</span>
