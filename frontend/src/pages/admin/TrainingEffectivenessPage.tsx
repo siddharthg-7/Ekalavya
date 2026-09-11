@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, CheckCircle, BarChart3, Award } from 'lucide-react';
-import { fetchAdminDashboard, type AdminDashboardData } from '../../services/api';
+import { fetchTrainingEffectiveness, type TrainingEffectivenessData, type TrainingEffectivenessCourse } from '../../services/api';
 
 export const TrainingEffectivenessPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [adminData, setAdminData] = useState<AdminDashboardData | null>(null);
+  const [data, setData] = useState<TrainingEffectivenessData | null>(null);
   const [hoveredCourseIndex, setHoveredCourseIndex] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const data = await fetchAdminDashboard();
-        setAdminData(data);
+        const res = await fetchTrainingEffectiveness();
+        setData(res);
       } catch (err) {
         console.error('Failed to load training effectiveness data', err);
       } finally {
@@ -22,52 +22,7 @@ export const TrainingEffectivenessPage: React.FC = () => {
     load();
   }, []);
 
-  const trainingMetrics = [
-    {
-      courseTitle: 'Small Area Estimation with R for Official Statistics',
-      shortTitle: 'Small Area Estimation',
-      source: 'NSSTA',
-      enrolled: 48,
-      completionRate: 92,
-      preAvgScore: 54,
-      postAvgScore: 82,
-      delta: '+28 pts',
-      status: 'Active Cohort'
-    },
-    {
-      courseTitle: 'Python for Data Processing & Automated ETL in Government',
-      shortTitle: 'Python Automated ETL',
-      source: 'iGOT Karmayogi',
-      enrolled: 76,
-      completionRate: 84,
-      preAvgScore: 42,
-      postAvgScore: 75,
-      delta: '+33 pts',
-      status: 'Continuous'
-    },
-    {
-      courseTitle: 'Statistical Data and Metadata eXchange (SDMX) Standards',
-      shortTitle: 'SDMX Standards',
-      source: 'NSSTA',
-      enrolled: 31,
-      completionRate: 87,
-      preAvgScore: 48,
-      postAvgScore: 78,
-      delta: '+30 pts',
-      status: 'Completed'
-    },
-    {
-      courseTitle: 'Data Anonymization and Differential Privacy in Dissemination',
-      shortTitle: 'Differential Privacy',
-      source: 'iGOT Karmayogi',
-      enrolled: 52,
-      completionRate: 79,
-      preAvgScore: 58,
-      postAvgScore: 81,
-      delta: '+23 pts',
-      status: 'Active Cohort'
-    }
-  ];
+  const trainingMetrics: TrainingEffectivenessCourse[] = data?.courses || [];
 
   if (loading) {
     return (
@@ -112,7 +67,7 @@ export const TrainingEffectivenessPage: React.FC = () => {
           <div className="text-xs font-bold text-[#52657A] uppercase tracking-wider mb-1">
             Active Cohort Cadre
           </div>
-          <div className="text-2xl font-bold text-[#102A43] font-mono">{adminData?.total_officials || 6} Officials</div>
+          <div className="text-2xl font-bold text-[#102A43] font-mono">{data?.total_officials || 6} Officials</div>
           <p className="text-xs text-emerald-600 mt-1 font-medium flex items-center">
             <TrendingUp className="w-3.5 h-3.5 mr-1" /> +18% over prior quarter
           </p>
@@ -121,7 +76,7 @@ export const TrainingEffectivenessPage: React.FC = () => {
           <div className="text-xs font-bold text-[#52657A] uppercase tracking-wider mb-1">
             Avg Skill Improvement
           </div>
-          <div className="text-2xl font-bold text-[#2563D9] font-mono">+28.5 pts</div>
+          <div className="text-2xl font-bold text-[#2563D9] font-mono">{data?.avg_improvement || '+28.5 pts'}</div>
           <p className="text-xs text-[#52657A] mt-1 font-medium">
             Standardized diagnostic delta
           </p>
@@ -130,9 +85,9 @@ export const TrainingEffectivenessPage: React.FC = () => {
           <div className="text-xs font-bold text-[#52657A] uppercase tracking-wider mb-1">
             Course Completion Rate
           </div>
-          <div className="text-2xl font-bold text-[#102A43] font-mono">86.2%</div>
+          <div className="text-2xl font-bold text-[#102A43] font-mono">{data?.completion_rate || '87.5%'}</div>
           <p className="text-xs text-[#52657A] mt-1 font-medium">
-            Across 4 deployed curricula
+            Across {data?.total_courses || 38} deployed curricula
           </p>
         </div>
         <div className="bg-white border border-[#DCE3EA] rounded-2xl p-5 shadow-2xs">

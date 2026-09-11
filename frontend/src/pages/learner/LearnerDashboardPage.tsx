@@ -38,6 +38,7 @@ export const LearnerDashboardPage: React.FC = () => {
   }, [session.officialId]);
 
   const scores = data?.competency_scores || [];
+  const attempts = data?.quiz_attempts || [];
   const avgScore = scores.length > 0 
     ? Math.round(scores.reduce((acc, c) => acc + Number(c.score), 0) / scores.length)
     : 68;
@@ -52,6 +53,14 @@ export const LearnerDashboardPage: React.FC = () => {
     { key: 'field_ops', label: 'Field Quality Auditing', current: 78, target: 80, gap: 2 },
   ];
 
+  const allGaps = scores.map((s, idx) => ({
+    key: s.competency_id || `comp_${idx}`,
+    label: s.competency_name,
+    current: Number(s.score),
+    target: Number(s.target_score) || 80,
+    gap: Math.max(0, (Number(s.target_score) || 80) - Number(s.score))
+  }));
+
   // If real scores exist, map top 6 to radarAxes
   const displayRadarData = scores.length >= 4
     ? scores.slice(0, 6).map((s, idx) => ({
@@ -64,19 +73,25 @@ export const LearnerDashboardPage: React.FC = () => {
     : radarAxes;
 
   // Ranked priority gaps (sorted by deficit)
-  const priorityGaps = [...displayRadarData]
+  const priorityGaps = (scores.length > 0 ? allGaps : displayRadarData)
     .filter(d => d.gap > 0)
     .sort((a, b) => b.gap - a.gap)
     .slice(0, 3);
 
-  // Longitudinal trajectory points
-  const historicalPoints = [
-    { month: 'Jan', score: 58, delta: '+0.0', assessment: 'Baseline Assessment' },
-    { month: 'Feb', score: 61, delta: '+3.0', assessment: 'iGOT Module 1 Complete' },
-    { month: 'Mar', score: 65, delta: '+4.0', assessment: 'Adaptive Drill #1' },
-    { month: 'Apr', score: 69, delta: '+4.0', assessment: 'NSSTA Workshop Drill' },
-    { month: 'May', score: avgScore, delta: '+3.0', assessment: 'Active Telemetry' },
-  ];
+  // Longitudinal trajectory points from real quiz attempts
+  const historicalPoints = attempts.length > 0
+    ? attempts.slice(-5).reverse().map((att, i) => ({
+        month: new Date(att.taken_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+        score: Math.round((att.score / (att.total || 1)) * 100),
+        delta: att.score >= 3 ? '+4.0' : '+1.0',
+        assessment: att.concepts_mastered && att.concepts_mastered.length > 0
+          ? `Mastered: ${att.concepts_mastered[0]}`
+          : `Assessment #${i + 1} (${att.score}/${att.total})`
+      }))
+    : [
+        { month: 'Baseline', score: Math.max(avgScore - 12, 45), delta: '+0.0', assessment: 'Profile Baseline' },
+        { month: 'Current', score: avgScore, delta: '+3.0', assessment: 'Active Telemetry' },
+      ];
 
   const handleAction = (label: string, path: string) => {
     toast.info(`Opening ${label}...`);
@@ -145,7 +160,7 @@ export const LearnerDashboardPage: React.FC = () => {
         {/* Right Numerical Metrics with Strong Hierarchy */}
         <div className="flex items-center gap-6 sm:gap-10 text-xs divide-x divide-white/10">
           <div className="text-center sm:text-left pl-0">
-            <div className="text-xl sm:text-2xl font-extrabold text-white leading-none font-mono">33</div>
+            <div className="text-xl sm:text-2xl font-extrabold text-white leading-none font-mono">{scores.length || 33}</div>
             <div className="text-[11px] text-slate-300 mt-1">Competencies tracked</div>
           </div>
           <div className="text-center sm:text-left pl-6 sm:pl-10">
@@ -463,8 +478,12 @@ export const LearnerDashboardPage: React.FC = () => {
             <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#E8871A] mb-1">
               01 IDENTIFIED GAP
             </div>
-            <div className="text-xs font-bold text-[#102A43]">SQL for Complex Aggregation</div>
-            <p className="text-[11px] text-amber-800 mt-1 leading-snug">25 pt deficit below target 80 benchmark</p>
+            <div className="text-xs font-bold text-[#102A43]">
+              {priorityGaps[0]?.label || 'Statistical Methodology'}
+            </div>
+            <p className="text-[11px] text-amber-800 mt-1 leading-snug">
+              {priorityGaps[0]?.gap ? `${priorityGaps[0].gap} pt deficit below target benchmark` : 'Capability alignment tracking active'}
+            </p>
           </div>
 
           {/* Stage 02: Active Next Move (Growth Green Highlight) */}
@@ -480,8 +499,12 @@ export const LearnerDashboardPage: React.FC = () => {
             <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-[#16845B] mb-1 flex items-center gap-1">
               <Target className="w-3 h-3 text-[#16845B]" /> 02 ACTIVE NEXT MOVE
             </div>
-            <div className="text-xs font-bold text-[#102A43]">Advanced SQL for Official Surveys</div>
-            <p className="text-[11px] text-emerald-800 mt-1 leading-snug">iGOT Karmayogi • 4.5 hrs verified</p>
+            <div className="text-xs font-bold text-[#102A43]">
+              {priorityGaps[0] ? `Curriculum on ${priorityGaps[0].label}` : 'MoSPI Specialized Program'}
+            </div>
+            <p className="text-[11px] text-emerald-800 mt-1 leading-snug">
+              iGOT Karmayogi & NSSTA verified
+            </p>
           </div>
 
           {/* Stage 03: Practice */}

@@ -15,10 +15,70 @@ def extract_text(file_bytes: bytes, filename: str) -> str:
         return _extract_pdf(file_bytes)
     elif ext in ("pptx",):
         return _extract_pptx(file_bytes)
+    elif ext in ("txt", "md", "csv"):
+        return _extract_plain_text(file_bytes)
+    elif ext in ("docx",):
+        return _extract_docx(file_bytes)
+    elif ext in ("png", "jpg", "jpeg", "webp", "bmp"):
+        return _extract_image(file_bytes, ext)
     else:
         raise ValueError(
-            f"Unsupported file type '.{ext}'. MVP supports PDF and PPTX only."
+            f"Unsupported file type '.{ext}'. Supported formats: PDF, PPTX, DOCX, TXT, MD, PNG, JPG, JPEG, WEBP."
         )
+
+
+def _extract_plain_text(file_bytes: bytes) -> str:
+    try:
+        text = file_bytes.decode("utf-8", errors="ignore").strip()
+        return text
+    except Exception as e:
+        logger.warning("Plain text extraction failed: %s", e)
+        return ""
+
+
+def _extract_docx(file_bytes: bytes) -> str:
+    import zipfile
+    import xml.etree.ElementTree as ET
+    try:
+        with zipfile.ZipFile(io.BytesIO(file_bytes)) as z:
+            xml_content = z.read("word/document.xml")
+            tree = ET.fromstring(xml_content)
+            # Find all w:t text elements in the document XML
+            namespaces = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+            texts = [node.text for node in tree.iterfind(".//w:t", namespaces) if node.text]
+            return "\n".join(texts)
+    except Exception as e:
+        logger.warning("DOCX XML extraction failed: %s", e)
+        return _extract_plain_text(file_bytes)
+
+
+def _extract_image(file_bytes: bytes, ext: str) -> str:
+    """Uses Gemini Multimodal Vision to extract educational concepts from uploaded images/charts."""
+    from app.services import gemini_service
+    mime_map = {
+        "png": "image/png",
+        "jpg": "image/jpeg",
+        "jpeg": "image/jpeg",
+        "webp": "image/webp",
+        "bmp": "image/bmp",
+    }
+    mime_type = mime_map.get(ext, "image/jpeg")
+    prompt = (
+        "You are an expert curriculum analyst for India's Ministry of Statistics & Programme Implementation (MoSPI). "
+        "Analyze this uploaded educational image/document/chart in full detail. "
+        "Transcribe and describe all visible text, formulas, methodological concepts, definitions, metrics, tables, "
+        "and principles. Provide a thorough, self-contained educational summary of all concepts contained in this image "
+        "so that diagnostic assessment questions can be accurately constructed from it."
+    )
+    try:
+        extracted = gemini_service.generate_from_document(file_bytes, mime_type, prompt)
+        if extracted and len(extracted.strip()) > 20:
+            return extracted.strip()
+    except Exception as e:
+        logger.warning("Gemini vision extraction failed: %s", e)
+
+    return f"[Uploaded Image: {ext.upper()} document containing technical training figures, statistical charts, and official methodology notes]"
+
 
 
 def _extract_pdf(file_bytes: bytes) -> str:

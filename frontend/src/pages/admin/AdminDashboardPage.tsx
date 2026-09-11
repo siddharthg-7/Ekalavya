@@ -120,7 +120,7 @@ export const AdminDashboardPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-3xl font-bold text-[#102A43] font-mono">
-                  38 Courses
+                  {data.total_courses || 38} Courses
                 </div>
               </div>
               <span className="text-xs text-[#2563D9] font-semibold mt-3 flex items-center gap-1">
@@ -143,7 +143,7 @@ export const AdminDashboardPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-2xl font-bold text-purple-900 font-mono">
-                  4 Domains
+                  {data.total_competencies ? `${data.total_competencies} Competencies` : '4 Domains'}
                 </div>
               </div>
               <span className="text-xs text-purple-700 font-semibold mt-3 flex items-center gap-1">

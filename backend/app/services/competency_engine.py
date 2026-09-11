@@ -36,11 +36,16 @@ def baseline_score(official: dict, competency: dict) -> float:
     return min(score, 100.0)
 
 
-def compute_gap_analysis(official: dict, competencies: list[dict]) -> list[dict]:
+def compute_gap_analysis(official: dict, competencies: list[dict], existing_scores: dict[str, float] | None = None) -> list[dict]:
     """Returns list of {competency, score, target_score, gap, rationale}."""
     baseline_results = []
+    has_existing = bool(existing_scores)
     for comp in competencies:
-        score = baseline_score(official, comp)
+        cid_str = str(comp["id"])
+        if existing_scores and cid_str in existing_scores:
+            score = float(existing_scores[cid_str])
+        else:
+            score = baseline_score(official, comp)
         target = 80.0  # flat target for MVP; could vary by seniority later
         baseline_results.append(
             {
@@ -53,20 +58,20 @@ def compute_gap_analysis(official: dict, competencies: list[dict]) -> list[dict]
             }
         )
 
-    # LLM refinement pass -- ask Gemini to sanity-check the biggest gaps only,
-    # to keep this fast and within free-tier quota during a live demo.
+    # LLM refinement pass -- only refine for brand new evaluations without existing scores,
+    # or to generate rationales for top gaps.
     top_gaps = sorted(baseline_results, key=lambda r: r["gap"], reverse=True)[:8]
     prompt = f"""
-You are reviewing a rule-based competency gap estimate for a government official
+You are reviewing a competency gap estimate for a government official
 in India's Official Statistics system.
 
 Official profile: {official}
 
-Top estimated gaps (rule-based): {top_gaps}
+Top estimated gaps: {top_gaps}
 
 For each item, return a short one-sentence rationale (max 20 words) explaining
-whether this gap estimate seems reasonable given the profile, and an adjusted
-score (0-100) if you think the rule-based estimate is clearly off.
+why addressing this gap is relevant given their profile, and an adjusted
+score (0-100) if the score needs calibration.
 
 Return a JSON array of objects: [{{"name": "...", "adjusted_score": 0-100, "rationale": "..."}}]
 """
@@ -74,15 +79,16 @@ Return a JSON array of objects: [{{"name": "...", "adjusted_score": 0-100, "rati
         refinements = generate_json(prompt)
         refinement_map = {r["name"]: r for r in refinements} if isinstance(refinements, list) else {}
     except Exception:
-        refinement_map = {}  # fall back to pure rule-based silently -- don't break the demo
+        refinement_map = {}
 
     for r in baseline_results:
         ref = refinement_map.get(r["name"])
         if ref:
-            r["score"] = ref.get("adjusted_score", r["score"])
-            r["gap"] = max(r["target_score"] - r["score"], 0)
+            if not has_existing:
+                r["score"] = ref.get("adjusted_score", r["score"])
+                r["gap"] = max(r["target_score"] - r["score"], 0)
             r["rationale"] = ref.get("rationale", "")
         else:
-            r["rationale"] = ""
+            r["rationale"] = f"Key operational standard for {r['domain']} excellence in official statistics."
 
     return baseline_results

@@ -29,8 +29,12 @@ def _insert_questions(quiz_id: str, questions: list[dict]) -> list[dict]:
 
 @router.post("/generate")
 async def generate_quiz(file: UploadFile = File(...), official_id: str = Form(...)):
-    if not file.filename.lower().endswith((".pdf", ".pptx")):
-        raise HTTPException(status_code=400, detail="Only PDF and PPTX are supported in MVP.")
+    allowed_extensions = (".pdf", ".pptx", ".docx", ".txt", ".md", ".csv", ".png", ".jpg", ".jpeg", ".webp", ".bmp")
+    if not file.filename.lower().endswith(allowed_extensions):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file format. Please upload a PDF, PPTX, DOCX, TXT, MD, or image (PNG, JPG, WEBP)."
+        )
 
     file_bytes = await file.read()
     try:

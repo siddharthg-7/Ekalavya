@@ -56,11 +56,50 @@ Return JSON array: [{{"name": "exact competency name from the list"}}]
 """
     try:
         picks = generate_json(prompt)
-        name_to_comp = {c["name"]: c for c in competencies}
-        matched = [name_to_comp[p["name"]] for p in picks if p.get("name") in name_to_comp]
-        return matched[:max_concepts] if matched else [competencies[0]]
+        norm_map = {c["name"].strip().lower(): c for c in competencies}
+        matched = []
+        if isinstance(picks, list):
+            for p in picks:
+                if not isinstance(p, dict) or not p.get("name"):
+                    continue
+                raw_name = str(p["name"]).strip().lower()
+                if raw_name in norm_map:
+                    matched.append(norm_map[raw_name])
+                else:
+                    # Fuzzy / substring match against known competencies
+                    for norm_cname, comp in norm_map.items():
+                        if norm_cname in raw_name or raw_name in norm_cname:
+                            matched.append(comp)
+                            break
+        
+        # Deduplicate while preserving order
+        seen_ids = set()
+        unique_matched = []
+        for m in matched:
+            if m["id"] not in seen_ids:
+                seen_ids.add(m["id"])
+                unique_matched.append(m)
+
+        if unique_matched:
+            return unique_matched[:max_concepts]
+
+        # Semantic keyword search against competencies if LLM didn't produce exact matches
+        doc_lower = truncated.lower()
+        scored_comps = []
+        for c in competencies:
+            overlap = 0
+            for word in c["name"].lower().split():
+                if len(word) > 3 and word in doc_lower:
+                    overlap += 1
+            if overlap > 0:
+                scored_comps.append((overlap, c))
+        scored_comps.sort(key=lambda x: x[0], reverse=True)
+        if scored_comps:
+            return [c for _, c in scored_comps[:max_concepts]]
+
+        return [competencies[0]]
     except Exception:
-        return [competencies[0]]  # fail safe: still generate something rather than erroring the demo
+        return [competencies[0]]
 
 
 def generate_tagged_questions(

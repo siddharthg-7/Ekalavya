@@ -44,17 +44,23 @@ def get_competency_gaps(official_id: str):
         raise HTTPException(status_code=404, detail="Official not found")
 
     competencies = fetch_all("SELECT * FROM competencies")
-    gaps = compute_gap_analysis(official, competencies)
+    score_rows = fetch_all(
+        "SELECT competency_id, score, target_score FROM competency_scores WHERE official_id = %s", (official_id,)
+    )
+    existing_scores = {str(r["competency_id"]): float(r["score"]) for r in score_rows}
+    gaps = compute_gap_analysis(official, competencies, existing_scores=existing_scores)
 
     for g in gaps:
-        execute(
-            """
-            INSERT INTO competency_scores (official_id, competency_id, score, target_score)
-            VALUES (%s, %s, %s, %s)
-            ON CONFLICT (official_id, competency_id)
-            DO UPDATE SET score = EXCLUDED.score, target_score = EXCLUDED.target_score, updated_at = now()
-            """,
-            (official_id, g["competency_id"], g["score"], g["target_score"]),
-        )
+        cid_str = str(g["competency_id"])
+        if cid_str not in existing_scores:
+            execute(
+                """
+                INSERT INTO competency_scores (official_id, competency_id, score, target_score)
+                VALUES (%s, %s, %s, %s)
+                ON CONFLICT (official_id, competency_id)
+                DO NOTHING
+                """,
+                (official_id, g["competency_id"], g["score"], g["target_score"]),
+            )
 
     return gaps

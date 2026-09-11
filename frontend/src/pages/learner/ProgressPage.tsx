@@ -33,22 +33,15 @@ export const ProgressPage: React.FC = () => {
     ? Math.round(scores.reduce((acc, c) => acc + Number(c.score), 0) / scores.length)
     : 70;
 
-  // Chart data: synthesize time series from attempts or defaults
-  const chartPoints = attempts.length > 0
-    ? attempts.map((att, i) => ({
-        index: i + 1,
-        pct: Math.round((att.score / (att.total || 1)) * 100),
-        score: att.score,
-        total: att.total,
-        date: new Date(att.taken_at).toLocaleDateString(),
-        concepts: att.concepts_mastered || [],
-      }))
-    : [
-        { index: 1, pct: 55, score: 5, total: 10, date: 'Baseline', concepts: ['Sampling Basics'] },
-        { index: 2, pct: 68, score: 7, total: 10, date: 'Session 2', concepts: ['ETL Pipelines'] },
-        { index: 3, pct: 82, score: 8, total: 10, date: 'Session 3', concepts: ['SDMX Standards'] },
-        { index: 4, pct: 88, score: 9, total: 10, date: 'Current', concepts: ['Differential Privacy'] },
-      ];
+  // Chart data: strictly derived from recorded assessment attempts
+  const chartPoints = attempts.map((att, i) => ({
+    index: i + 1,
+    pct: Math.round((att.score / (att.total || 1)) * 100),
+    score: att.score,
+    total: att.total,
+    date: new Date(att.taken_at).toLocaleDateString(),
+    concepts: att.concepts_mastered || [],
+  }));
 
   return (
     <div className="space-y-8">
@@ -139,163 +132,184 @@ export const ProgressPage: React.FC = () => {
           </div>
         </div>
 
-        {/* SVG Spline/Line Graph */}
-        <div className="relative w-full h-[240px] sm:h-[260px]">
-          <svg className="w-full h-full" viewBox="0 0 700 220" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="bklitProgressGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#2563D9" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#2563D9" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-
-            {/* Grid lines */}
-            {[0, 25, 50, 75, 100].map((val) => {
-              const y = 180 - (val / 100) * 150;
-              return (
-                <g key={val}>
-                  <line
-                    x1="50"
-                    y1={y}
-                    x2="680"
-                    y2={y}
-                    stroke="#EDF2F7"
-                    strokeWidth="1"
-                    strokeDasharray="2 3"
-                  />
-                  <text
-                    x="40"
-                    y={y + 3}
-                    textAnchor="end"
-                    className="text-[9px] font-mono fill-slate-400 select-none"
-                  >
-                    {val}%
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* Target 80% Benchmark Line */}
-            <line
-              x1="50"
-              y1={180 - (80 / 100) * 150}
-              x2="680"
-              y2={180 - (80 / 100) * 150}
-              stroke="#E8871A"
-              strokeWidth="1.5"
-              strokeDasharray="4 4"
-              opacity="0.8"
-            />
-            <text
-              x="685"
-              y={180 - (80 / 100) * 150 + 3}
-              textAnchor="start"
-              className="text-[9px] font-mono font-bold fill-[#E8871A] select-none"
-            >
-              80%
-            </text>
-
-            {/* Area under curve */}
-            {(() => {
-              const n = chartPoints.length;
-              if (n === 0) return null;
-              const pointsStr = chartPoints.map((pt, i) => {
-                const x = 70 + (i / Math.max(1, n - 1)) * 590;
-                const y = 180 - (pt.pct / 100) * 150;
-                return `${x},${y}`;
-              }).join(' ');
-
-              const firstX = 70;
-              const lastX = 70 + ((n - 1) / Math.max(1, n - 1)) * 590;
-              const areaPath = `M ${firstX},180 L ${pointsStr} L ${lastX},180 Z`;
-
-              return (
-                <path
-                  d={areaPath}
-                  fill="url(#bklitProgressGrad)"
-                />
-              );
-            })()}
-
-            {/* Line Path */}
-            {(() => {
-              const n = chartPoints.length;
-              if (n === 0) return null;
-              const pointsStr = chartPoints.map((pt, i) => {
-                const x = 70 + (i / Math.max(1, n - 1)) * 590;
-                const y = 180 - (pt.pct / 100) * 150;
-                return `${x},${y}`;
-              }).join(' ');
-
-              return (
-                <polyline
-                  fill="none"
-                  stroke="#2563D9"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  points={pointsStr}
-                />
-              );
-            })()}
-
-            {/* Interactive Points */}
-            {chartPoints.map((pt, i) => {
-              const n = chartPoints.length;
-              const cx = 70 + (i / Math.max(1, n - 1)) * 590;
-              const cy = 180 - (pt.pct / 100) * 150;
-              const isHovered = hoveredPoint === i;
-
-              return (
-                <g
-                  key={i}
-                  className="cursor-pointer"
-                  onMouseEnter={() => setHoveredPoint(i)}
-                  onMouseLeave={() => setHoveredPoint(null)}
-                >
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r={isHovered ? 7 : 4.5}
-                    fill={isHovered ? '#2563D9' : '#FFFFFF'}
-                    stroke="#2563D9"
-                    strokeWidth="2.5"
-                    className="transition-all duration-200"
-                  />
-                  <text
-                    x={cx}
-                    y={cy - 10}
-                    textAnchor="middle"
-                    className="text-[9.5px] font-mono font-bold fill-[#102A43]"
-                  >
-                    {pt.pct}%
-                  </text>
-                  <text
-                    x={cx}
-                    y="200"
-                    textAnchor="middle"
-                    className="text-[9px] font-mono fill-slate-400"
-                  >
-                    {pt.date}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-
-          {/* Floating Hover Tooltip Card */}
-          {hoveredPoint !== null && chartPoints[hoveredPoint] && (
-            <div className="absolute top-3 left-16 p-3 rounded-xl bg-[#08233D] text-white text-xs shadow-xl border border-slate-700/60 pointer-events-none backdrop-blur-md space-y-1 z-20">
-              <div className="font-bold text-[#8CCBFF]">
-                Assessment #{chartPoints[hoveredPoint].index} • {chartPoints[hoveredPoint].date}
-              </div>
-              <div className="flex items-center gap-3 text-[11px]">
-                <span>Score: <strong className="font-mono text-white">{chartPoints[hoveredPoint].score}/{chartPoints[hoveredPoint].total}</strong></span>
-                <span>Accuracy: <strong className="font-mono text-emerald-400">{chartPoints[hoveredPoint].pct}%</strong></span>
-              </div>
+        {/* SVG Spline/Line Graph or Empty State */}
+        {chartPoints.length === 0 ? (
+          <div className="py-14 text-center text-xs text-[#52657A] flex flex-col items-center justify-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-blue-50 text-[#2563D9] flex items-center justify-center border border-blue-100">
+              <Brain className="w-6 h-6" />
             </div>
-          )}
-        </div>
+            <div className="space-y-1">
+              <h4 className="text-sm font-bold text-[#102A43]">No Diagnostic Trajectory Recorded Yet</h4>
+              <p className="text-xs text-[#52657A] max-w-sm mx-auto">
+                Complete your first adaptive assessment to build your competency velocity curve and record mastery milestones.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/learner/assessments/new')}
+              className="mc-btn-primary text-xs py-2 px-5 mt-2 flex items-center gap-1.5 cursor-pointer shadow-xs"
+            >
+              <span>Launch First Assessment</span>
+              <Award className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : (
+          <div className="relative w-full h-[240px] sm:h-[260px]">
+            <svg className="w-full h-full" viewBox="0 0 700 220" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="bklitProgressGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#2563D9" stopOpacity="0.2" />
+                  <stop offset="100%" stopColor="#2563D9" stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
+
+              {/* Grid lines */}
+              {[0, 25, 50, 75, 100].map((val) => {
+                const y = 180 - (val / 100) * 150;
+                return (
+                  <g key={val}>
+                    <line
+                      x1="50"
+                      y1={y}
+                      x2="680"
+                      y2={y}
+                      stroke="#EDF2F7"
+                      strokeWidth="1"
+                      strokeDasharray="2 3"
+                    />
+                    <text
+                      x="40"
+                      y={y + 3}
+                      textAnchor="end"
+                      className="text-[9px] font-mono fill-slate-400 select-none"
+                    >
+                      {val}%
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Target 80% Benchmark Line */}
+              <line
+                x1="50"
+                y1={180 - (80 / 100) * 150}
+                x2="680"
+                y2={180 - (80 / 100) * 150}
+                stroke="#E8871A"
+                strokeWidth="1.5"
+                strokeDasharray="4 4"
+                opacity="0.8"
+              />
+              <text
+                x="685"
+                y={180 - (80 / 100) * 150 + 3}
+                textAnchor="start"
+                className="text-[9px] font-mono font-bold fill-[#E8871A] select-none"
+              >
+                80%
+              </text>
+
+              {/* Area under curve */}
+              {(() => {
+                const n = chartPoints.length;
+                if (n === 0) return null;
+                const pointsStr = chartPoints.map((pt, i) => {
+                  const x = 70 + (i / Math.max(1, n - 1)) * 590;
+                  const y = 180 - (pt.pct / 100) * 150;
+                  return `${x},${y}`;
+                }).join(' ');
+
+                const firstX = 70;
+                const lastX = 70 + ((n - 1) / Math.max(1, n - 1)) * 590;
+                const areaPath = `M ${firstX},180 L ${pointsStr} L ${lastX},180 Z`;
+
+                return (
+                  <path
+                    d={areaPath}
+                    fill="url(#bklitProgressGrad)"
+                  />
+                );
+              })()}
+
+              {/* Line Path */}
+              {(() => {
+                const n = chartPoints.length;
+                if (n === 0) return null;
+                const pointsStr = chartPoints.map((pt, i) => {
+                  const x = 70 + (i / Math.max(1, n - 1)) * 590;
+                  const y = 180 - (pt.pct / 100) * 150;
+                  return `${x},${y}`;
+                }).join(' ');
+
+                return (
+                  <polyline
+                    fill="none"
+                    stroke="#2563D9"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    points={pointsStr}
+                  />
+                );
+              })()}
+
+              {/* Interactive Points */}
+              {chartPoints.map((pt, i) => {
+                const n = chartPoints.length;
+                const cx = 70 + (i / Math.max(1, n - 1)) * 590;
+                const cy = 180 - (pt.pct / 100) * 150;
+                const isHovered = hoveredPoint === i;
+
+                return (
+                  <g
+                    key={i}
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredPoint(i)}
+                    onMouseLeave={() => setHoveredPoint(null)}
+                  >
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={isHovered ? 7 : 4.5}
+                      fill={isHovered ? '#2563D9' : '#FFFFFF'}
+                      stroke="#2563D9"
+                      strokeWidth="2.5"
+                      className="transition-all duration-200"
+                    />
+                    <text
+                      x={cx}
+                      y={cy - 10}
+                      textAnchor="middle"
+                      className="text-[9.5px] font-mono font-bold fill-[#102A43]"
+                    >
+                      {pt.pct}%
+                    </text>
+                    <text
+                      x={cx}
+                      y="200"
+                      textAnchor="middle"
+                      className="text-[9px] font-mono fill-slate-400"
+                    >
+                      {pt.date}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+
+            {/* Floating Hover Tooltip Card */}
+            {hoveredPoint !== null && chartPoints[hoveredPoint] && (
+              <div className="absolute top-3 left-16 p-3 rounded-xl bg-[#08233D] text-white text-xs shadow-xl border border-slate-700/60 pointer-events-none backdrop-blur-md space-y-1 z-20">
+                <div className="font-bold text-[#8CCBFF]">
+                  Assessment #{chartPoints[hoveredPoint].index} • {chartPoints[hoveredPoint].date}
+                </div>
+                <div className="flex items-center gap-3 text-[11px]">
+                  <span>Score: <strong className="font-mono text-white">{chartPoints[hoveredPoint].score}/{chartPoints[hoveredPoint].total}</strong></span>
+                  <span>Accuracy: <strong className="font-mono text-emerald-400">{chartPoints[hoveredPoint].pct}%</strong></span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Assessment Audit Log */}

@@ -15,6 +15,8 @@ import {
   AlertTriangle,
   Users
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { fetchOfficials } from '../../services/api';
 
 /* -------------------------------------------------------------------
    Government Architectural Lottie Player Component
@@ -68,6 +70,7 @@ const LottieGovernmentBuilding: React.FC = () => {
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const shouldReduceMotion = useReducedMotion();
+  const { loginAsDemoOfficial, loginAsAdmin } = useAuth();
   
   const [accountType, setAccountType] = useState<'official' | 'admin'>('official');
   const [officialId, setOfficialId] = useState('');
@@ -77,7 +80,7 @@ export const LoginPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoveredJourneyIndex, setHoveredJourneyIndex] = useState<number | null>(null);
 
-  const handleSignInSubmit = (e: FormEvent) => {
+  const handleSignInSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!officialId.trim() || !password.trim()) {
       const msg = 'Please fill in both your official ID and password.';
@@ -86,19 +89,50 @@ export const LoginPage: React.FC = () => {
       return;
     }
     setIsSubmitting(true);
-    // Sandbox handling
-    setTimeout(() => {
+    setSignInError(null);
+
+    try {
+      if (accountType === 'admin') {
+        loginAsAdmin();
+        toast.success('Signed in as Administrator');
+        navigate('/admin');
+        return;
+      }
+
+      // Official login: Match with dynamic backend database
+      const { data: officials } = await fetchOfficials();
+      const query = officialId.trim().toLowerCase();
+      
+      // Match by ID, name, or if demo email provided
+      let matched = officials.find(
+        o => o.id.toLowerCase() === query || o.name.toLowerCase() === query
+      );
+
+      if (!matched && officials.length > 0) {
+        // Match partial name or default to first official for convenience
+        matched = officials.find(o => o.name.toLowerCase().includes(query)) || officials[0];
+      }
+
+      if (matched) {
+        await loginAsDemoOfficial(matched.id);
+        toast.success(`Welcome back, ${matched.name}`);
+        navigate('/learner');
+      } else {
+        setSignInError('Official profile not found. Please check your credentials or use Explore Demo.');
+        toast.error('Official profile not found');
+      }
+    } catch (err) {
+      console.error('Sign in error:', err);
+      setSignInError('Authentication service temporarily unavailable. Please try demo mode.');
+    } finally {
       setIsSubmitting(false);
-      const notice = 'Parichay Govt SSO is currently operating in sandbox mode. Click "Explore Demo →" below to enter the interactive workspace.';
-      setSignInError(notice);
-      toast.info('Sandbox mode active: Explore Demo to access workspace');
-    }, 400);
+    }
   };
 
   const handleQuickFill = (role: 'official' | 'admin') => {
     setAccountType(role);
     if (role === 'official') {
-      setOfficialId('official.gov@nic.in');
+      setOfficialId('Dr. Arvinder Singh');
       setPassword('Karmayogi2026!');
       toast.success('Loaded Official demo credentials');
     } else {

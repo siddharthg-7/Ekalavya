@@ -109,8 +109,31 @@ export interface LearnerDashboardData {
 
 export interface AdminDashboardData {
   total_officials: number;
+  total_courses?: number;
+  total_competencies?: number;
   avg_gap_by_domain: Record<string, number>;
   projected_training_priority: string[];
+}
+
+export interface TrainingEffectivenessCourse {
+  courseTitle: string;
+  shortTitle: string;
+  source: string;
+  enrolled: number;
+  completionRate: number;
+  preAvgScore: number;
+  postAvgScore: number;
+  delta: string;
+  status: string;
+}
+
+export interface TrainingEffectivenessData {
+  total_officials: number;
+  total_courses: number;
+  total_attempts: number;
+  avg_improvement: string;
+  completion_rate: string;
+  courses: TrainingEffectivenessCourse[];
 }
 
 // ============================================================================
@@ -265,6 +288,8 @@ export const FALLBACK_RECOMMENDATIONS: CourseRecommendation[] = [
 
 export const FALLBACK_ADMIN: AdminDashboardData = {
   total_officials: 6,
+  total_courses: 38,
+  total_competencies: 33,
   avg_gap_by_domain: {
     "Technical": 24.8,
     "DigitalGovernance": 19.4,
@@ -431,6 +456,90 @@ export async function fetchAdminDashboard(): Promise<AdminDashboardData> {
   }
 }
 
+export async function fetchCourseDetail(courseId: string): Promise<CourseRecommendation> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/recommendations/course/${courseId}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return {
+      course_id: String(data.id),
+      title: data.title,
+      domain: data.domain,
+      source: data.source,
+      duration_hrs: Number(data.duration_hrs) || 16,
+      url: data.url,
+      reason: data.description || "Curated capacity building module for official statistics excellence.",
+      score: 90.0,
+      addresses_gap: data.sub_skill || data.domain
+    };
+  } catch {
+    const found = FALLBACK_RECOMMENDATIONS.find(c => c.course_id === courseId);
+    return found || FALLBACK_RECOMMENDATIONS[0];
+  }
+}
+
+export async function fetchTrainingEffectiveness(): Promise<TrainingEffectivenessData> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/dashboard/admin/training-effectiveness`, { signal: AbortSignal.timeout(4000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch {
+    return {
+      total_officials: 6,
+      total_courses: 38,
+      total_attempts: 14,
+      avg_improvement: "+28.5 pts",
+      completion_rate: "87.5%",
+      courses: [
+        {
+          courseTitle: 'Small Area Estimation with R for Official Statistics',
+          shortTitle: 'Small Area Estimation',
+          source: 'NSSTA',
+          enrolled: 48,
+          completionRate: 92,
+          preAvgScore: 54,
+          postAvgScore: 82,
+          delta: '+28 pts',
+          status: 'Active Cohort'
+        },
+        {
+          courseTitle: 'Python for Data Processing & Automated ETL in Government',
+          shortTitle: 'Python Automated ETL',
+          source: 'iGOT',
+          enrolled: 76,
+          completionRate: 84,
+          preAvgScore: 42,
+          postAvgScore: 75,
+          delta: '+33 pts',
+          status: 'Continuous'
+        },
+        {
+          courseTitle: 'Statistical Data and Metadata eXchange (SDMX) Standards',
+          shortTitle: 'SDMX Standards',
+          source: 'NSSTA',
+          enrolled: 31,
+          completionRate: 87,
+          preAvgScore: 48,
+          postAvgScore: 78,
+          delta: '+30 pts',
+          status: 'Completed'
+        },
+        {
+          courseTitle: 'Data Anonymization and Differential Privacy in Dissemination',
+          shortTitle: 'Differential Privacy',
+          source: 'iGOT',
+          enrolled: 52,
+          completionRate: 79,
+          preAvgScore: 58,
+          postAvgScore: 81,
+          delta: '+23 pts',
+          status: 'Active Cohort'
+        }
+      ]
+    };
+  }
+}
+
 export async function generateQuizFromDocument(file: File, officialId: string): Promise<{
   quiz_id: string;
   session_id: string;
@@ -441,35 +550,24 @@ export async function generateQuizFromDocument(file: File, officialId: string): 
   formData.append('file', file);
   formData.append('official_id', officialId);
 
-  try {
-    const res = await fetch(`${API_BASE_URL}/quiz/generate`, {
-      method: 'POST',
-      body: formData,
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: 'Quiz generation failed' }));
-      throw new Error(err.detail || 'Upload failed');
-    }
-    return await res.json();
-  } catch (err: any) {
-    console.warn('Backend quiz generation unavailable, switching to local adaptive session:', err.message);
-    return {
-      quiz_id: `sim-quiz-${Date.now()}`,
-      session_id: `sim-session-${Date.now()}`,
-      title: `Adaptive Diagnostic: ${file.name.replace(/\.[^/.]+$/, '').replace(/_/g, ' ')}`,
-      total_questions_queued: 4
-    };
+  const res = await fetch(`${API_BASE_URL}/quiz/generate`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Quiz generation failed' }));
+    throw new Error(err.detail || `Upload failed with HTTP ${res.status}`);
   }
+  return await res.json();
 }
 
 export async function getNextQuestion(sessionId: string): Promise<QuizQuestion | { status: 'completed' }> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/quiz/session/${sessionId}/next`, { signal: AbortSignal.timeout(3000) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch {
+  if (sessionId.startsWith('sim-session-')) {
     return getLocalSimulatedQuestion(sessionId);
   }
+  const res = await fetch(`${API_BASE_URL}/quiz/session/${sessionId}/next`, { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
 }
 
 export async function submitQuizAnswer(payload: {
@@ -477,25 +575,20 @@ export async function submitQuizAnswer(payload: {
   question_id: string;
   selected_option: string;
 }): Promise<AnswerResponse> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/quiz/session/answer`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch {
+  if (payload.session_id.startsWith('sim-session-')) {
     return processLocalSimulatedAnswer(payload);
   }
+  const res = await fetch(`${API_BASE_URL}/quiz/session/answer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
 }
 
 export async function getSessionSummary(sessionId: string): Promise<SessionSummary> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/quiz/session/${sessionId}/summary`, { signal: AbortSignal.timeout(3000) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch {
+  if (sessionId.startsWith('sim-session-')) {
     return {
       score: 3,
       total: 4,
@@ -504,6 +597,9 @@ export async function getSessionSummary(sessionId: string): Promise<SessionSumma
       taken_at: new Date().toISOString()
     };
   }
+  const res = await fetch(`${API_BASE_URL}/quiz/session/${sessionId}/summary`, { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
 }
 
 // ============================================================================

@@ -7,7 +7,7 @@ import { Clock, ArrowRight, ArrowLeft, Target } from 'lucide-react';
 export const PersonalizedLearningPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { session } = useAuth();
+  const { session, currentOfficial } = useAuth();
 
   const [courses, setCourses] = useState<CourseRecommendation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +32,21 @@ export const PersonalizedLearningPage: React.FC = () => {
     load();
   }, [session.officialId]);
 
-  // Tab counts
-  const inProgressCourses = courses.slice(0, 2);
-  const completedCourses = courses.slice(2, 5);
+  // Tab counts dynamically mapped
+  const inProgressCourses = courses.slice(0, Math.min(2, courses.length));
+  const pastTrainings: string[] = currentOfficial?.past_trainings || [];
+
+  const completedCourses: CourseRecommendation[] = pastTrainings.map((t, idx) => ({
+    course_id: `comp-past-${idx}`,
+    title: t,
+    domain: 'Official Statistics',
+    source: t.includes('(iGOT)') ? 'iGOT' : 'NSSTA',
+    duration_hrs: 16,
+    url: t.includes('(iGOT)') ? 'https://igotkarmayogi.gov.in' : 'https://nssta.gov.in',
+    reason: 'Verified prerequisite training recorded in official cadre profile.',
+    score: 95.0,
+    addresses_gap: 'Core Cadre Qualification'
+  }));
 
   const displayedCourses = activeTab === 'recommended' 
     ? courses 
@@ -102,7 +114,7 @@ export const PersonalizedLearningPage: React.FC = () => {
                 : 'bg-white hover:bg-slate-50 text-[#52657A] border border-[#DCE3EA]'
             }`}
           >
-            In Progress (2)
+            In Progress ({inProgressCourses.length})
           </button>
           <button
             onClick={() => setActiveTab('completed')}
@@ -112,7 +124,7 @@ export const PersonalizedLearningPage: React.FC = () => {
                 : 'bg-white hover:bg-slate-50 text-[#52657A] border border-[#DCE3EA]'
             }`}
           >
-            Completed (3)
+            Completed ({completedCourses.length})
           </button>
         </div>
 

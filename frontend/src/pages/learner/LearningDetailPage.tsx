@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { type CourseRecommendation, FALLBACK_RECOMMENDATIONS } from '../../services/api';
+import { type CourseRecommendation, fetchCourseDetail } from '../../services/api';
 import { ArrowLeft, ExternalLink, Brain, Clock, Award, Target } from 'lucide-react';
 
 export const LearningDetailPage: React.FC = () => {
@@ -8,10 +8,41 @@ export const LearningDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Try to read course from location state, or fallback to lookup
-  const course: CourseRecommendation = location.state?.course || 
-    FALLBACK_RECOMMENDATIONS.find(c => c.course_id === id) || 
-    FALLBACK_RECOMMENDATIONS[0];
+  const [course, setCourse] = React.useState<CourseRecommendation | null>(location.state?.course || null);
+  const [loading, setLoading] = React.useState(!location.state?.course);
+
+  React.useEffect(() => {
+    if (course || !id) return;
+    async function load() {
+      setLoading(true);
+      try {
+        const data = await fetchCourseDetail(id!);
+        setCourse(data);
+      } catch (err) {
+        console.error('Failed to load course details:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [id, course]);
+
+  if (loading) {
+    return (
+      <div className="max-w-3xl mx-auto py-24 text-center text-xs text-[#52657A] flex items-center justify-center gap-2">
+        <div className="w-4 h-4 border-2 border-[#2563D9] border-t-transparent rounded-full animate-spin" />
+        <span>Loading curriculum module dossier...</span>
+      </div>
+    );
+  }
+
+  if (!course) {
+    return (
+      <div className="max-w-3xl mx-auto py-12 text-center text-xs text-[#52657A]">
+        Course module details unavailable.
+      </div>
+    );
+  }
 
   const isIgot = course.source.toUpperCase() === 'IGOT';
 

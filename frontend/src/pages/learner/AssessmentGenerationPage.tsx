@@ -120,17 +120,17 @@ export const AssessmentGenerationPage: React.FC = () => {
           </div>
 
           <h3 className="text-base font-bold text-[#102A43] mb-1.5">
-            Drop your training material here
+            Drop your training material or educational image here
           </h3>
           <p className="text-xs text-[#52657A] mb-5">
-            Supports official PDF or PPTX manuals. The AI parses tables, formulas, and definitions.
+            Supports official manuals (PDF, PPTX, DOCX, TXT) and diagrams/charts (PNG, JPG, WEBP). The AI extracts concepts and constructs adaptive evaluations.
           </p>
 
           <label className="mc-btn-primary cursor-pointer text-xs py-2.5 px-6">
-            <span>Browse Local Document</span>
+            <span>Browse Document or Image</span>
             <input
               type="file"
-              accept=".pdf,.pptx"
+              accept=".pdf,.pptx,.docx,.txt,.md,.csv,.png,.jpg,.jpeg,.webp"
               className="hidden"
               onChange={(e) => {
                 if (e.target.files && e.target.files[0]) {
