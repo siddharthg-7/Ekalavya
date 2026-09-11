@@ -4,7 +4,7 @@
   "private": true,
   "description": "Ekalavya FastAPI Backend Service",
   "scripts": {
-    "dev": "python -m uvicorn app.main:app --reload --port 8000",
-    "start": "python -m uvicorn app.main:app --reload --port 8000"
+    "dev": "powershell -Command \"if (Test-Path .venv\\Scripts\\python.exe) { .venv\\Scripts\\python.exe -m uvicorn app.main:app --reload --port 8000 } else { python -m uvicorn app.main:app --reload --port 8000 }\"",
+    "start": "powershell -Command \"if (Test-Path .venv\\Scripts\\python.exe) { .venv\\Scripts\\python.exe -m uvicorn app.main:app --reload --port 8000 } else { python -m uvicorn app.main:app --reload --port 8000 }\""
   }
 }

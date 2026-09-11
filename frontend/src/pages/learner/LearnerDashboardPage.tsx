@@ -19,6 +19,7 @@ export const LearnerDashboardPage: React.FC = () => {
   const [activeHoveredKey, setActiveHoveredKey] = useState<string | null>(null);
   const [hoveredProgressIndex, setHoveredProgressIndex] = useState<number | null>(null);
   const [activeLearningStage, setActiveLearningStage] = useState<number>(1); // Step 02 active by default
+  const [radarMode, setRadarMode] = useState<'balanced' | 'domains' | 'gaps'>('balanced');
 
   useEffect(() => {
     async function load() {
@@ -43,37 +44,121 @@ export const LearnerDashboardPage: React.FC = () => {
     ? Math.round(scores.reduce((acc, c) => acc + Number(c.score), 0) / scores.length)
     : 68;
 
-  // 6 Primary Competency Axes mapped to official's framework
-  const radarAxes = [
-    { key: 'sql_agg', label: 'SQL for Complex Aggregation', current: 55, target: 80, gap: 25 },
-    { key: 'data_sharing', label: 'Inter-Agency Data Sharing', current: 60, target: 80, gap: 20 },
-    { key: 'supply_tables', label: 'Supply & Use Tables', current: 68, target: 85, gap: 17 },
-    { key: 'survey_design', label: 'Survey Sampling & Weights', current: 82, target: 80, gap: 0 },
-    { key: 'report_drafting', label: 'National Accounts Reports', current: 85, target: 80, gap: 0 },
-    { key: 'field_ops', label: 'Field Quality Auditing', current: 78, target: 80, gap: 2 },
-  ];
+  const formatDomain = (dom: string) => {
+    if (dom === 'DigitalGovernance') return 'Digital Governance';
+    return dom;
+  };
 
   const allGaps = scores.map((s, idx) => ({
     key: s.competency_id || `comp_${idx}`,
     label: s.competency_name,
+    domain: s.domain || 'General',
     current: Number(s.score),
     target: Number(s.target_score) || 80,
     gap: Math.max(0, (Number(s.target_score) || 80) - Number(s.score))
   }));
 
-  // If real scores exist, map top 6 to radarAxes
-  const displayRadarData = scores.length >= 4
-    ? scores.slice(0, 6).map((s, idx) => ({
-        key: s.competency_id || `comp_${idx}`,
-        label: s.competency_name,
-        current: Number(s.score),
-        target: Number(s.target_score) || 80,
-        gap: Math.max(0, (Number(s.target_score) || 80) - Number(s.score))
-      }))
-    : radarAxes;
+  const totalDeficitCount = allGaps.filter(g => g.gap > 0).length;
+
+  // Domain aggregator
+  const domainMap: Record<string, { totalScore: number; totalTarget: number; count: number }> = {};
+  scores.forEach(s => {
+    const d = s.domain || 'General';
+    if (!domainMap[d]) domainMap[d] = { totalScore: 0, totalTarget: 0, count: 0 };
+    domainMap[d].totalScore += Number(s.score);
+    domainMap[d].totalTarget += Number(s.target_score) || 80;
+    domainMap[d].count += 1;
+  });
+
+  const domainSummaries = Object.entries(domainMap).map(([d, stat]) => {
+    const avg = Math.round(stat.totalScore / (stat.count || 1));
+    const target = Math.round(stat.totalTarget / (stat.count || 1));
+    return {
+      domain: d,
+      name: formatDomain(d),
+      avgScore: avg,
+      targetScore: target,
+      gap: Math.max(0, target - avg),
+      count: stat.count
+    };
+  });
+
+  // Balanced 6-axis selection across all 4 domains
+  const getBalancedRadarData = () => {
+    if (scores.length < 4) {
+      return [
+        { key: 'sql_agg', label: 'SQL for Complex Aggregation', domain: 'Technical', current: 55, target: 80, gap: 25 },
+        { key: 'data_sharing', label: 'Inter-Agency Data Sharing', domain: 'DigitalGovernance', current: 60, target: 80, gap: 20 },
+        { key: 'supply_tables', label: 'Supply & Use Tables', domain: 'Statistical', current: 68, target: 85, gap: 17 },
+        { key: 'survey_design', label: 'Survey Sampling & Weights', domain: 'Statistical', current: 82, target: 80, gap: 0 },
+        { key: 'report_drafting', label: 'National Accounts Reports', domain: 'Behavioural', current: 85, target: 80, gap: 0 },
+        { key: 'field_ops', label: 'Field Quality Auditing', domain: 'Technical', current: 78, target: 80, gap: 2 },
+      ];
+    }
+
+    const byDomain: Record<string, typeof allGaps> = {
+      Statistical: allGaps.filter(g => g.domain === 'Statistical').sort((a, b) => b.gap - a.gap),
+      Technical: allGaps.filter(g => g.domain === 'Technical').sort((a, b) => b.gap - a.gap),
+      DigitalGovernance: allGaps.filter(g => g.domain === 'DigitalGovernance').sort((a, b) => b.gap - a.gap),
+      Behavioural: allGaps.filter(g => g.domain === 'Behavioural').sort((a, b) => b.gap - a.gap),
+    };
+
+    const selected: typeof allGaps = [];
+    // 2 Statistical
+    if (byDomain.Statistical?.[0]) selected.push(byDomain.Statistical[0]);
+    if (byDomain.Statistical?.[1]) selected.push(byDomain.Statistical[1]);
+    // 2 Technical
+    if (byDomain.Technical?.[0]) selected.push(byDomain.Technical[0]);
+    if (byDomain.Technical?.[1]) selected.push(byDomain.Technical[1]);
+    // 1 Digital Governance
+    if (byDomain.DigitalGovernance?.[0]) selected.push(byDomain.DigitalGovernance[0]);
+    // 1 Behavioural
+    if (byDomain.Behavioural?.[0]) selected.push(byDomain.Behavioural[0]);
+
+    // If fewer than 6, fill from remaining highest gaps
+    if (selected.length < 6) {
+      const selectedKeys = new Set(selected.map(s => s.key));
+      const remaining = [...allGaps].sort((a, b) => b.gap - a.gap).filter(g => !selectedKeys.has(g.key));
+      selected.push(...remaining.slice(0, 6 - selected.length));
+    }
+
+    return selected;
+  };
+
+  // 4 Cadre Domain radar data
+  const getDomainRadarData = () => {
+    if (domainSummaries.length === 0) {
+      return [
+        { key: 'dom_stat', label: 'Statistical Domain', domain: 'Statistical', current: 74, target: 80, gap: 6 },
+        { key: 'dom_tech', label: 'Technical Domain', domain: 'Technical', current: 65, target: 80, gap: 15 },
+        { key: 'dom_gov', label: 'Digital Governance', domain: 'DigitalGovernance', current: 72, target: 80, gap: 8 },
+        { key: 'dom_beh', label: 'Behavioural Domain', domain: 'Behavioural', current: 79, target: 80, gap: 1 },
+      ];
+    }
+    return domainSummaries.map(ds => ({
+      key: `dom_${ds.domain}`,
+      label: ds.name,
+      domain: ds.domain,
+      current: ds.avgScore,
+      target: ds.targetScore,
+      gap: ds.gap
+    }));
+  };
+
+  // Top 6 Deficits radar data
+  const getTopGapsRadarData = () => {
+    return [...allGaps].sort((a, b) => b.gap - a.gap).slice(0, 6);
+  };
+
+  // Dynamic radar data based on active mode
+  const displayRadarData = radarMode === 'domains'
+    ? getDomainRadarData()
+    : radarMode === 'gaps'
+      ? getTopGapsRadarData()
+      : getBalancedRadarData();
 
   // Ranked priority gaps (sorted by deficit)
-  const priorityGaps = (scores.length > 0 ? allGaps : displayRadarData)
+  const priorityGaps = [...allGaps]
     .filter(d => d.gap > 0)
     .sort((a, b) => b.gap - a.gap)
     .slice(0, 3);
@@ -114,14 +199,18 @@ export const LearnerDashboardPage: React.FC = () => {
             <span>OFFICIAL COMPETENCY PORTAL</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#102A43] tracking-tight">
-            Welcome back, {currentOfficial?.name || 'Rajesh'}.
+            Welcome back, {currentOfficial?.name || 'Statistical Officer'}.
           </h1>
           <p className="text-xs sm:text-sm text-[#52657A] font-medium flex flex-wrap items-center gap-1.5">
             <span>{currentOfficial?.designation || 'Senior Statistical Officer'}</span>
             <span className="text-slate-300">•</span>
-            <span>Central Statistics Division</span>
-            <span className="text-slate-300">•</span>
             <span>{currentOfficial?.department || 'National Accounts Division (NAD)'}</span>
+            {currentOfficial?.job_role && (
+              <>
+                <span className="text-slate-300">•</span>
+                <span className="text-slate-500 font-normal">{currentOfficial.job_role}</span>
+              </>
+            )}
           </p>
         </div>
 
@@ -164,12 +253,12 @@ export const LearnerDashboardPage: React.FC = () => {
             <div className="text-[11px] text-slate-300 mt-1">Competencies tracked</div>
           </div>
           <div className="text-center sm:text-left pl-6 sm:pl-10">
-            <div className="text-xl sm:text-2xl font-extrabold text-[#E8871A] leading-none font-mono">{priorityGaps.length}</div>
-            <div className="text-[11px] text-slate-300 mt-1">Priority gaps</div>
+            <div className="text-xl sm:text-2xl font-extrabold text-[#E8871A] leading-none font-mono">{totalDeficitCount}</div>
+            <div className="text-[11px] text-slate-300 mt-1">Deficits (&lt;80)</div>
           </div>
           <div className="text-center sm:text-left pl-6 sm:pl-10">
             <div className="text-xl sm:text-2xl font-extrabold text-emerald-400 leading-none font-mono">{avgScore}%</div>
-            <div className="text-[11px] text-slate-300 mt-1">Alignment</div>
+            <div className="text-[11px] text-slate-300 mt-1">Avg Alignment</div>
           </div>
         </div>
       </section>
@@ -189,22 +278,73 @@ export const LearnerDashboardPage: React.FC = () => {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <h2 className="text-lg sm:text-xl font-bold text-[#102A43] tracking-tight">
-                Your Competency Profile
-              </h2>
-              <div className="flex items-center gap-3 text-[11px] font-medium text-[#52657A]">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#2563D9]" /> Current
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-1 border-t-2 border-dashed border-[#E8871A]" /> Expected (80)
-                </span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold text-[#102A43] tracking-tight">
+                  Your Competency Profile
+                </h2>
+                <p className="text-xs text-[#52657A] mt-0.5">
+                  {radarMode === 'domains' 
+                    ? '4 core cadre domains aggregated against the 80 benchmark' 
+                    : radarMode === 'gaps' 
+                      ? 'Top 6 competency deficits ranked by improvement urgency'
+                      : '6 balanced competencies spanning Statistical, Technical, Digital Governance & Behavioural'}
+                </p>
+              </div>
+
+              {/* View Switcher Controls */}
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg text-[11px] font-semibold self-start sm:self-auto shrink-0 border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setRadarMode('balanced')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    radarMode === 'balanced'
+                      ? 'bg-white text-[#102A43] shadow-xs font-bold'
+                      : 'text-[#52657A] hover:text-[#102A43]'
+                  }`}
+                  title="2 Statistical, 2 Technical, 1 Digital Governance, 1 Behavioural"
+                >
+                  Balanced (4 Domains)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRadarMode('domains')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    radarMode === 'domains'
+                      ? 'bg-white text-[#102A43] shadow-xs font-bold'
+                      : 'text-[#52657A] hover:text-[#102A43]'
+                  }`}
+                  title="Cadre macro averages across 4 operational domains"
+                >
+                  Cadre Domains (4)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRadarMode('gaps')}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    radarMode === 'gaps'
+                      ? 'bg-white text-[#102A43] shadow-xs font-bold'
+                      : 'text-[#52657A] hover:text-[#102A43]'
+                  }`}
+                  title="Top 6 highest capability deficits"
+                >
+                  Top Deficits (6)
+                </button>
               </div>
             </div>
-            <p className="text-xs text-[#52657A] mb-4">
-              33 domain competencies mapped to your role. Hover nodes or priority gaps to inspect delta.
-            </p>
+
+            {/* Legend */}
+            <div className="flex items-center gap-4 text-[11px] font-medium text-[#52657A] mb-2 pb-1 border-b border-slate-100">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#2563D9]" /> Current Score
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-1 border-t-2 border-dashed border-[#E8871A]" /> Expected Benchmark (80)
+              </span>
+              <span className="text-slate-400 ml-auto hidden sm:inline text-[10px]">
+                Hover nodes or priority gaps to inspect delta
+              </span>
+            </div>
 
             {/* Large SVG Radar Chart */}
             <div className="relative w-full h-[320px] sm:h-[380px] flex items-center justify-center my-2">
@@ -252,8 +392,11 @@ export const LearnerDashboardPage: React.FC = () => {
                   const labelX = 155 * Math.cos(angle);
                   const labelY = 155 * Math.sin(angle);
                   
-                  const isHovered = activeHoveredKey === d.key;
-                  const isMuted = activeHoveredKey !== null && activeHoveredKey !== d.key;
+                  const isDirectHovered = activeHoveredKey === d.key;
+                  const hoveredGapDomain = activeHoveredKey ? allGaps.find(g => g.key === activeHoveredKey)?.domain : null;
+                  const isDomainMatchHovered = radarMode === 'domains' && Boolean(hoveredGapDomain && d.domain === hoveredGapDomain);
+                  const isHovered = isDirectHovered || isDomainMatchHovered;
+                  const isMuted = activeHoveredKey !== null && !isHovered;
 
                   return (
                     <g key={d.key} className="transition-opacity duration-200" opacity={isMuted ? 0.35 : 1}>
@@ -264,7 +407,7 @@ export const LearnerDashboardPage: React.FC = () => {
                         x2={x} 
                         y2={y} 
                         stroke={isHovered ? '#2563D9' : '#DCE3EA'} 
-                        strokeWidth={isHovered ? 2 : 0.8} 
+                        strokeWidth={isHovered ? 2.2 : 0.8} 
                       />
                       
                       {/* Axis Label */}
@@ -281,7 +424,7 @@ export const LearnerDashboardPage: React.FC = () => {
                         onMouseEnter={() => setActiveHoveredKey(d.key)}
                         onMouseLeave={() => setActiveHoveredKey(null)}
                       >
-                        {d.label.length > 20 ? d.label.slice(0, 18) + '…' : d.label}
+                        {d.label.length > 22 ? d.label.slice(0, 20) + '…' : d.label}
                       </text>
                     </g>
                   );
@@ -311,14 +454,17 @@ export const LearnerDashboardPage: React.FC = () => {
                   const r = (d.current / 100) * 130;
                   const cx = r * Math.cos(angle);
                   const cy = r * Math.sin(angle);
-                  const isHovered = activeHoveredKey === d.key;
+                  const isDirectHovered = activeHoveredKey === d.key;
+                  const hoveredGapDomain = activeHoveredKey ? allGaps.find(g => g.key === activeHoveredKey)?.domain : null;
+                  const isDomainMatchHovered = radarMode === 'domains' && Boolean(hoveredGapDomain && d.domain === hoveredGapDomain);
+                  const isHovered = isDirectHovered || isDomainMatchHovered;
 
                   return (
                     <circle
                       key={d.key}
                       cx={cx}
                       cy={cy}
-                      r={isHovered ? 7 : 4.5}
+                      r={isHovered ? 7.5 : 4.5}
                       fill={isHovered ? '#E8871A' : '#2563D9'}
                       stroke="#FFFFFF"
                       strokeWidth="2"
@@ -332,28 +478,63 @@ export const LearnerDashboardPage: React.FC = () => {
 
               {/* Floating Hover Metric Tooltip */}
               {activeHoveredKey && (() => {
-                const item = displayRadarData.find(r => r.key === activeHoveredKey);
+                const item = displayRadarData.find(r => r.key === activeHoveredKey) ||
+                  (radarMode === 'domains' 
+                    ? displayRadarData.find(r => r.domain === allGaps.find(g => g.key === activeHoveredKey)?.domain) 
+                    : null) ||
+                  allGaps.find(g => g.key === activeHoveredKey);
                 if (!item) return null;
                 return (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="absolute bottom-3 left-3 p-3 rounded-xl bg-[#08233D] text-white text-xs space-y-1 shadow-lg border border-[#8CCBFF]/30 backdrop-blur-md z-20 pointer-events-none"
+                    className="absolute bottom-3 left-3 p-3 rounded-xl bg-[#08233D] text-white text-xs space-y-1 shadow-lg border border-[#8CCBFF]/30 backdrop-blur-md z-20 pointer-events-none max-w-[260px]"
                   >
-                    <div className="font-bold text-[#8CCBFF]">{item.label}</div>
+                    <div className="font-bold text-[#8CCBFF] truncate">{item.label}</div>
                     <div className="flex items-center gap-3 text-[11px]">
                       <span>Current: <strong className="text-white font-mono">{item.current}</strong></span>
-                      <span>Expected: <strong className="text-white font-mono">{item.target}</strong></span>
+                      <span>Target: <strong className="text-white font-mono">{item.target}</strong></span>
                       <span>Gap: <strong className="text-[#E8871A] font-mono">{item.gap} pts</strong></span>
                     </div>
                   </motion.div>
                 );
               })()}
             </div>
+
+            {/* Domain Telemetry Mini-Strip */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 pb-1 border-t border-[#DCE3EA]">
+              {domainSummaries.map(ds => {
+                const isDomActive = radarMode === 'domains';
+                return (
+                  <button
+                    key={ds.domain}
+                    type="button"
+                    onClick={() => setRadarMode('domains')}
+                    className={`p-2 rounded-lg border transition-all cursor-pointer text-center ${
+                      isDomActive
+                        ? 'bg-blue-50/80 border-blue-200 shadow-2xs'
+                        : 'bg-slate-50/70 border-slate-200/60 hover:bg-slate-100/70'
+                    }`}
+                  >
+                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider truncate">
+                      {ds.name}
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5 mt-0.5">
+                      <span className="font-mono font-extrabold text-xs text-[#102A43]">
+                        {ds.avgScore}%
+                      </span>
+                      <span className={`text-[10px] font-bold font-mono ${ds.gap > 0 ? 'text-[#E8871A]' : 'text-emerald-600'}`}>
+                        {ds.gap > 0 ? `-${ds.gap}` : '✓'}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="pt-3 border-t border-[#DCE3EA] flex items-center justify-between text-xs text-[#52657A]">
-            <span>Interactive measurement polygon</span>
+            <span>33 competencies across 4 Cadre Domains</span>
             <button
               onClick={() => handleAction('Full Competencies', '/learner/profile')}
               className="text-[#2563D9] font-bold hover:underline flex items-center gap-1 cursor-pointer"
@@ -630,59 +811,77 @@ export const LearnerDashboardPage: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              Growth: +10.0 pts
-            </span>
+            {historicalPoints.length >= 2 && (() => {
+              const deltaGrowth = historicalPoints[historicalPoints.length - 1].score - historicalPoints[0].score;
+              return (
+                <span className={`text-[11px] font-bold px-3 py-1 rounded-full border ${
+                  deltaGrowth >= 0 
+                    ? 'text-emerald-700 bg-emerald-50 border-emerald-200' 
+                    : 'text-amber-700 bg-amber-50 border-amber-200'
+                }`}>
+                  Growth: {deltaGrowth >= 0 ? `+${deltaGrowth}.0` : `${deltaGrowth}.0`} pts
+                </span>
+              );
+            })()}
           </div>
         </div>
 
-        {/* Minimal Longitudinal SVG Graph */}
+        {/* Dynamic Longitudinal SVG Graph */}
         <div className="relative w-full h-44 sm:h-52 pt-4">
-          <svg className="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none">
-            
-            {/* Horizontal Grid lines */}
-            <line x1="0" y1="30" x2="500" y2="30" stroke="#F1F5F9" strokeDasharray="3 3" />
-            <line x1="0" y1="65" x2="500" y2="65" stroke="#F1F5F9" strokeDasharray="3 3" />
-            <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F5F9" strokeDasharray="3 3" />
+          {(() => {
+            const count = historicalPoints.length;
+            const progressCoords = historicalPoints.map((pt, i) => {
+              const x = count <= 1 ? 250 : 50 + i * (400 / Math.max(1, count - 1));
+              const y = 140 - Math.min(105, Math.max(15, (pt.score / 100) * 115));
+              return { x, y, pt };
+            });
+            const pathD = progressCoords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x},${c.y}`).join(' ');
 
-            {/* Target 80 Benchmark Line (Saffron #E8871A) */}
-            <line x1="0" y1="35" x2="500" y2="35" stroke="#E8871A" strokeWidth="1.2" strokeDasharray="4 4" />
-            <text x="495" y="28" textAnchor="end" className="text-[9px] fill-[#E8871A] font-bold font-mono">BENCHMARK (80.0)</text>
+            return (
+              <svg className="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none">
+                {/* Horizontal Grid lines */}
+                <line x1="0" y1="30" x2="500" y2="30" stroke="#F1F5F9" strokeDasharray="3 3" />
+                <line x1="0" y1="65" x2="500" y2="65" stroke="#F1F5F9" strokeDasharray="3 3" />
+                <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F5F9" strokeDasharray="3 3" />
 
-            {/* Trajectory Path (Intelligence Blue #2563D9) */}
-            <path
-              d="M 50,110 L 150,98 L 250,82 L 350,68 L 450,56"
-              fill="none"
-              stroke="#2563D9"
-              strokeWidth="2.5"
-            />
+                {/* Target 80 Benchmark Line (Saffron #E8871A) */}
+                <line x1="0" y1="48" x2="500" y2="48" stroke="#E8871A" strokeWidth="1.2" strokeDasharray="4 4" />
+                <text x="495" y="42" textAnchor="end" className="text-[9px] fill-[#E8871A] font-bold font-mono">BENCHMARK (80.0)</text>
 
-            {/* Data Nodes */}
-            {historicalPoints.map((pt, i) => {
-              const x = 50 + i * 100;
-              const y = 150 - (pt.score / 100) * 150;
-              const isHov = hoveredProgressIndex === i;
+                {/* Trajectory Path (Intelligence Blue #2563D9) */}
+                <path
+                  d={pathD}
+                  fill="none"
+                  stroke="#2563D9"
+                  strokeWidth="2.5"
+                />
 
-              return (
-                <g key={i}>
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r={isHov ? 6.5 : 4}
-                    fill={isHov ? '#E8871A' : '#2563D9'}
-                    stroke="#FFFFFF"
-                    strokeWidth="2"
-                    className="cursor-pointer transition-all"
-                    onMouseEnter={() => setHoveredProgressIndex(i)}
-                    onMouseLeave={() => setHoveredProgressIndex(null)}
-                  />
-                  <text x={x} y="142" textAnchor="middle" className="text-[10px] fill-[#52657A] font-semibold font-mono">
-                    {pt.month}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+                {/* Data Nodes */}
+                {progressCoords.map((c, i) => {
+                  const isHov = hoveredProgressIndex === i;
+
+                  return (
+                    <g key={i}>
+                      <circle
+                        cx={c.x}
+                        cy={c.y}
+                        r={isHov ? 6.5 : 4}
+                        fill={isHov ? '#E8871A' : '#2563D9'}
+                        stroke="#FFFFFF"
+                        strokeWidth="2"
+                        className="cursor-pointer transition-all"
+                        onMouseEnter={() => setHoveredProgressIndex(i)}
+                        onMouseLeave={() => setHoveredProgressIndex(null)}
+                      />
+                      <text x={c.x} y="142" textAnchor="middle" className="text-[10px] fill-[#52657A] font-semibold font-mono">
+                        {c.pt.month}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            );
+          })()}
 
           {/* Clean Hover Tooltip */}
           {hoveredProgressIndex !== null && (() => {
