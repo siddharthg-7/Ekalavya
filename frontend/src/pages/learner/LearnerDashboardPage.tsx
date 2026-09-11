@@ -44,24 +44,24 @@ export const LearnerDashboardPage: React.FC = () => {
     load();
   }, [session.officialId]);
 
-  const scores = data?.competency_scores || [];
-  const attempts = data?.quiz_attempts || [];
+  const scores = Array.isArray(data?.competency_scores) ? data.competency_scores : [];
+  const attempts = Array.isArray(data?.quiz_attempts) ? data.quiz_attempts : [];
   const avgScore = scores.length > 0 
-    ? Math.round(scores.reduce((acc, c) => acc + Number(c.score), 0) / scores.length)
+    ? Math.round(scores.reduce((acc, c) => acc + (Number(c.score) || 0), 0) / scores.length)
     : 68;
 
   const formatDomain = (dom: string) => {
     if (dom === 'DigitalGovernance') return 'Digital Governance';
-    return dom;
+    return dom || 'General';
   };
 
   const allGaps = scores.map((s, idx) => ({
     key: s.competency_id || `comp_${idx}`,
-    label: s.competency_name,
+    label: s.competency_name || 'Competency',
     domain: s.domain || 'General',
-    current: Number(s.score),
+    current: Number(s.score) || 60,
     target: Number(s.target_score) || 80,
-    gap: Math.max(0, (Number(s.target_score) || 80) - Number(s.score))
+    gap: Math.max(0, (Number(s.target_score) || 80) - (Number(s.score) || 60))
   }));
 
   const totalDeficitCount = allGaps.filter(g => g.gap > 0).length;

@@ -396,9 +396,12 @@ export async function fetchCompetencyGaps(officialId: string): Promise<Competenc
   try {
     const res = await fetch(`${API_BASE_URL}/officials/${officialId}/competency-gaps`, { signal: AbortSignal.timeout(4000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
+    const json = await res.json();
+    if (Array.isArray(json)) return json;
+    throw new Error("Invalid API response format");
   } catch {
-    return FALLBACK_GAPS[officialId] || FALLBACK_GAPS["f101-anjali-sharma"];
+    const fallback = FALLBACK_GAPS[officialId] || FALLBACK_GAPS["ddbffb96-2eb5-4246-b7ed-4c5065f3ac15"] || Object.values(FALLBACK_GAPS)[0] || [];
+    return Array.isArray(fallback) ? fallback : [];
   }
 }
 
@@ -407,9 +410,9 @@ export async function fetchRecommendations(officialId: string): Promise<CourseRe
     const res = await fetch(`${API_BASE_URL}/recommendations/${officialId}`, { signal: AbortSignal.timeout(4000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
-    return json.recommendations || [];
+    return Array.isArray(json.recommendations) ? json.recommendations : [];
   } catch {
-    return FALLBACK_RECOMMENDATIONS;
+    return Array.isArray(FALLBACK_RECOMMENDATIONS) ? FALLBACK_RECOMMENDATIONS : [];
   }
 }
 
@@ -417,16 +420,26 @@ export async function fetchLearnerDashboard(officialId: string): Promise<Learner
   try {
     const res = await fetch(`${API_BASE_URL}/dashboard/learner/${officialId}`, { signal: AbortSignal.timeout(3000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
+    const data = await res.json();
+    if (data && Array.isArray(data.competency_scores)) {
+      return {
+        official: data.official || (await fetchOfficialDetail(officialId)),
+        competency_scores: Array.isArray(data.competency_scores) ? data.competency_scores : [],
+        quiz_attempts: Array.isArray(data.quiz_attempts) ? data.quiz_attempts : []
+      };
+    }
+    throw new Error("Invalid dashboard payload");
   } catch {
     const official = await fetchOfficialDetail(officialId);
-    const gaps = await fetchCompetencyGaps(officialId);
+    const rawGaps = await fetchCompetencyGaps(officialId);
+    const gaps = Array.isArray(rawGaps) ? rawGaps : [];
+    
     const competency_scores: CompetencyScoreWithDetail[] = gaps.map(g => ({
-      competency_id: g.competency_id,
-      domain: g.domain,
-      competency_name: g.name,
-      score: g.score,
-      target_score: g.target_score
+      competency_id: g.competency_id || `comp-${g.name}`,
+      domain: g.domain || 'General',
+      competency_name: g.name || 'Competency',
+      score: Number(g.score) || 60,
+      target_score: Number(g.target_score) || 80
     }));
 
     const quiz_attempts: QuizAttemptRecord[] = [
