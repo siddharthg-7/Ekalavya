@@ -128,27 +128,48 @@ export const CompetencyProfilePage: React.FC = () => {
 
       {/* 4 Summary Telemetry KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-2xl p-5 border border-[#DCE3EA] shadow-2xs">
+        <div 
+          onClick={() => setStatusFilter('all')}
+          className={`bg-white rounded-2xl p-5 border transition-all cursor-pointer ${
+            statusFilter === 'all' ? 'border-[#102A43] ring-1 ring-[#102A43] shadow-xs' : 'border-[#DCE3EA] hover:border-slate-300'
+          }`}
+          title="Click to view all competencies"
+        >
           <div className="text-[11px] font-bold text-[#52657A] uppercase tracking-wider">Total Competencies</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-[#102A43] font-mono mt-1">
             {scores.length || 33}
           </div>
           <div className="text-xs text-slate-400 mt-1">Mapped to Ministry Cadre</div>
         </div>
-        <div className="bg-white rounded-2xl p-5 border border-[#DCE3EA] shadow-2xs">
+
+        <div 
+          onClick={() => setStatusFilter('proficient')}
+          className={`bg-white rounded-2xl p-5 border transition-all cursor-pointer ${
+            statusFilter === 'proficient' ? 'border-[#16845B] ring-1 ring-[#16845B] bg-emerald-50/20 shadow-xs' : 'border-[#DCE3EA] hover:border-emerald-300'
+          }`}
+          title="Click to filter proficient competencies (≥80)"
+        >
           <div className="text-[11px] font-bold text-[#16845B] uppercase tracking-wider">Proficient (≥80)</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-[#16845B] font-mono mt-1">
             {scores.filter(s => s.score >= s.target_score).length}
           </div>
           <div className="text-xs text-emerald-600 mt-1">Verified Standards Met</div>
         </div>
-        <div className="bg-white rounded-2xl p-5 border border-[#DCE3EA] shadow-2xs">
+
+        <div 
+          onClick={() => setStatusFilter('gap')}
+          className={`bg-white rounded-2xl p-5 border transition-all cursor-pointer ${
+            statusFilter === 'gap' ? 'border-[#E8871A] ring-1 ring-[#E8871A] bg-amber-50/20 shadow-xs' : 'border-[#DCE3EA] hover:border-amber-300'
+          }`}
+          title="Click to filter priority capability gaps (<80)"
+        >
           <div className="text-[11px] font-bold text-[#E8871A] uppercase tracking-wider">Priority Gaps (&lt;80)</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-[#E8871A] font-mono mt-1">
             {scores.filter(s => s.score < s.target_score).length}
           </div>
           <div className="text-xs text-amber-600 mt-1">Upskilling Targets</div>
         </div>
+
         <div className="bg-white rounded-2xl p-5 border border-[#DCE3EA] shadow-2xs">
           <div className="text-[11px] font-bold text-[#2563D9] uppercase tracking-wider">Average Alignment</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-[#2563D9] font-mono mt-1">
@@ -463,13 +484,18 @@ export const CompetencyProfilePage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredScores.map((c) => {
               const isProficient = c.score >= c.target_score;
-              const gapPts = Math.round(c.target_score - c.score);
+              const gapPts = Math.max(0, Math.round(c.target_score - c.score));
               const domainClean = c.domain === 'DigitalGovernance' ? 'Digital Governance' : c.domain;
+              const isHighPriority = !isProficient && gapPts >= 15;
 
               return (
                 <div
                   key={c.competency_id}
-                  className="bg-white rounded-2xl p-6 border border-[#DCE3EA] hover:border-[#2563D9]/50 hover:shadow-xs transition-all flex flex-col justify-between group"
+                  className={`bg-white rounded-2xl p-6 border transition-all flex flex-col justify-between group ${
+                    isHighPriority 
+                      ? 'border-amber-300/80 hover:border-amber-500 shadow-2xs bg-amber-50/10' 
+                      : 'border-[#DCE3EA] hover:border-[#2563D9]/50 hover:shadow-xs'
+                  }`}
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2.5">
@@ -480,6 +506,10 @@ export const CompetencyProfilePage: React.FC = () => {
                         <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
                           <CheckCircle2 className="w-3 h-3" />
                           Proficient
+                        </span>
+                      ) : isHighPriority ? (
+                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
+                          Priority Deficit: -{gapPts} pts
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
