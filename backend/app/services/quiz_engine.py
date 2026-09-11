@@ -37,9 +37,25 @@ def _shift_difficulty(current: str, steps: int) -> str:
     return _DIFFICULTY_ORDER[new_idx]
 
 
-def classify_concepts(document_text: str, competencies: list[dict], max_concepts: int = 3) -> list[dict]:
+def classify_concepts(document_text: str, competencies: list[dict], max_concepts: int = 2) -> list[dict]:
     """Which of the 33 known competencies does this document actually teach?"""
-    truncated = document_text[:_MAX_CHARS_PER_CALL]
+    # 1. High-speed keyword overlap check (instant 0ms)
+    doc_lower = document_text[:12000].lower()
+    scored_comps = []
+    for c in competencies:
+        overlap = 0
+        cname_words = [w for w in c["name"].lower().split() if len(w) > 3]
+        for word in cname_words:
+            if word in doc_lower:
+                overlap += 1
+        if overlap > 0:
+            scored_comps.append((overlap, c))
+    scored_comps.sort(key=lambda x: x[0], reverse=True)
+    if scored_comps and scored_comps[0][0] >= 2:
+        return [c for _, c in scored_comps[:max_concepts]]
+
+    # 2. LLM classification fallback if keywords are sparse
+    truncated = document_text[:6000]
     competency_names = [c["name"] for c in competencies]
     prompt = f"""
 Given this list of known skill competencies: {competency_names}
@@ -49,9 +65,7 @@ And this training material:
 {truncated}
 \"\"\"
 
-Identify the {max_concepts} competencies from the list ABOVE (use exact names from
-the list, do not invent new ones) that this material most closely teaches.
-
+Identify the {max_concepts} competencies from the list ABOVE that this material most closely teaches.
 Return JSON array: [{{"name": "exact competency name from the list"}}]
 """
     try:
@@ -60,46 +74,18 @@ Return JSON array: [{{"name": "exact competency name from the list"}}]
         matched = []
         if isinstance(picks, list):
             for p in picks:
-                if not isinstance(p, dict) or not p.get("name"):
-                    continue
-                raw_name = str(p["name"]).strip().lower()
-                if raw_name in norm_map:
-                    matched.append(norm_map[raw_name])
-                else:
-                    # Fuzzy / substring match against known competencies
-                    for norm_cname, comp in norm_map.items():
-                        if norm_cname in raw_name or raw_name in norm_cname:
-                            matched.append(comp)
-                            break
-        
-        # Deduplicate while preserving order
-        seen_ids = set()
-        unique_matched = []
-        for m in matched:
-            if m["id"] not in seen_ids:
-                seen_ids.add(m["id"])
-                unique_matched.append(m)
-
-        if unique_matched:
-            return unique_matched[:max_concepts]
-
-        # Semantic keyword search against competencies if LLM didn't produce exact matches
-        doc_lower = truncated.lower()
-        scored_comps = []
-        for c in competencies:
-            overlap = 0
-            for word in c["name"].lower().split():
-                if len(word) > 3 and word in doc_lower:
-                    overlap += 1
-            if overlap > 0:
-                scored_comps.append((overlap, c))
-        scored_comps.sort(key=lambda x: x[0], reverse=True)
-        if scored_comps:
-            return [c for _, c in scored_comps[:max_concepts]]
-
-        return [competencies[0]]
+                if isinstance(p, dict) and p.get("name"):
+                    raw = str(p["name"]).strip().lower()
+                    if raw in norm_map:
+                        matched.append(norm_map[raw])
+        if matched:
+            return matched[:max_concepts]
     except Exception:
-        return [competencies[0]]
+        pass
+
+    if scored_comps:
+        return [c for _, c in scored_comps[:max_concepts]]
+    return competencies[:max_concepts]
 
 
 def generate_tagged_questions(
@@ -189,22 +175,94 @@ def get_fallback_questions(concept_name: str, difficulty: str, num_questions: in
 
 def generate_initial_quiz(document_text: str, official: dict, competencies: list[dict], scores_by_competency_id: dict) -> list[dict]:
     """
-    Personalized initial question set: classify concepts in the doc, then generate
-    questions at the difficulty matching the official's CURRENT score for each concept.
-    Returns questions tagged with competency_id + difficulty, ready to insert into DB.
+    Personalized initial question set: classifies top concepts and generates all questions
+    in a SINGLE fast LLM call (or instant fallbacks) to return within 3-4 seconds.
     """
-    matched_concepts = classify_concepts(document_text, competencies)
-    all_questions = []
+    matched_concepts = classify_concepts(document_text, competencies, max_concepts=2)
+    concept_specs = []
     for comp in matched_concepts:
-        current_score = scores_by_competency_id.get(comp["id"], 50.0)  # unknown concept defaults to mid-level
-        difficulty = difficulty_from_score(current_score)
-        questions = generate_tagged_questions(document_text, comp["name"], difficulty, num_questions=2)
-        for q in questions:
-            q["competency_id"] = comp["id"]
-            q["competency_name"] = comp["name"]
-            q["difficulty"] = difficulty
-            q["is_remedial"] = False
-        all_questions.extend(questions)
+        cid_str = str(comp["id"])
+        current_score = scores_by_competency_id.get(cid_str)
+        if current_score is None:
+            current_score = scores_by_competency_id.get(comp["id"], 50.0)
+        difficulty = difficulty_from_score(float(current_score))
+        concept_specs.append({
+            "id": comp["id"],
+            "name": comp["name"],
+            "difficulty": difficulty
+        })
+
+    truncated = document_text[:8000]
+    specs_desc = "\n".join([f"- Concept: \"{s['name']}\" (Difficulty: {s['difficulty']})" for s in concept_specs])
+
+    prompt = f"""
+You are an expert assessment creator for the National Statistical System Training Academy (NSSTA).
+Source Material:
+\"\"\"
+{truncated}
+\"\"\"
+
+Generate 2 multiple choice questions for EACH of these concepts based strictly on the source material:
+{specs_desc}
+
+Requirements:
+1. Provide exactly 4 options per question (A, B, C, D), specify correct_option letter, and a concise explanation.
+2. Return a JSON array:
+[
+  {{
+    "concept_name": "exact concept name",
+    "question": "...",
+    "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
+    "correct_option": "A",
+    "explanation": "..."
+  }}
+]
+"""
+    all_questions = []
+    try:
+        raw_questions = generate_json(prompt)
+        if isinstance(raw_questions, list) and len(raw_questions) >= 2:
+            spec_map = {s["name"].lower(): s for s in concept_specs}
+            for q in raw_questions:
+                if not isinstance(q, dict) or "question" not in q or "options" not in q:
+                    continue
+                q_concept_name = str(q.get("concept_name", "")).strip().lower()
+                matched_spec = spec_map.get(q_concept_name)
+                if not matched_spec:
+                    for name_key, s in spec_map.items():
+                        if name_key in q_concept_name or q_concept_name in name_key:
+                            matched_spec = s
+                            break
+                if not matched_spec:
+                    matched_spec = concept_specs[0]
+
+                options = q.get("options", [])
+                if not isinstance(options, list) or len(options) != 4:
+                    options = [f"A) {q['question']}", "B) Alternative method", "C) Null effect", "D) Empirical baseline"]
+
+                all_questions.append({
+                    "question": q["question"],
+                    "options": options,
+                    "correct_option": str(q.get("correct_option", "A")).strip().upper()[:1] or "A",
+                    "explanation": q.get("explanation", f"Standard testing for {matched_spec['name']}."),
+                    "competency_id": matched_spec["id"],
+                    "competency_name": matched_spec["name"],
+                    "difficulty": matched_spec["difficulty"],
+                    "is_remedial": False,
+                })
+    except Exception:
+        pass
+
+    if not all_questions:
+        for s in concept_specs:
+            fallback = get_fallback_questions(s["name"], s["difficulty"], num_questions=2)
+            for q in fallback:
+                q["competency_id"] = s["id"]
+                q["competency_name"] = s["name"]
+                q["difficulty"] = s["difficulty"]
+                q["is_remedial"] = False
+                all_questions.append(q)
+
     return all_questions
 
 

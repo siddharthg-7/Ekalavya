@@ -384,11 +384,17 @@ export async function createOfficial(payload: OfficialCreate): Promise<OfficialD
 /**
  * Helper to execute fetch with timeout (default 15s) and automatic retry logic for Render free tier cold starts.
  */
-export async function fetchWithRetry(url: string, options: RequestInit = {}, retries = 2, delayMs = 1500): Promise<Response> {
+export async function fetchWithRetry(
+  url: string,
+  options: RequestInit = {},
+  retries = 2,
+  delayMs = 1500,
+  timeoutMs = 20000
+): Promise<Response> {
   for (let i = 0; i <= retries; i++) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
       
       const combinedOptions: RequestInit = {
         ...options,
@@ -607,7 +613,7 @@ export async function generateQuizFromDocument(file: File, officialId: string): 
     const res = await fetchWithRetry(`${API_BASE_URL}/quiz/generate`, {
       method: 'POST',
       body: formData,
-    }, 1, 2000);
+    }, 1, 2000, 60000);
 
     if (res.ok) {
       return await res.json();

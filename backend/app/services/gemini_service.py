@@ -53,7 +53,7 @@ def generate_text(prompt: str) -> str:
             return _groq_fallback(prompt, e)
     elif _legacy_model and settings.GEMINI_API_KEY:
         try:
-            resp = _legacy_model.generate_content(prompt, request_options={"timeout": 8})
+            resp = _legacy_model.generate_content(prompt, request_options={"timeout": 15})
             return resp.text or ""
         except Exception as e:
             logger.warning("google.generativeai error, attempting fallback: %s", e)
